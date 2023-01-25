@@ -3,6 +3,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "axios": "^1.2.4",
     "octokit": "^2.0.14",
     "tsc": "^2.0.4"
