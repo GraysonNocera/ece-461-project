@@ -45,3 +45,4 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node dist/test_apis.js
+          node dist/test.js
