@@ -4,7 +4,7 @@ import { Octokit } from "octokit";
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
-  auth: process.env.GRAYSON_GITHUB_TOKEN,
+  auth: process.env.GITHUB_TOKEN,
 });
 
 // Async functions must return a Promise type
