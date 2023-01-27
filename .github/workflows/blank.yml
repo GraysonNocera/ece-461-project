@@ -44,4 +44,4 @@ jobs:
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          node .github/actions-scripts/use-the-api.mjs
+          node dist/test_apis.js
