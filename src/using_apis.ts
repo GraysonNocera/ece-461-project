@@ -5,10 +5,13 @@ import { Octokit } from "octokit";
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
   auth: process.env.GITHUB_TOKEN,
+  userAgent: "using apis",
+  timeZone: "Eastern",
+  baseUrl: 'https://api.github.com',
 });
 
 // Async functions must return a Promise type
-async function myFunc(): Promise<void> {
+async function myFunc(owner?: string, repo?: string): Promise<void> {
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
@@ -28,6 +31,14 @@ async function myFunc(): Promise<void> {
         },
     })
 
+    let random_user_request = await octokit.rest.pulls.get({
+        owner: "ebroecker",
+        repo: "canmatrix",
+        pull_number: 682,
+        mediaType: {
+            format: "raw",
+        }
+    })
 
     console.log(result.data)
     console.log(another_result.data)
@@ -44,6 +55,10 @@ async function myFunc(): Promise<void> {
     for (let i = 0; i < result.data.length; i++) {
         console.log(result.data[i]["title"])
     }
+
+    console.log("\n\n")
+    console.log(random_user_request.data)
+    console.log(random_user_request.data["title"])
 }
 
 myFunc()
