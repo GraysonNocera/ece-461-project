@@ -12,13 +12,28 @@ async function myFunc(): Promise<void> {
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
-    let result = await octokit.request("GET /repos/GraysonNocera/ece-461-project/issues", {
+    let result = await octokit.request("GET /repos/" + process.env.GITHUB_LOGIN + "/ece-461-project/issues", {
         owner: "github",
         repo: "ece-461-project",
         per_page: 4
     });
 
+    // Get pull request #5 from our repo
+    let another_result = await octokit.rest.pulls.get({
+        owner: "GraysonNocera",
+        repo: "ece-461-project",
+        pull_number: 5,
+        mediaType: {
+          format: "raw",
+        },
+    })
+
+
     console.log(result.data)
+    console.log(another_result.data)
+
+    // Get pull request title
+    console.log(another_result.data["title"])
     // console.log(result.headers)
     // console.log(result.status)
     // console.log(result.url)
