@@ -1,12 +1,19 @@
-// import { Endpoints } from "@octokit/types";
+import os from "octokit";
 
-// type listUserReposParameters = Endpoints["GET /repos/{owner}/{repo}"]["parameters"];
-// type listUserReposResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
+const ok = new os.Octokit({
+    auth: 'YOUR-TOKEN'
+})
 
-// async function listRepos(options: listUserReposParameters): listUserReposResponse["data"] {
-//     const data = await options;
-//     return data;
-// }
+
+
+type listUserReposParameters = Endpoints["GET /repos/{owner}/{repo}"]["parameters"];
+type listUserReposResponse = Endpoints["GET /repos/{owner}/{repo}"]["response"];
+
+async function listRepos(options: listUserReposParameters): listUserReposResponse["data"] {
+    const data = await options;
+    return data;
+}
+
 
 function* generator() {
     console.log("Generator is starting")
