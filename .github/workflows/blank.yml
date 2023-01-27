@@ -35,10 +35,10 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           
-      - name: Setup TypeScript
-        # You may pin to the exact commit or the version.
-        # uses: Tyler887/TypeScript-GitHub-Actions@53e31ff564a77d333d0b3e7aebfca502079ad0bc
-        uses: Tyler887/TypeScript-GitHub-Actions@1.0
+      # - name: Setup TypeScript
+      #   # You may pin to the exact commit or the version.
+      #   # uses: Tyler887/TypeScript-GitHub-Actions@53e31ff564a77d333d0b3e7aebfca502079ad0bc
+      #   uses: Tyler887/TypeScript-GitHub-Actions@1.0
 
       - name: Run script
         env:
