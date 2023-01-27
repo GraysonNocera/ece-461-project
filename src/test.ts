@@ -1,5 +1,6 @@
 import axios from 'axios';
 import fs from 'fs';
+import path from 'path';
 
 interface Repository {
   name: string;
@@ -10,12 +11,36 @@ interface Repository {
 
 async function getRepositories(username:string): Promise<Repository[]> {
   try {
-    const response = await axios.get<Repository[]>(`https://api.github.com/users/$b4yuan/repos`);
+    const response = await axios.get<Repository[]>(`https://github.com/GraysonNocera?tab=repositories`);
     return response.data;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     throw error;
   }
 }
 
-getRepositories('username').then(repositories => console.log(repositories));
+function onReceived(repos: Repository[]): void {
+
+  console.log(repos)
+  // let string = ''
+  // repos.forEach(element => {
+  //   string += element.name
+  // });
+
+  // console.log("hi")
+  // fs.writeFileSync(path.join(__dirname, "data.txt"), string)
+}
+
+function onRejected(repos: Repository[]): void {
+  // let string = ''
+  // repos.forEach(element => {
+  //   string += element.name
+  // });
+
+  // console.log("hi")
+  // fs.writeFileSync(path.join(__dirname, "data.txt"), string)
+  console.log(repos)
+}
+
+getRepositories('username').then(onReceived, onRejected);
+
