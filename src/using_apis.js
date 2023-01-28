@@ -49,26 +49,18 @@ function myFunc(repos, owners) {
     if (repos === void 0) { repos = ""; }
     if (owners === void 0) { owners = ""; }
     return __awaiter(this, void 0, void 0, function () {
-        var result, i;
+        var issues;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, octokit.request("GET /repos/GraysonNocera/ece-461-project/issues", {
+                case 0: return [4 /*yield*/, octokit.paginate("GET /repos/{owner}/{repo}/issues", {
                         owner: owners,
-                        repo: repos,
-                        per_page: 4
+                        repo: repos
                     })];
                 case 1:
-                    result = _a.sent();
-                    console.log(result.data);
-                    // console.log(result.headers)
-                    // console.log(result.status)
-                    // console.log(result.url)
-                    console.log("\n\n\n\n\n\n" + result.data["title"]);
-                    // Iterate through the issues and print their title
-                    for (i = 0; i < result.data.length; i++) {
-                        console.log(result.data[i]["title"]);
-                    }
-                    return [2 /*return*/];
+                    issues = _a.sent();
+                    //  console.log(test.length);
+                    //can return a number this way but has to return to async or else it won't work properly 
+                    return [2 /*return*/, issues.length];
             }
         });
     });

@@ -4,6 +4,7 @@ export class url_class {
     correctness:number;
     bus_factror:number;
     ramp_up:number;
+    issues:number;
     responsiveness:number;
     license:number;
     score: number;
@@ -16,6 +17,7 @@ export class url_class {
         this.correctness = 0;
         this.bus_factror = 0; 
         this.ramp_up = 0;
+        this.issues = 0;
         this.responsiveness = 0;
         this.license = 0; 
         this.score = 0; 
@@ -24,10 +26,15 @@ export class url_class {
     }
 
     //What do we need to call from here?  but possibly interact with whatever API's we need 
- calculate_correctness(){
+    //has to be async to allow use of await to fulfil promise made by myFunc
+    //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
+ async calculate_correctness(){
 
     this.correctness = 0; 
-    myFunc(this.repo, this.owner);
+
+    //needed to complete promise and return a number type 
+    this.issues = await myFunc(this.repo, this.owner);
+    console.log(this.issues);
 }
 
 //API?
