@@ -6,6 +6,9 @@ import * as readline from 'readline';
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
   auth: process.env.GITHUB_TOKEN,
+  userAgent: "using apis",
+  timeZone: "Eastern",
+  baseUrl: 'https://api.github.com',
 });
 
 let rl = readline.createInterface({
@@ -30,42 +33,21 @@ rl.close();
 
 
 // Async functions must return a Promise type
-export async function myFunc(): Promise<void> {
+export async function myFunc(owner: string, repo: string): Promise<number> {
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
-    let result = await octokit.request("GET /repos/" + process.env.GITHUB_LOGIN + "/ece-461-project/issues", {
-        owner: "github",
-        repo: "ece-461-project",
-        per_page: 4
-    });
-
+    let issuecount = 0
     // Get pull request #5 from our repo
-    let another_result = await octokit.rest.pulls.get({
-        owner: "GraysonNocera",
-        repo: "ece-461-project",
-        pull_number: 5,
-        mediaType: {
-          format: "raw",
-        },
+    let another_result = await octokit.request('GET /repos/{owner}/{repo}/pulls{?state,head,base,sort,direction,per_page,page}',{
+        owner: owner,
+        repo: repo,
     })
-
-
-    // console.log(result.data)
-    // console.log(another_result.data)
-
-    // Get pull request title
-    // console.log(another_result.data["title"])
-    // console.log(result.headers)
-    // console.log(result.status)
-    // console.log(result.url)
-
-    // console.log("\n\n\n\n\n\n" + result.data["title"])
-    let countIss = 0
+    
     // Iterate through the issues and print their title
-    for (let i = 0; i < result.data.length; i++) {
-        countIss++ // console.log(result.data[i]["title"])
+    for (let i = 0; i < another_result.data.length; i++) {
+        issuecount++ // console.log(result.data[i]["title"])
     }
-}
 
-myFunc()
+    return issuecount
+}
