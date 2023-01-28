@@ -13,7 +13,7 @@ const octokit = new Octokit({
     // token above and store the result/data in the variable result
 
     // let result = await octokit.request("GET /repos/GraysonNocera/ece-461-project/issues", {
-    //     owner: owners,
+    //     owner: owner,
     //     repo: repos,
     //     per_page: 4
     // });
