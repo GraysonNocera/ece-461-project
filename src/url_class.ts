@@ -2,7 +2,7 @@ import { myFunc } from "./using_apis";
 
 export class url_class {
     correctness:number;
-    bus_factror:number;
+    bus_factor:number;
     ramp_up:number;
     issues:number;
     responsiveness:number;
@@ -15,7 +15,7 @@ export class url_class {
     constructor(URL: string = "", repo = "", owner = "github") {
         this.url = URL;
         this.correctness = 0;
-        this.bus_factror = 0; 
+        this.bus_factor = 0; 
         this.ramp_up = 0;
         this.issues = 0;
         this.responsiveness = 0;
@@ -39,7 +39,7 @@ export class url_class {
 
 //API?
 calculate_bus(){
-  this.bus_factror = 0; 
+  this.bus_factor = 0; 
 }
 //API?
 calculate_ramp(){

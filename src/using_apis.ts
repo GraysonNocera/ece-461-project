@@ -68,8 +68,10 @@ rl.close();
 // }
 
 // //myFunc()
-// =======
+
 export async function myFunc(repo: string, owner: string): Promise<number> {
+
+
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
@@ -89,4 +91,3 @@ export async function myFunc(repo: string, owner: string): Promise<number> {
 
     return issuecount
 }
-// >>>>>>> understand-apis-develop-examples
