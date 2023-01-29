@@ -4,8 +4,11 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "axios": "^1.2.5",
+    "axios": "^1.2.6",
     "fs": "^0.0.1-security",
+    "graphql": "^16.6.0",
+    "node": "^18.13.0",
+    "node-fetch": "^3.3.0",
     "octokit": "^2.0.14",
     "path": "^0.12.7",
     "tsc": "^2.0.4"
