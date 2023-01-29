@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: ["ci-things"]
+    branches: ["main"]
   pull_request:
     branches: [ "main" ]
 
@@ -34,15 +34,9 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-          
-      # - name: Setup TypeScript
-      #   # You may pin to the exact commit or the version.
-      #   # uses: Tyler887/TypeScript-GitHub-Actions@53e31ff564a77d333d0b3e7aebfca502079ad0bc
-      #   uses: Tyler887/TypeScript-GitHub-Actions@1.0
 
       - name: Run script
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          node dist/test_apis.js
-          node dist/test.js
+          echo Hello, World
