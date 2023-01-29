@@ -39,6 +39,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          npm install
           tsc
           node dist/test/initial_test.js
 
