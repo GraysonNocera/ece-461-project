@@ -1,3 +1,8 @@
+# Ignore modules and just install them locally
 node_modules/**
+
+# Ignore transpiled JavaScript files
 dist/
+
+# Ignore transpiled JavaScript files
 src/*.js
