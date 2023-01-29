@@ -68,16 +68,20 @@ rl.close();
 // }
 
 // //myFunc()
-// =======
-export async function myFunc(owner: string, repo: string): Promise<number> {
+
+export async function myFunc(repo: string, owner: string): Promise<number> {
+
+
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
     let issuecount = 0
     // Get pull request #5 from our repo
-    let another_result = await octokit.request('GET /repos/{owner}/{repo}/pulls{?state,head,base,sort,direction,per_page,page}',{
+    let another_result = await octokit.request('GET /repos/{owner}/{repo}/issues{?state,head,base,sort,direction,per_page,page}',{
         owner: owner,
         repo: repo,
+        state: "closed",
+        since: "2023-01-23"
     })
     
     // Iterate through the issues and print their title
