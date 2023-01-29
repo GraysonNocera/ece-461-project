@@ -84,6 +84,7 @@ fetch("https://api.github.com/graphql", {
     body: JSON.stringify({query : gql_query})
 }).then(data => data.json())
 .then(data => {
+    console.log (data);
     let str = JSON.stringify(data, null, 4);
 
     fs.writeFile("API_RETURN.json", str, function(err: any) {
