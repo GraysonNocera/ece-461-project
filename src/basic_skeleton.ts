@@ -1,8 +1,10 @@
-import { url_class } from './url_class';
+import { Runner } from './url_class';
+
+// File to test passing a URL input into the API
 
 function test(owner:string ="", repo:string =""){
     //pass in repo and owner of repo to initialize the url class
-    var test = new url_class("",repo, owner);
+    var test = new Runner("",repo, owner);
     test.calculate_correctness(); 
 }
 
