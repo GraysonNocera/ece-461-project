@@ -39,4 +39,6 @@ jobs:
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo Hello, World
+          tsc
+          node dist/test/initial_test.js
+
