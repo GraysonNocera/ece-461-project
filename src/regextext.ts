@@ -1,5 +1,10 @@
-// Given a Repo URL, uses REGEX to grab the repo and owner name
+/*
+
 // Run with ```tsc regextext.ts && node regextext.js```
+// Change URL to demo
+
+var url = "https://github.com/GraysonNocera/ece-461-project/tree/graphql";
+
 
 function getRepoDetails(url: string) {
     const regex = /(?:https:\/\/github.com\/)([^\/]+)\/([^\/]+)(?:\/|$)/;
@@ -11,6 +16,7 @@ function getRepoDetails(url: string) {
     return null;
 }
 
-
-var url = "https://github.com/GraysonNocera/ece-461-project/tree/graphql";
 console.log (getRepoDetails (url));
+
+
+*/
