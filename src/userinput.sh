@@ -9,13 +9,13 @@ owner=${arr[3]}
 repo=$(echo $link | awk -F/ '{print $NF}' | sed 's/.git$//')
 
 # Clone, tell us our variables, and nav to the repository
-git clone $link
-echo $owner
-echo $repo
-cd $repo
+#git clone $link
+#echo $owner
+#echo $repo
+#cd $repo
 
 # Pass into using_apis
-#ts-node using_apis $owner $repo
+ts-node basic_skeleton $owner $repo
 
 # Nav out and delete
 cd ..

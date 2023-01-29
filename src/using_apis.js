@@ -38,32 +38,88 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.myFunc = void 0;
 var octokit_1 = require("octokit");
+var readline = require("readline");
 // Set up authentication token
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 var octokit = new octokit_1.Octokit({
-    auth: process.env.GITHUB_TOKEN
+    auth: process.env.GITHUB_TOKEN,
+    userAgent: "using apis",
+    timeZone: "Eastern",
+    baseUrl: 'https://api.github.com'
+});
+var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+rl.question('Is this example useful? [y/n] ', function (answer) {
+    switch (answer.toLowerCase()) {
+        case 'y':
+            console.log('Super!');
+            break;
+        case 'n':
+            console.log('Sorry! :(');
+            break;
+        default:
+            console.log('Invalid answer!');
+    }
+    rl.close();
 });
 // Async functions must return a Promise type
-function myFunc(repos, owners) {
-    if (repos === void 0) { repos = ""; }
-    if (owners === void 0) { owners = ""; }
+// <<<<<<< HEAD
+//  export async function myFunc(repos:string = "", owners:string = ""): Promise<number> {
+//     // This call will pull 4 issues from the repo ece-461-project using the personal access
+//     // token above and store the result/data in the variable result
+//     // let result = await octokit.request("GET /repos/GraysonNocera/ece-461-project/issues", {
+//     //     owner: owner,
+//     //     repo: repos,
+//     //     per_page: 4
+//     // });
+// //paginate allows us to see active issues
+//     let issues = await octokit.paginate("GET /repos/{owner}/{repo}/issues", {
+//         owner: owners,
+//         repo: repos
+//     });
+//   //  console.log(test.length);
+//   //can return a number this way but has to return to async or else it won't work properly 
+//     return issues.length; 
+//     //console.log(result.headers)
+//     // console.log(result.headers)
+//     // console.log(result.status)
+//     // console.log(result.url)
+//   //  console.log("\n\n\n\n\n\n" + result.data["title"])
+//     //Iterate through the issues and print their title
+//     // for (let i = 0; i < test.length; i++) {
+//     //     console.log(test[i])
+//     // }
+// }
+// //myFunc()
+// =======
+function myFunc(repo, owner) {
     return __awaiter(this, void 0, void 0, function () {
-        var issues;
+        var issuecount, another_result, i;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, octokit.paginate("GET /repos/{owner}/{repo}/issues", {
-                        owner: owners,
-                        repo: repos
-                    })];
+                case 0:
+                    issuecount = 0;
+                    return [4 /*yield*/, octokit.request('GET /repos/{owner}/{repo}/issues{?state,head,base,sort,direction,per_page,page}', {
+                            owner: owner,
+                            repo: repo,
+                            state: "closed",
+                            since: "2023-01-23"
+                        })
+                        // Iterate through the issues and print their title
+                    ];
                 case 1:
-                    issues = _a.sent();
-                    //  console.log(test.length);
-                    //can return a number this way but has to return to async or else it won't work properly 
-                    return [2 /*return*/, issues.length];
+                    another_result = _a.sent();
+                    // Iterate through the issues and print their title
+                    for (i = 0; i < another_result.data.length; i++) {
+                        issuecount++; // console.log(result.data[i]["title"])
+                    }
+                    return [2 /*return*/, issuecount];
             }
         });
     });
 }
 exports.myFunc = myFunc;
-//myFunc()
+// >>>>>>> understand-apis-develop-examples

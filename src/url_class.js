@@ -56,6 +56,7 @@ var url_class = /** @class */ (function () {
     }
     //What do we need to call from here?  but possibly interact with whatever API's we need 
     //has to be async to allow use of await to fulfil promise made by myFunc
+    //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
     url_class.prototype.calculate_correctness = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
