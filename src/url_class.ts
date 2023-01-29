@@ -1,6 +1,6 @@
 import { get_info } from "./using_apis";
 
-// Rudimentary 
+// Rudimentary implementation of Runner class
 
 export class Runner {
   correctness:number;
