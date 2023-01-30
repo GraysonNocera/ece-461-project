@@ -14,19 +14,19 @@
                 "totalCount": 12
             },
             "open_issues": {
-                "totalCount": 4
+                "totalCount": 3
             },
             "defaultBranchRef": {
                 "target": {
                     "history": {
-                        "totalCount": 70
+                        "totalCount": 83
                     }
                 }
             },
             "pullRequests": {
                 "totalCount": 11
             },
-            "last_pushed_at": "2023-01-29T21:40:59Z",
+            "last_pushed_at": "2023-01-30T04:40:39Z",
             "stargazerCount": 0,
             "hasVulnerabilityAlertsEnabled": false
         },

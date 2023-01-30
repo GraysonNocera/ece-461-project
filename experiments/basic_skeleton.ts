@@ -1,4 +1,4 @@
-import { url_class } from './url_class';
+import { url_class } from '../src/url_class';
 
 // Given a Repo URL, uses REGEX to grab the repo and owner name
 // I **THINK** it works with any (GitHub) URL they can throw at us, but I haven't exhaustively tested it

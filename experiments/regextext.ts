@@ -1,4 +1,4 @@
-//*
+/*
 
 // Run with ```tsc regextext.ts && node regextext.js```
 // Change URL to demo
@@ -33,4 +33,4 @@ console.log (getGitRepoDetails (url4));
 console.log (getGitRepoDetails (url5));
 console.log (getGitRepoDetails (url6));
 
-//*/
+/*/
