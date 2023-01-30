@@ -1,4 +1,566 @@
 {
-    "message": "Bad credentials",
-    "documentation_url": "https://docs.github.com/graphql"
+    "data": {
+        "repository": {
+            "name": "ece-461-project",
+            "forkCount": 3,
+            "licenseInfo": null,
+            "assignableUsers": {
+                "totalCount": 4
+            },
+            "sshUrl": "git@github.com:GraysonNocera/ece-461-project.git",
+            "latestRelease": null,
+            "hasIssuesEnabled": true,
+            "issues": {
+                "totalCount": 12
+            },
+            "open_issues": {
+                "totalCount": 4
+            },
+            "defaultBranchRef": {
+                "target": {
+                    "history": {
+                        "totalCount": 70
+                    }
+                }
+            },
+            "pullRequests": {
+                "totalCount": 11
+            },
+            "last_pushed_at": "2023-01-29T21:40:59Z",
+            "stargazerCount": 0,
+            "hasVulnerabilityAlertsEnabled": false
+        },
+        "securityVulnerabilities": {
+            "nodes": [
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "5.13.15"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.0.4"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "7.0.0"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "CRITICAL"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "6.0.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "LOW"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.11.3"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.32"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.32"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.32"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.15"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.0.4"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.5.0b3.dev42"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.5.0b3.dev44"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.13"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.13"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.5"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.38.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1229.v4880b"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "5.2.11"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.0.4"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.13.0"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.2"
+                    },
+                    "severity": "LOW"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "LOW"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.209.v862c6e5fb"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "3.16.0"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "CRITICAL"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.15"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "LOW"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "LOW"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "20.0.19"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "19.4.22"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "20.0.19"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "19.4.22"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.6.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "20.0.19"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "19.4.22"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "20.0.19"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "19.4.22"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "20.0.19"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "19.4.22"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.3.5"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.14.1.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.13.2.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "3.17.0.rc1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.10.0"
+                    },
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.4.0-beta.2"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.3.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.2.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.1.3"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.0.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "HIGH"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.5.3"
+                    },
+                    "severity": "CRITICAL"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": null,
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.5.1"
+                    },
+                    "severity": "CRITICAL"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "3.0.5"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.30.0"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.11.2"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.4.6"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "3.9.0"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.4.0-beta.2"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.3.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.2.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.1.3"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "1.0.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.4.0"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.5.2"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.3.17"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.14.1.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.13.2.1"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.1.5"
+                    },
+                    "severity": "MODERATE"
+                },
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "0.4.0"
+                    },
+                    "severity": "MODERATE"
+                }
+            ]
+        }
+    }
 }

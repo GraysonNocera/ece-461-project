@@ -38,7 +38,8 @@ export class url_class {
 }
 
 //API?
-calculate_bus(){
+calculate_bus(num_contribter: number){
+  
   this.bus_factor = 0; 
 }
 //API?
