@@ -14,7 +14,7 @@ const octokit = new Octokit({
 let rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
-  });
+});
 
 rl.question('Is this example useful? [y/n] ', (answer) => {
 switch(answer.toLowerCase()) {
@@ -69,9 +69,7 @@ rl.close();
 
 // //myFunc()
 
-export async function myFunc(repo: string, owner: string): Promise<number> {
-
-
+export async function get_info(repo: string, owner: string): Promise<number> {
 
     // This call will pull 4 issues from the repo ece-461-project using the personal access
     // token above and store the result/data in the variable result
