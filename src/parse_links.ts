@@ -5,8 +5,64 @@ let fs = require("fs");
 
 const MAX_RETRIES = 1;
 
-///*
+export function gql_query(username:string, repo:string) {
+  return `
+  {
+    repository(owner: "${username}", name: "${repo}") {
+      name
+      forkCount
+      licenseInfo {
+        name
+      }
+      assignableUsers {
+        totalCount
+      }
+      sshUrl
+      latestRelease {
+        tagName
+      }
+      hasIssuesEnabled
+      issues {
+        totalCount
+      }
+      open_issues: issues(states: OPEN) {
+        totalCount
+      }
+      defaultBranchRef {
+        target {
+          ... on Commit {
+            history {
+              totalCount
+            }
+          }
+        }
+      }
+      pullRequests {
+        totalCount
+      }
+      
+      last_pushed_at: pushedAt
+      
+      stargazerCount
+      hasVulnerabilityAlertsEnabled
+    }
+    
+    securityVulnerabilities (first: 100) {
+      nodes {
+        firstPatchedVersion {
+          identifier
+        }
+        severity
+      }
+    }
+  }
+  `;
+}
+
+
+// Takes a NPM package URL and returns the GitHub URL
 export async function npm_2_git(npmUrl: string): Promise<string> {
+  
   // check if input is a valid URL
   if (!URL.parse(npmUrl).hostname) {
     throw new Error(`Invalid NPM package URL: ${npmUrl}`);
@@ -14,9 +70,10 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
   // extract the package name from the npm URL
   const packageName = npmUrl.split("/").pop();
-
   let retries = 0;
+  
   while (retries < MAX_RETRIES) {
+
     try {
       // use the npm registry API to get the package information
       const response: AxiosResponse = await axios.get(
@@ -37,7 +94,11 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
           `Repository of package: ${packageName} is not on GitHub`
         );
       }
-    } catch (error: any) {
+
+
+    } 
+    
+    catch (error: any) {
       if (error.response && error.response.status === 404) {
         throw new Error(`Package not found: ${packageName}`);
       } else if (error.response && error.response.status === 429) {
@@ -53,6 +114,7 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
       }
     }
   }
+
   throw new Error(
     `Error: Maximum retries exceeded for package: ${packageName}`
   );
@@ -92,7 +154,7 @@ export async function graphAPIfetch(gql_query: string): Promise<any> {
       const data = await response.json();
       console.log ("\nData Acquired From API\n")
 
-      fs.promises.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
+      fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
         if (err) {
           console.log(err);
         } else {
@@ -106,59 +168,3 @@ export async function graphAPIfetch(gql_query: string): Promise<any> {
     }
 }
 
-
-
-export function gql_query(username:string, repo:string) {
-    return `
-    {
-      repository(owner: "${username}", name: "${repo}") {
-        name
-        forkCount
-        licenseInfo {
-          name
-        }
-        assignableUsers {
-          totalCount
-        }
-        sshUrl
-        latestRelease {
-          tagName
-        }
-        hasIssuesEnabled
-        issues {
-          totalCount
-        }
-        open_issues: issues(states: OPEN) {
-          totalCount
-        }
-        defaultBranchRef {
-          target {
-            ... on Commit {
-              history {
-                totalCount
-              }
-            }
-          }
-        }
-        pullRequests {
-          totalCount
-        }
-        
-        last_pushed_at: pushedAt
-        
-        stargazerCount
-        hasVulnerabilityAlertsEnabled
-      }
-      
-      securityVulnerabilities (first: 100) {
-        nodes {
-          firstPatchedVersion {
-            identifier
-          }
-          severity
-        }
-      }
-    }
-    `;
-  }
-  

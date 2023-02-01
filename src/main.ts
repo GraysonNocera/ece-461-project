@@ -1,5 +1,4 @@
-import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_funcs';
-import { url_class } from './url_class';
+import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
 
 function sleep(ms: number) {
     // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
@@ -7,7 +6,7 @@ function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function main() {
+async function main() {    
     let url = process.argv[2];
     var data;
 
@@ -18,7 +17,7 @@ async function main() {
     let username: string | null = null;
     let repoName: string | null = null;
 
-    if (url.startsWith("https://www.npmjs.com/")) {
+    if (url.startsWith("https://www.npmjs.com/package/")) {
         let gitUrl = await npm_2_git(url);
         let gitRepoDetails = await getGitRepoDetails(gitUrl);
         
@@ -34,18 +33,22 @@ async function main() {
     }
 
     if (username != null && repoName != null) {
-        data = await graphAPIfetch(gql_query(username, repoName));
+        data = await graphAPIfetch(gql_query(username, repoName)).catch((error) => {
+            console.log (`Error: ${error}`);
+        });
     }
 
     else {
-        throw (`Unable to fetch repo -> ${username}/${repoName}`);
+        throw new Error (`Unable to fetch repo -> ${username}/${repoName}`);
     }
 
-    console.log (data); // I have data up to this point. A nice JSON object (I think?)
-    // I can't parse it to save my life. plis help
-    // look at API_RETURN.json to "see" what the data looks like.
+    console.log (data);
+
+    if (data["message"] == `Bad credentials`) {
+        console.log (`Bad credentials. Please check your token.`);
+        throw new Error ("Bad credentials. Please check your token.");
+    }
+    
 }
 
-
 main();
-
