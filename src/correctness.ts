@@ -1,8 +1,6 @@
 // import { Octokit } from "octokit";
 import { Octokit as OctokitType } from "octokit";
-
 const Octokit = OctokitType as any;
-
 import * as readline from 'readline';
 
 // Set up authentication token
