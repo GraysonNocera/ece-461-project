@@ -7,7 +7,7 @@ import * as readline from 'readline';
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
-  auth: "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",
+  auth: "<token here with scope repo>",
   userAgent: "using apis",
   timeZone: "Eastern",
   baseUrl: 'https://api.github.com',
