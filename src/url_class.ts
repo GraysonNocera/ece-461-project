@@ -1,4 +1,5 @@
-import { get_info } from "./using_apis";
+import { listenerCount } from "process";
+import { get_issues } from "./correctness";
 
 // Rudimentary implementation of Runner class
 
@@ -34,7 +35,7 @@ export class Runner {
     this.correctness = 0; 
 
     //needed to complete promise and return a number type 
-    this.issues = await get_info(this.repo, this.owner);
+    this.issues = await get_issues(this.repo, this.owner);
     console.log(this.issues);
 }
 
@@ -54,6 +55,8 @@ export class Runner {
 
   //API?
   calculate_score(){
+    this.score = 0.35 * this.bus_factor + 0.25 * this.license + 0.2 * this.correctness + 0.1 * this.ramp_up + 0.1 * this.responsiveness;
+    
     //whatever we need to do to calculate formula 
   }
 }
