@@ -3,9 +3,44 @@ import fs from "fs";
 import path from "path";
 import cp from "child_process";
 import { parse } from "csv-parse";
+import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
+import { emptyDirSync } from "fs-extra";
 
-async function delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+function clone_repo(repo_url: string, path_to_repo: string, repo_name?: string): void {
+
+    if (!repo_name) {
+        // Try to get it from parse github url function?
+        repo_name = "placeholder text"
+    }
+
+    // Create file or delete its contents if it exists
+    let repo_base_dir = path.join(path_to_repo, repo_name)
+    if (!fs.existsSync(repo_base_dir)) {
+        fs.mkdirSync(repo_base_dir)
+    } else {
+        emptyDirSync(repo_base_dir)
+    }
+
+    // Create options for git object
+    const options: Partial<SimpleGitOptions> = {
+        baseDir: repo_base_dir,
+        binary: 'git',
+        maxConcurrentProcesses: 6,
+        trimmed: false,
+    };
+
+    // Create git object
+    const git: SimpleGit = simpleGit(options)
+
+    // Clone repo
+    git.clone(repo_url, repo_base_dir, {
+        // Options go here
+    }, (err, data) => {
+        console.log("Error", err)
+        console.log("Data", data)
+    });
+
+    return;
 }
 
 function get_readme_length(path_to_repo: string): number {
@@ -49,5 +84,7 @@ function get_percentage_comments(path_to_repo: string): number {
 }
 
 let path_to_repo = "/Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/"
-console.log(get_readme_length(path_to_repo))
-console.log(get_percentage_comments(path_to_repo))
+let repo_url = "https://github.com/pyserial/pyserial"
+clone_repo(repo_url, path_to_repo, "pyserial")
+// console.log(get_readme_length(path_to_repo))
+// console.log(get_percentage_comments(path_to_repo))
