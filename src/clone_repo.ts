@@ -4,6 +4,7 @@ import path from "path";
 import cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions, gitP } from "simple-git";
 import { emptyDirSync } from "fs-extra";
+import { Octokit } from "octokit";
 
 function create_git_object(path_to_repo?: string, repo_name?: string): SimpleGit {
     // Clone repo into path_to_repo + repo_name directory
@@ -44,6 +45,8 @@ function create_git_object(path_to_repo?: string, repo_name?: string): SimpleGit
 
 async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
 
+    emptyDirSync(repo_base_dir)
+
     // Clone repo
     await git.clone(repo_url, repo_base_dir, {
         //Options go here
@@ -67,7 +70,7 @@ function get_readme_length(repo_base_dir: string): number {
     try {
         file_contents = fs.readFileSync(file, "ascii");
     } catch(exception) {
-        console.log("File not found\n");
+        console.log("README file not found");
         return 0;
     }
 
@@ -106,11 +109,13 @@ function delete_repo(repo_base_dir: string) {
     // Delete the repo after analyzing it
     // :param repo_base_dir: base path of repository
 
-    emptyDirSync(repo_base_dir)
-    fs.rmdir(repo_base_dir, (err) => {
-        if (err)
-            console.log(err)
-    })
+    if (fs.existsSync(repo_base_dir)) {
+        emptyDirSync(repo_base_dir)
+        fs.rmdir(repo_base_dir, (err) => {
+            if (err)
+                console.log(err)
+        })
+    }
 }
 
 function has_license_in_readme(repo_base_dir: string): boolean {
@@ -118,13 +123,16 @@ function has_license_in_readme(repo_base_dir: string): boolean {
     // :param repo_base_dir: base directory of repo
     // :return: whether readme has license section
 
+    if (!get_readme_length(repo_base_dir))
+        return false
+
     let file_contents: string;
     let file: string = path.join(repo_base_dir, "README.md");
     
     try {
         file_contents = fs.readFileSync(file, "ascii");
     } catch(exception) {
-        console.log("File not found\n");
+        console.log("README file not found");
         return false;
     }
 
@@ -148,21 +156,47 @@ async function main() {
         "https://github.com/lodash/lodash",
         "https://github.com/browserify/browserify"
     ]
+    let names: Array<string> = [
+        "cloudinary_npm",
+        "express",
+        "nodist",
+        "lodash",
+        "browserify",
+    ]
 
-    let path_to_repo: string = "/Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/"
-    let repo_url: string = urls[0]
-    let repo_base_dir: string = path.join(path_to_repo, "cloudinary_npm")
-    let git: SimpleGit = create_git_object(path_to_repo, "cloudinary_npm")
+    urls.forEach(async (value, index, urls) => {
+        let path_to_repo: string = "/Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/"
+        let repo_url: string = value
+        let repo_base_dir: string = path.join(path_to_repo, names[index])
+        let git: SimpleGit = create_git_object(path_to_repo, names[index])
 
-    // Clone the repo
-    await clone_repo(repo_url, repo_base_dir, git)
-    
-    // Print readme length in characters and percentage of comments
-    console.log(get_readme_length(repo_base_dir))
-    console.log(get_percentage_comments(repo_base_dir))
-    console.log(has_license_in_readme(repo_base_dir))
+        // Clone the repo
+        await clone_repo(repo_url, repo_base_dir, git)
+        
+        // Print readme length in characters and percentage of comments
+        console.log("---Information about " + names[index] + " ---")
+        console.log("Readme length: ", get_readme_length(repo_base_dir))
+        console.log("Percentage comments: ", get_percentage_comments(repo_base_dir))
+        console.log("Has license? ", has_license_in_readme(repo_base_dir))
+        console.log("\n")
 
-    delete_repo(repo_base_dir)
+        delete_repo(repo_base_dir)
+    });
+
+    // const octokit = new Octokit({ 
+    //     auth: process.env.GITHUB_TOKEN,
+    //     userAgent: "using apis",
+    //     timeZone: "Eastern",
+    //     baseUrl: 'https://api.github.com',
+    //   });
+      
+    // const value = await octokit.rest.pulls.get({
+    //     owner: "octokit",
+    //     repo: "rest.js",
+    //     pull_number: 123,
+    // })
+
+    // console.log(value['url'])
 }
 
 main()
