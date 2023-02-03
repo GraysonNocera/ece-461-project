@@ -59,22 +59,43 @@ async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGi
 
 }
 
+function get_readme_path(repo_base_dir: string): string {
+    // Get the path of a readme in a repo
+    // :param repo_base_dir: base directory of repo
+    // :return: string of repo readme 
+
+    let file_path: string = "";
+    
+    // match readme
+    let readme_search: RegExp = /[Rr][Ea][Dd][Mm][Ee].*/
+    let files: string[] = fs.readdirSync(repo_base_dir)
+    files.forEach(element => {
+        if (element.search(readme_search)) {
+            file_path = path.join(repo_base_dir, element)
+        }
+    });
+
+    return file_path
+}
+
 function get_readme_length(repo_base_dir: string): number {
     // Get length in characters of a readme file
     // :param path_to_repo: absolute path to the base directory of the cloned repo
     // :return: number of characters in readme
 
-    let file_contents: string;
-    let file: string = path.join(repo_base_dir, "README.md");
-    
-    try {
-        file_contents = fs.readFileSync(file, "ascii");
-    } catch(exception) {
-        console.log("README file not found");
+    let file_path = get_readme_path(repo_base_dir)
+
+    if (!file_path) {
         return 0;
     }
 
-    return file_contents?.length;
+    let file_contents: string = read_readme(file_path);
+
+    if (!file_contents) {
+        return 0;
+    }
+
+    return file_contents.length;
 }
 
 function get_percentage_comments(repo_base_dir: string): number {
@@ -123,23 +144,34 @@ function has_license_in_readme(repo_base_dir: string): boolean {
     // :param repo_base_dir: base directory of repo
     // :return: whether readme has license section
 
-    if (!get_readme_length(repo_base_dir))
+
+    let file_path: string = get_readme_path(repo_base_dir);
+
+    if (!file_path)
         return false
 
-    let file_contents: string;
-    let file: string = path.join(repo_base_dir, "README.md");
-    
-    try {
-        file_contents = fs.readFileSync(file, "ascii");
-    } catch(exception) {
-        console.log("README file not found");
-        return false;
-    }
+    let file_contents: string = read_readme(file_path);
+
+    if (!file_contents)
+        return false
 
     // Search for a license
     let search: RegExp = new RegExp(/#+\s*[Ll][Ii][Cc][Ee][Nn][SsCc][Ee]/)
 
     return file_contents.search(search) != -1
+}
+
+function read_readme(readme_path: string): string {
+
+    let file_contents: string = "";
+    
+    try {
+        file_contents = fs.readFileSync(readme_path, "ascii");
+    } catch(exception) {
+        console.log("README file not found");
+    }
+
+    return file_contents;
 }
 
 function has_correct_license() {
