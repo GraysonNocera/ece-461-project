@@ -1,4 +1,5 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
+import { Runner } from './url_class';
 
 function sleep(ms: number) {
     // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
@@ -9,7 +10,7 @@ function sleep(ms: number) {
 async function main() {    
     let url = process.argv[2];
     var data;
-
+    
     if (!url) {
         throw new Error("Please provide a URL as an argument when running the program.");
     }
@@ -17,6 +18,7 @@ async function main() {
     let username: string | null = null;
     let repoName: string | null = null;
 
+   
     if (url.startsWith("https://www.npmjs.com/package/")) {
         let gitUrl = await npm_2_git(url);
         let gitRepoDetails = await getGitRepoDetails(gitUrl);
@@ -48,6 +50,7 @@ async function main() {
         console.log (`Bad credentials. Please check your token.`);
         throw new Error ("Bad credentials. Please check your token.");
     }
+ 
     
 }
 

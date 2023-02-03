@@ -7,7 +7,7 @@ import * as readline from 'readline';
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
-  auth: "<token here with scope repo>",
+  auth: "string of tokens",
   userAgent: "using apis",
   timeZone: "Eastern",
   baseUrl: 'https://api.github.com',
@@ -20,6 +20,13 @@ export async function get_issues(repo: string, owner: string): Promise<number> {
     let issuesRemaining = true;
     
     try {
+        // issuecount = await octokit.paginate('GET /repos/{owner}/{repo}/issues{?state}',{
+        //     owner:owner,
+        //     repo: repo,
+        //     state: "closed",
+        //     since: "1999-01-23"
+        // });
+
         while (issuesRemaining) {
             let result = await octokit.request('GET /repos/{owner}/{repo}/issues{?state,head,base,sort,direction,per_page,page}', {
                 owner: owner,
