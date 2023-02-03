@@ -67,15 +67,36 @@ function get_readme_path(repo_base_dir: string): string {
     let file_path: string = "";
     
     // match readme
-    let readme_search: RegExp = /[Rr][Ea][Dd][Mm][Ee].*/
+    let readme_search: RegExp = /[Rr][Ee][Aa][Dd][Mm][Ee]\..+/
     let files: string[] = fs.readdirSync(repo_base_dir)
     files.forEach(element => {
-        if (element.search(readme_search)) {
+        if (element.search(readme_search) != -1) {
             file_path = path.join(repo_base_dir, element)
+            return file_path
         }
     });
 
     return file_path
+}
+
+function has_license_file(repo_base_dir: string): boolean {
+    // Boolean for detecting a license file
+    // :param repo_base_dir: base directory of repo
+    // :return: whether the repo has a license file
+
+    let has_file: boolean = false;
+    
+    // match readme
+    let readme_search: RegExp = /[Ll][Ii][Cc][Ee][Nn][SsCc][Ee]\.*.*/
+    let files: string[] = fs.readdirSync(repo_base_dir)
+    files.forEach(element => {
+        if (element.search(readme_search) != -1) {
+            has_file = true
+            return has_file
+        }
+    });
+
+    return has_file
 }
 
 function get_readme_length(repo_base_dir: string): number {
@@ -209,26 +230,12 @@ async function main() {
         console.log("---Information about " + names[index] + " ---")
         console.log("Readme length: ", get_readme_length(repo_base_dir))
         console.log("Percentage comments: ", get_percentage_comments(repo_base_dir))
-        console.log("Has license? ", has_license_in_readme(repo_base_dir))
+        console.log("Has license in readme? ", has_license_in_readme(repo_base_dir))
+        console.log("Has license file? ", has_license_file(repo_base_dir))
         console.log("\n")
 
         delete_repo(repo_base_dir)
     });
-
-    // const octokit = new Octokit({ 
-    //     auth: process.env.GITHUB_TOKEN,
-    //     userAgent: "using apis",
-    //     timeZone: "Eastern",
-    //     baseUrl: 'https://api.github.com',
-    //   });
-      
-    // const value = await octokit.rest.pulls.get({
-    //     owner: "octokit",
-    //     repo: "rest.js",
-    //     pull_number: 123,
-    // })
-
-    // console.log(value['url'])
 }
 
 main()
