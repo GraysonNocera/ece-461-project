@@ -1,9 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import isGitHubUrl = require("is-github-url");
+// import isGitHubUrl = require("is-github-url");
 import * as URL from "url";
 let fs = require("fs");
 
 const MAX_RETRIES = 1;
+const isGitHubUrl = require("is-github-url");
 
 export function gql_query(username:string, repo:string) {
   return `
