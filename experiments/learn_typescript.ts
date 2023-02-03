@@ -1,4 +1,6 @@
+/*
 import os from "octokit";
+
 
 const ok = new os.Octokit({
     auth: 'YOUR-TOKEN'
@@ -38,3 +40,4 @@ console.log(gen.next())
 let result = gen.next()
 console.log(result.value)
 console.log(result.done)
+*/

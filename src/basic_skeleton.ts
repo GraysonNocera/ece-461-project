@@ -1,3 +1,4 @@
+/*
 import { Runner } from './url_class';
 
 // File to test passing a URL input into the API
@@ -12,3 +13,4 @@ function test(owner:string ="", repo:string =""){
 //const var2 = process.argv[3];
 //test(var1, var2)
 test("GraysonNocera", "ece-461-project")
+*/
