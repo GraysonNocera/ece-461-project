@@ -2,20 +2,16 @@
 import fs from "fs";
 import path from "path";
 import cp from "child_process";
-import simpleGit, { SimpleGit, SimpleGitOptions, gitP } from "simple-git";
-import { emptyDirSync } from "fs-extra";
-import { Octokit } from "octokit";
+import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
+import { emptyDir, emptyDirSync } from "fs-extra";
+import { package_class } from "./package_class";
 
-function create_git_object(path_to_repo?: string, repo_name?: string): SimpleGit {
+export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
     // Clone repo into path_to_repo + repo_name directory
     // :param repo_url: url to Github repo page
     // :param path_to_repo: (optional) path to repository
     // :param repo_name: (optional) name of repository
 
-    if (!repo_name) {
-        // Try to get it from parse github url function?
-        repo_name = "placeholder text"
-    }
     if (!path_to_repo) {
         // If no path_to_repo provided, assume current working directory
         path_to_repo = process.cwd()
@@ -43,7 +39,7 @@ function create_git_object(path_to_repo?: string, repo_name?: string): SimpleGit
     return git
 }
 
-async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
+export async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
 
     emptyDirSync(repo_base_dir)
 
@@ -59,7 +55,7 @@ async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGi
 
 }
 
-function get_readme_path(repo_base_dir: string): string {
+async function get_readme_path(repo_base_dir: string): Promise<string> {
     // Get the path of a readme in a repo
     // :param repo_base_dir: base directory of repo
     // :return: string of repo readme 
@@ -79,7 +75,7 @@ function get_readme_path(repo_base_dir: string): string {
     return file_path
 }
 
-function has_license_file(repo_base_dir: string): boolean {
+export async function has_license_file(repo_base_dir: string): Promise<boolean> {
     // Boolean for detecting a license file
     // :param repo_base_dir: base directory of repo
     // :return: whether the repo has a license file
@@ -99,18 +95,18 @@ function has_license_file(repo_base_dir: string): boolean {
     return has_file
 }
 
-function get_readme_length(repo_base_dir: string): number {
+export async function get_readme_length(repo_base_dir: string): Promise<number> {
     // Get length in characters of a readme file
     // :param path_to_repo: absolute path to the base directory of the cloned repo
     // :return: number of characters in readme
 
-    let file_path = get_readme_path(repo_base_dir)
+    let file_path = await get_readme_path(repo_base_dir)
 
     if (!file_path) {
         return 0;
     }
 
-    let file_contents: string = read_readme(file_path);
+    let file_contents: string = await read_readme(file_path);
 
     if (!file_contents) {
         return 0;
@@ -119,7 +115,7 @@ function get_readme_length(repo_base_dir: string): number {
     return file_contents.length;
 }
 
-function get_percentage_comments(repo_base_dir: string): number {
+export async function get_percentage_comments(repo_base_dir: string): Promise<number> {
     // Get the percentage of code that is comments
     // :param path_to_repo: path to the repo
     // :return: percentage of code that is comments (num_comments / (num_comments + code))
@@ -147,12 +143,12 @@ function get_percentage_comments(repo_base_dir: string): number {
     return percent
 }
 
-function delete_repo(repo_base_dir: string) {
+export async function delete_repo(repo_base_dir: string): Promise<void> {
     // Delete the repo after analyzing it
     // :param repo_base_dir: base path of repository
 
     if (fs.existsSync(repo_base_dir)) {
-        emptyDirSync(repo_base_dir)
+        emptyDir(repo_base_dir)
         fs.rmdir(repo_base_dir, (err) => {
             if (err)
                 console.log(err)
@@ -160,18 +156,18 @@ function delete_repo(repo_base_dir: string) {
     }
 }
 
-function has_license_in_readme(repo_base_dir: string): boolean {
+export async function has_license_in_readme(repo_base_dir: string): Promise<boolean> {
     // Ensure that repo has a license section by checking the README.md
     // :param repo_base_dir: base directory of repo
     // :return: whether readme has license section
 
 
-    let file_path: string = get_readme_path(repo_base_dir);
+    let file_path: string = await get_readme_path(repo_base_dir);
 
     if (!file_path)
         return false
 
-    let file_contents: string = read_readme(file_path);
+    let file_contents: string = await read_readme(file_path);
 
     if (!file_contents)
         return false
@@ -182,7 +178,7 @@ function has_license_in_readme(repo_base_dir: string): boolean {
     return file_contents.search(search) != -1
 }
 
-function read_readme(readme_path: string): string {
+async function read_readme(readme_path: string): Promise<string> {
 
     let file_contents: string = "";
     
@@ -201,41 +197,22 @@ function has_correct_license() {
     // to get supplemental information about licenses
 }
 
-async function main() {
-    let urls: Array<string> = [
-        "https://github.com/cloudinary/cloudinary_npm",
-        "https://github.com/expressjs/express",
-        "https://github.com/nullivex/nodist",
-        "https://github.com/lodash/lodash",
-        "https://github.com/browserify/browserify"
-    ]
-    let names: Array<string> = [
-        "cloudinary_npm",
-        "express",
-        "nodist",
-        "lodash",
-        "browserify",
-    ]
+export async function get_info_from_cloned_repo(package_instance: package_class) {
+    // Get information from cloned repo and save it in package_instance
+    // :param package_instance: instance of package class holding data
+    // :return: none
 
-    urls.forEach(async (value, index, urls) => {
-        let path_to_repo: string = "/Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/"
-        let repo_url: string = value
-        let repo_base_dir: string = path.join(path_to_repo, names[index])
-        let git: SimpleGit = create_git_object(path_to_repo, names[index])
+    let path_to_repo: string = process.cwd()
+    let repo_base_dir: string = path.join(path_to_repo, package_instance.repo)
+    let git: SimpleGit = await create_git_object(package_instance.repo, path_to_repo)
 
-        // Clone the repo
-        await clone_repo(repo_url, repo_base_dir, git)
-        
-        // Print readme length in characters and percentage of comments
-        console.log("---Information about " + names[index] + " ---")
-        console.log("Readme length: ", get_readme_length(repo_base_dir))
-        console.log("Percentage comments: ", get_percentage_comments(repo_base_dir))
-        console.log("Has license in readme? ", has_license_in_readme(repo_base_dir))
-        console.log("Has license file? ", has_license_file(repo_base_dir))
-        console.log("\n")
+    await clone_repo(package_instance.url, repo_base_dir, git)
 
-        delete_repo(repo_base_dir)
-    });
+    // Get information about readme
+    package_instance.readme_size = get_readme_length(repo_base_dir)
+    package_instance.comment_ratio = get_percentage_comments(repo_base_dir)
+    package_instance.has_license_in_readme = has_license_in_readme(repo_base_dir)
+    package_instance.has_license_file = has_license_file(repo_base_dir)
+
+    delete_repo(repo_base_dir)
 }
-
-main()
