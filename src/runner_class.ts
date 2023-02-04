@@ -1,6 +1,7 @@
 import { listenerCount } from "process";
 import { get_issues } from "./correctness";
 import { package_class } from './package_class';
+import { clone_repo, create_git_object, delete_repo, get_info_from_cloned_repo, get_percentage_comments, get_readme_length } from "./clone_repo";
 // Rudimentary implementation of Runner class
 
 export class Runner {
@@ -45,9 +46,29 @@ export class Runner {
   async calculate_bus(){
     this.package_instance.bus_factor = 0; 
   }
-  //API?
+
+  async calculate_license(){
+
+  }
+
   async calculate_ramp(){
+
     this.package_instance.ramp_up = 0;
+
+    await get_info_from_cloned_repo(this.package_instance)
+
+    // Get standards for readme length and percent comments
+    let standard_readme_length: number = 10000;
+    let standard_percent_comments: number = 0.5;
+
+    // Handle large percent comments
+
+    // Subscores
+    let readme_score = Math.min(await this.package_instance.readme_size / standard_readme_length, 1)
+    let comments_score = Math.min(await this.package_instance.comment_ratio / standard_percent_comments, 1)
+
+    // Calculate ramp up time
+    this.package_instance.ramp_up = (readme_score * 0.4) + (comments_score * 0.6)
   }
 
   //API? 
