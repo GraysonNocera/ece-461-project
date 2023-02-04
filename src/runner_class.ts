@@ -45,7 +45,7 @@ export class Runner {
     } else{
       this.package_instance.commit_count /= 1000; 
     }
-    this.package_instance.correctness = this.package_instance.commit_count + (this.package_instance.issues_active/this.package_instance.issues);
+    this.package_instance.correctness = 0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues);
 
 }
 

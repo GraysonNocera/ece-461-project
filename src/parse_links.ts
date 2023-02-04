@@ -165,6 +165,7 @@ export async function graphAPIfetch(gql_query: string, package_test: package_cla
       });
       let data2 = JSON.stringify(data);
       let data3 = JSON.parse(data2);
+      
       package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
       package_test.issues_active = data3.data.repository.open_issues.totalCount;
       package_test.issues = data3.data.repository.issues.totalCount; 
