@@ -63,7 +63,7 @@ export class Runner {
     let has_license_in_readme_score: number = Number(await this.package_instance.has_license_in_readme)
     let has_license_in_package_json: number = Number(await this.package_instance.has_license_in_package_json)
 
-    this.package_instance.license = has_license_file_score * 0.3 + has_license_in_readme_score * 0.2 + has_license_in_package_json * 0.5
+    this.package_instance.license = has_license_file_score * 0.2 + has_license_in_readme_score * 0.5 + has_license_in_package_json * 0.3
   }
 
   async calculate_ramp(){
