@@ -1,5 +1,6 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
-import { Runner } from './url_class';
+import { package_class } from './package_class';
+import { Runner } from './runner_class';
 
 function sleep(ms: number) {
     // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging

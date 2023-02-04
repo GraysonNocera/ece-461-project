@@ -1,4 +1,4 @@
-import { Runner } from '../src/url_class';
+import { Runner } from '../src/runner_class';
 import * as fs from 'fs';
 // Given a Repo URL, uses REGEX to grab the repo and owner name
 // I **THINK** it works with any (GitHub) URL they can throw at us, but I haven't exhaustively tested it
@@ -102,6 +102,6 @@ var gql_query = `
 `;
 
 var data = fetchGithubAPI (gql_query);
-var curr_package = new Runner("sshUrl", repoName, username);
+//var curr_package = new Runner("sshUrl", repoName, username);
 
 
