@@ -1,5 +1,4 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
-
 import { Package } from './package_class';
 import { Runner } from './runner_class';
 
