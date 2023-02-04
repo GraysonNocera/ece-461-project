@@ -14,3 +14,13 @@ function test(owner:string ="", repo:string =""){
 //test(var1, var2)
 test("GraysonNocera", "ece-461-project")
 */
+
+import { Package } from "./package_class";
+
+async function main(){
+    //parse url elements
+    //call REST
+    //cal graphql
+    //call git clone
+    
+}

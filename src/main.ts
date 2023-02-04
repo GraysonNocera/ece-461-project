@@ -1,5 +1,5 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
-import { package_class } from './package_class';
+import { Package } from './package_class';
 import { Runner } from './runner_class';
 
 function sleep(ms: number) {

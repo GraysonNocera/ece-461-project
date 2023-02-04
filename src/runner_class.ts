@@ -1,11 +1,11 @@
 import { listenerCount } from "process";
 import { get_issues } from "./correctness";
-import { package_class } from './package_class';
+import { Package } from './package_class';
 import { get_info_from_cloned_repo } from "./clone_repo";
 // Rudimentary implementation of Runner class
 
 export class Runner {
- package_instance: package_class; 
+ package_instance: Package; 
   // correctness:number;
   // bus_factor:number;
   // ramp_up:number;
@@ -16,7 +16,7 @@ export class Runner {
   // url:string;
   // repo:string; 
   // owner:string; 
-    constructor(instance : package_class){
+    constructor(instance : Package){
         this.package_instance = instance;
     }
   // constructor(URL: string = "", repo = "", owner = "github") {

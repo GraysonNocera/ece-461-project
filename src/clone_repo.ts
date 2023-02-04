@@ -4,7 +4,7 @@ import path from "path";
 import cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
-import { package_class } from "./package_class";
+import { Package } from "./package_class";
 
 export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
     // Clone repo into path_to_repo + repo_name directory
@@ -221,7 +221,7 @@ function has_correct_license() {
     // to get supplemental information about licenses
 }
 
-export async function get_info_from_cloned_repo(package_instance: package_class) {
+export async function get_info_from_cloned_repo(package_instance: Package) {
     // Get information from cloned repo and save it in package_instance
     // :param package_instance: instance of package class holding data
     // :return: none
