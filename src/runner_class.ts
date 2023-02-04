@@ -26,7 +26,6 @@ export class Runner {
     }
     this.package_instance.correctness = Math.min(0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues, 1));
 
-
 }
 
   //API?
@@ -71,7 +70,6 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = (readme_score * 0.4) + (comments_score * 0.6)
-
   }
 
   //API? 
