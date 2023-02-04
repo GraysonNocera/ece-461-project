@@ -1,7 +1,7 @@
 import { listenerCount } from "process";
 import { get_issues } from "./correctness";
 import { package_class } from './package_class';
-import { clone_repo, create_git_object, delete_repo, get_info_from_cloned_repo, get_percentage_comments, get_readme_length } from "./clone_repo";
+import { get_info_from_cloned_repo } from "./clone_repo";
 // Rudimentary implementation of Runner class
 
 export class Runner {
@@ -48,12 +48,26 @@ export class Runner {
   }
 
   async calculate_license(){
+    // Calculate license based on data from cloned repo
+    // License is calculated by considering whether the readme includes a license section
+    // and if the repository has a license file
+    // NOTE: calculate_license() and calculate_ramp() both need data from the cloned repo
+    // I suggest we call it right at the start of the program so it has time to clone the repo
+    // while we are doing stuff with REST and GraphQL
 
+    // TODO: should we take into account the REST API license stuff
+
+    this.package_instance.license = 0
+
+    let has_license_file_score: number = Number(await this.package_instance.has_license_file)
+    let has_license_in_readme_score: number = Number(await this.package_instance.has_license_in_readme)
+
+    this.package_instance.license = Number(has_license_file_score || has_license_in_readme_score)
   }
 
   async calculate_ramp(){
 
-    this.package_instance.ramp_up = 0;
+    this.package_instance.ramp_up = 0
 
     await get_info_from_cloned_repo(this.package_instance)
 
