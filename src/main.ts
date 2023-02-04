@@ -1,6 +1,6 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
 
-import { package_class } from './package_class';
+import { Package } from './package_class';
 import { Runner } from './runner_class';
 
 function sleep(ms: number) {
@@ -37,7 +37,7 @@ async function main() {
     }
     
     if (username != null && repoName != null) {
-        let package_test = new package_class(url, repoName, username, process.env.GITHUB_TOKEN);
+        let package_test = new Package(url, repoName, username, process.env.GITHUB_TOKEN);
         data = await graphAPIfetch(gql_query(username, repoName), package_test).catch((error) => {
             console.log (`Error: ${error}`);
         });

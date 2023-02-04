@@ -1,22 +1,13 @@
 import { listenerCount } from "process";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { get_issues ,get_commitcount } from "./correctness";
-import { package_class } from './package_class';
+import { Package } from './package_class';
 // Rudimentary implementation of Runner class
 
 export class Runner {
- package_instance: package_class; 
-  // correctness:number;
-  // bus_factor:number;
-  // ramp_up:number;
-  // issues:number;
-  // responsiveness:number;
-  // license:number;
-  // score: number;
-  // url:string;
-  // repo:string; 
-  // owner:string; 
-    constructor(instance : package_class){
+ package_instance: Package; 
+
+    constructor(instance : Package){
         this.package_instance = instance;
     }
   // constructor(URL: string = "", repo = "", owner = "github") {

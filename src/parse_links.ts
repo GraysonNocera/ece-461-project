@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 // import isGitHubUrl = require("is-github-url");
 import * as URL from "url";
-import { package_class } from './package_class';
+import { Package } from './package_class';
 let fs = require("fs");
 
 const MAX_RETRIES = 1;
@@ -143,7 +143,7 @@ export async function getGitRepoDetails(url: string): Promise<{username: string,
   return null;
 }
 
-export async function graphAPIfetch(gql_query: string, package_test: package_class): Promise<any> {
+export async function graphAPIfetch(gql_query: string, package_test: Package): Promise<any> {
     try {
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
