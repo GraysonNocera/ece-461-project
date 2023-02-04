@@ -23,6 +23,7 @@ export class package_class{
     last_push:string; 
     has_license_in_readme: Promise<boolean>;
     has_license_file: Promise<boolean>;
+    has_license_in_package_json: Promise<boolean>;
 
 
     constructor(URL: string = "", repo = "", owner = "github", token = "") {
@@ -47,6 +48,7 @@ export class package_class{
         this.last_push= "";
         this.has_license_file = new Promise<boolean>((value) => {});
         this.has_license_in_readme = new Promise<boolean>((value) => {});
+        this.has_license_in_package_json = new Promise<boolean>((value) => {});
     }
 
 }
