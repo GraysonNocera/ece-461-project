@@ -15,7 +15,9 @@ export class Runner {
   // url:string;
   // repo:string; 
   // owner:string; 
-
+    constructor(instance : package_class){
+        this.package_instance = instance;
+    }
   // constructor(URL: string = "", repo = "", owner = "github") {
   //     this.url = URL;
   //     this.correctness = 0;
@@ -40,21 +42,21 @@ export class Runner {
 }
 
   //API?
-  calculate_bus(){
+  async calculate_bus(){
     this.package_instance.bus_factor = 0; 
   }
   //API?
-  calculate_ramp(){
+  async calculate_ramp(){
     this.package_instance.ramp_up = 0;
   }
 
   //API? 
-  claculate_responsiveness(){
+  async claculate_responsiveness(){
     this.package_instance.responsiveness = 0; 
   }
 
   //API?
-  calculate_score(){
+  async calculate_score(){
     this.package_instance.score = 0.35 * this.package_instance.bus_factor + 0.25 * this.package_instance.license + 0.2 * this.package_instance.correctness + 0.1 * this.package_instance.ramp_up + 0.1 * this.package_instance.responsiveness;
     
     //whatever we need to do to calculate formula 
