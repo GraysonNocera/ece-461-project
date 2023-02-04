@@ -1,7 +1,7 @@
 /* Package class module
 * initialized then passed to the APIs to have data loaded to it and then used by the Runner to calculate score
 */ 
-export class package_class{ 
+export class Package{ 
     correctness:number;
     bus_factor:number;
     num_dev:number;
