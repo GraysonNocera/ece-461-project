@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 // import isGitHubUrl = require("is-github-url");
 import * as URL from "url";
+import { package_class } from './package_class';
 let fs = require("fs");
 
 const MAX_RETRIES = 1;
@@ -142,7 +143,7 @@ export async function getGitRepoDetails(url: string): Promise<{username: string,
   return null;
 }
 
-export async function graphAPIfetch(gql_query: string): Promise<any> {
+export async function graphAPIfetch(gql_query: string, package_test: package_class): Promise<any> {
     try {
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
@@ -153,8 +154,8 @@ export async function graphAPIfetch(gql_query: string): Promise<any> {
       });
 
       const data = await response.json();
+      
       console.log ("\nData Acquired From API\n")
-
       fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
         if (err) {
           console.log(err);
@@ -162,6 +163,12 @@ export async function graphAPIfetch(gql_query: string): Promise<any> {
           console.log("API Return Saved to File for further parsing!");
         }
       });
+      let data2 = JSON.stringify(data);
+      let data3 = JSON.parse(data2);
+      package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
+      package_test.issues_active = data3.data.repository.open_issues.totalCount;
+      package_test.issues = data3.data.repository.issues.totalCount; 
+      // console.log(data3.data.repository.name)
 
       return data;
     } catch (error) {

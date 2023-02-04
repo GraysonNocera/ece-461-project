@@ -1,5 +1,7 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
-import { Runner } from './url_class';
+
+import { package_class } from './package_class';
+import { Runner } from './runner_class';
 
 function sleep(ms: number) {
     // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
@@ -33,18 +35,22 @@ async function main() {
             ({username, repoName} = gitRepoDetails);
         }
     }
-
+    
     if (username != null && repoName != null) {
-        data = await graphAPIfetch(gql_query(username, repoName)).catch((error) => {
+        let package_test = new package_class(url, repoName, username, process.env.GITHUB_TOKEN);
+        data = await graphAPIfetch(gql_query(username, repoName), package_test).catch((error) => {
             console.log (`Error: ${error}`);
         });
-    }
+       let run_test = new Runner(package_test);
+       await run_test.calculate_correctness();
+       console.log(run_test.package_instance.correctness)
 
+    }
     else {
         throw new Error (`Unable to fetch repo -> ${username}/${repoName}`);
     }
 
-    console.log (data);
+    // console.log (data);
 
     if (data["message"] == `Bad credentials`) {
         console.log (`Bad credentials. Please check your token.`);

@@ -1,4 +1,5 @@
 // import { Octokit } from "octokit";
+import { request } from "http";
 import { Octokit as OctokitType } from "octokit";
 const Octokit = OctokitType as any;
 import * as readline from 'readline';
@@ -7,7 +8,7 @@ import * as readline from 'readline';
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
-  auth: "string of tokens",
+  auth: process.env.GITHUB_TOKEN,
   userAgent: "using apis",
   timeZone: "Eastern",
   baseUrl: 'https://api.github.com',
@@ -20,31 +21,31 @@ export async function get_issues(repo: string, owner: string): Promise<number> {
     let issuesRemaining = true;
     
     try {
-        // issuecount = await octokit.paginate('GET /repos/{owner}/{repo}/issues{?state}',{
-        //     owner:owner,
-        //     repo: repo,
-        //     state: "closed",
-        //     since: "1999-01-23"
-        // });
+       issuecount = await octokit.paginate('GET /repos/{owner}/{repo}/issues{?state}',{
+            owner:owner,
+            repo: repo,
+            state: "closed",
+            since: "1999-01-23"
+        });
 
-        while (issuesRemaining) {
-            let result = await octokit.request('GET /repos/{owner}/{repo}/issues{?state,head,base,sort,direction,per_page,page}', {
-                owner: owner,
-                repo: repo,
-                state: "closed",
-                since: "1999-01-23",
-                per_page: per_page,
-                page: page
-            });
+        // while (issuesRemaining) {
+        //     let result = await octokit.request('GET /repos/{owner}/{repo}/issues{?state,head,base,sort,direction,per_page,page}', {
+        //         owner: owner,
+        //         repo: repo,
+        //         state: "closed",
+        //         since: "1999-01-23",
+        //         per_page: per_page,
+        //         page: page
+        //     });
 
-            issuecount += result.data.length;
+        //     issuecount += result.data.length;
 
-            if (result.data.length < per_page) {
-                issuesRemaining = false;
-            } else {
-                page++;
-            }
-        }
+        //     if (result.data.length < per_page) {
+        //         issuesRemaining = false;
+        //     } else {
+        //         page++;
+        //     }
+        // }
     } catch (error) {
         console.error("Could not find number of issues in repository.");
     }
@@ -57,7 +58,6 @@ export async function get_commitcount(repo: string, owner: string): Promise<numb
     let page = 1;
     let per_page = 30;
     let commitsRemaining = true;
-
     try {
         while (commitsRemaining) {
             let result = await octokit.request(
@@ -69,7 +69,6 @@ export async function get_commitcount(repo: string, owner: string): Promise<numb
                     per_page: per_page
                 }
             );
-
             count += result.data.length;
 
             if (result.data.length < per_page) {
@@ -79,9 +78,9 @@ export async function get_commitcount(repo: string, owner: string): Promise<numb
             }
         }
     } catch (error) {
+        console.log(error)
         console.error("Could not find repository commit counts.");
     }
-
     return count;
 }
 
