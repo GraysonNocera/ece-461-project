@@ -1,0 +1,53 @@
+export function gql_query(username, repo) {
+  return `
+  {
+    repository(owner: "${username}", name: "${repo}") {
+      name
+      forkCount
+      licenseInfo {
+        name
+      }
+      assignableUsers {
+        totalCount
+      }
+      sshUrl
+      latestRelease {
+        tagName
+      }
+      hasIssuesEnabled
+      issues {
+        totalCount
+      }
+      open_issues: issues(states: OPEN) {
+        totalCount
+      }
+      defaultBranchRef {
+        target {
+          ... on Commit {
+            history {
+              totalCount
+            }
+          }
+        }
+      }
+      pullRequests {
+        totalCount
+      }
+      
+      last_pushed_at: pushedAt
+      
+      stargazerCount
+      hasVulnerabilityAlertsEnabled
+    }
+    
+    securityVulnerabilities (first: 100) {
+      nodes {
+        firstPatchedVersion {
+          identifier
+        }
+        severity
+      }
+    }
+  }
+  `;
+}

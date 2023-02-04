@@ -40,6 +40,5 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          tsc
-          node dist/test/initial_test.js
+          npx ts-node test/initial_test.ts
 

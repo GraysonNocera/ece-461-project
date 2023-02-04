@@ -14,6 +14,7 @@ const octokit = new Octokit({
 });
 
 export async function get_recentCommits(repo: string, owner: string): Promise<number> {
+
     let count = 0;
     let page = 1;
     let per_page = 30;
