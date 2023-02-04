@@ -191,6 +191,30 @@ async function read_readme(readme_path: string): Promise<string> {
     return file_contents;
 }
 
+export async function has_license_in_package_json(repo_base_dir: string): Promise<boolean> {
+
+    let package_json_path: string = path.join(repo_base_dir, "package.json")
+    let file_contents: Buffer;
+    try {
+        file_contents = fs.readFileSync(package_json_path)
+    } catch (err) {
+        // Package json not found
+        // Log err in LOG FILE
+        return false
+    }
+
+    let package_json = JSON.parse(file_contents.toString())
+    try {
+        if (package_json.license)
+            return true
+    } catch(err) {
+        // No license file
+        return false
+    }
+
+    return true
+}
+
 function has_correct_license() {
     // In the future, regex the README to find the specific license we're looking for
     // We should also have a function in another file that uses REST or GraphQL
