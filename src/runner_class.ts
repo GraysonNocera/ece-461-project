@@ -1,6 +1,6 @@
 import { listenerCount } from "process";
 import { get_issues } from "./correctness";
-import { Package } from './Package';
+import { Package } from './package_class';
 // Rudimentary implementation of Runner class
 
 export class Runner {
