@@ -27,6 +27,15 @@ if (process.env.LOG_FILE) {
     }
 }
 
+if (process.env.LOG_FILE) {
+    try {
+        fs.writeFileSync(process.env.LOG_FILE, "")
+    } catch {
+        // Invalid file
+        console.log("Invalid log file")
+    }
+}
+
 const provider = CategoryProvider.createProvider("ExampleProvider", {
   level: level,
   channel: {
@@ -35,10 +44,6 @@ const provider = CategoryProvider.createProvider("ExampleProvider", {
         let path: string = "";
         if (process.env.LOG_FILE) {
             path = process.env.LOG_FILE;
-
-            if (!path) {
-                return // No environment variable given
-            }
 
             fs.appendFile(path, msg.message, {}, (err) => {
                 if (err)
