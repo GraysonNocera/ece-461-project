@@ -251,8 +251,7 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   package_instance.comment_ratio = get_percentage_comments(repo_base_dir);
   package_instance.has_license_in_readme = has_license_in_readme(repo_base_dir);
   package_instance.has_license_file = has_license_file(repo_base_dir);
-  package_instance.has_license_in_package_json =
-    has_license_in_package_json(repo_base_dir);
+  package_instance.has_license_in_package_json = has_license_in_package_json(repo_base_dir);
 
   delete_repo(repo_base_dir);
 }
