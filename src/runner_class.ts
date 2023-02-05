@@ -1,9 +1,8 @@
 import { listenerCount } from "process";
 import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import { get_workingLifetime ,get_recentCommits } from "./correctness";
+import { get_workingLifetime ,get_recentCommits } from "./parse_links";
 import { Package } from './package_class';
 import { get_info_from_cloned_repo } from "./clone_repo";
-
 // Rudimentary implementation of Runner class
 
 export class Runner {
@@ -17,13 +16,15 @@ export class Runner {
   //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
   async calculate_correctness(){
     //this.package_instance.correctness = 0; 
-    //needed to complete promise and return a number type 
+    //0.5 on commit count because commits are important but aren't always useful and 0.8 on active issues over resolved because this can be 
+    //a sign of correctness 
     this.package_instance.commit_count = await get_recentCommits(this.package_instance.repo, this.package_instance.owner);
     if(this.package_instance.commit_count >= 1000){
       this.package_instance.commit_count = 1;
     } else{
       this.package_instance.commit_count /= 1000; 
     }
+    console.log(this.package_instance.commit_count)
     this.package_instance.correctness = Math.min(0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues, 1));
 
 }
@@ -56,7 +57,7 @@ export class Runner {
 
     this.package_instance.ramp_up = 0
 
-    await get_info_from_cloned_repo(this.package_instance)
+    // await get_info_from_cloned_repo(this.package_instance)
 
     // Get standards for readme length and percent comments
     let standard_readme_length: number = 10000;

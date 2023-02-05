@@ -149,7 +149,7 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
 
     if (fs.existsSync(repo_base_dir)) {
         emptyDir(repo_base_dir)
-        fs.rmdir(repo_base_dir, (err) => {
+        fs.rm(repo_base_dir, {recursive : true}, (err) => {
             if (err)
                 console.log(err)
         })
@@ -239,5 +239,5 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
     package_instance.has_license_file = has_license_file(repo_base_dir)
     package_instance.has_license_in_package_json = has_license_in_package_json(repo_base_dir)
 
-    delete_repo(repo_base_dir)
+    await delete_repo(repo_base_dir)
 }

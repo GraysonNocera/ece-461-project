@@ -16,7 +16,7 @@ import * as readline from 'readline';
 // To do this, I copied and pasted my github token into an environment variable
 // in vs code and referenced it in this line
 const octokit = new Octokit({ 
-  auth: "<GitHub Token>",
+  auth: process.env.GITHUB_TOKEN,
   userAgent: "using apis",
   timeZone: "Eastern",
   baseUrl: 'https://api.github.com',
@@ -227,7 +227,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   } catch (error) {
       console.error("Could not find repository commit counts.");
   }
-
+  console.log(count)
   return count;
 }
 
