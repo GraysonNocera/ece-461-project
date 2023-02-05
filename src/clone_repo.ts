@@ -84,7 +84,7 @@ async function get_readme_path(repo_base_dir: string): Promise<string> {
     files.forEach(element => {
         if (element.search(readme_search) != -1) {
             file_path = path.join(repo_base_dir, element)
-            log.info("Found readme file for repository " + repo_base_dir + ": " + file_path + "\n")
+            log.info("Found readme file for repository: " + file_path + "\n")
             return file_path
         }
     });
@@ -149,12 +149,20 @@ export async function get_percentage_comments(repo_base_dir: string): Promise<nu
     // :param path_to_repo: path to the repo
     // :return: percentage of code that is comments (num_comments / (num_comments + code))
 
+    let log: Category = root_cloned.getChildCategory("get_percentage_comments")    
+
     // Terminal command, running cloc to get comment information
     repo_base_dir = "\"" + repo_base_dir + "\"" // prep directory for cloc command
     let terminal_command: string = "cloc --by-percent cm --sum-one --yaml " + repo_base_dir;
 
     // Run terminal output and conver to string
-    let terminal_output: Buffer = cp.execSync(terminal_command);
+    let terminal_output: Buffer;
+    try {
+        terminal_output = cp.execSync(terminal_command)
+    } catch (err) {
+        log.debug("Error in running cloc command\n")
+        return 0;
+    }
     let data: string = terminal_output.toString()
 
     // Get percentage of repo that is comments
@@ -167,8 +175,16 @@ export async function get_percentage_comments(repo_base_dir: string): Promise<nu
     // Get total comment percentage
     re = new RegExp('comment:', 'i');
     let loc: number = data.search(re)
+    if (!loc) {
+        log.debug("Could not find comment ratio\n")
+        return 0
+    }
+
     data = data.substring(loc + "comment: ".length, data.length)
     percent = parseFloat(data.split('\n')[0])
+
+    log.info("Returning comment ratio\n")
+
     return percent
 }
 
@@ -176,11 +192,13 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
     // Delete the repo after analyzing it
     // :param repo_base_dir: base path of repository
 
+    let log: Category = root_cloned.getChildCategory("delete_repo")    
+
     if (fs.existsSync(repo_base_dir)) {
         await emptyDir(repo_base_dir)
         fs.rmdir(repo_base_dir, (err) => {
             if (err)
-                console.log(err)
+                log.debug("Error when removing repository in " + repo_base_dir + "\n")
         })
     }
 }
@@ -209,12 +227,14 @@ export async function has_license_in_readme(repo_base_dir: string): Promise<bool
 
 async function read_readme(readme_path: string): Promise<string> {
 
+    let log: Category = root_cloned.getChildCategory("read_readme")    
+
     let file_contents: string = "";
     
     try {
         file_contents = fs.readFileSync(readme_path, "ascii");
     } catch(exception) {
-        console.log("README file not found");
+        log.debug("Readme file not found: " + readme_path + "\n")
     }
 
     return file_contents;
@@ -222,22 +242,24 @@ async function read_readme(readme_path: string): Promise<string> {
 
 export async function has_license_in_package_json(repo_base_dir: string): Promise<boolean> {
 
+    let log: Category = root_cloned.getChildCategory("has_license_in_package_json")    
+
     let package_json_path: string = path.join(repo_base_dir, "package.json")
     let file_contents: Buffer;
     try {
         file_contents = fs.readFileSync(package_json_path)
     } catch (err) {
-        // Package json not found
-        // Log err in LOG FILE
+        log.debug("Could not find package.json file\n")
         return false
     }
 
     let package_json = JSON.parse(file_contents.toString())
     try {
         if (package_json.license)
+            log.info("Found license in package.json\n")
             return true
     } catch(err) {
-        // No license file
+        log.debug("Package.json has no license\n")
         return false
     }
 
