@@ -1,7 +1,7 @@
 // File for functions to get information from cloned repo
-import fs from "fs";
-import path from "path";
-import cp from "child_process";
+import * as fs from "fs";
+import * as path from "path";
+import * as cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
@@ -44,7 +44,7 @@ export async function clone_repo(repo_url: string, repo_base_dir: string, git: S
     emptyDirSync(repo_base_dir)
 
     // Clone repo
-    await git.clone(repo_url, repo_base_dir, {
+    await git.clone(repo_url, {
         //Options go here
     }, (err, data) => {
         if (err)

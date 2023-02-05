@@ -1,6 +1,7 @@
 import {npm_2_git, getGitRepoDetails, graphAPIfetch, gql_query} from './parse_links';
 import { Package } from './package_class';
 import { Runner } from './runner_class';
+import { get_info_from_cloned_repo } from './clone_repo';
 
 function sleep(ms: number) {
     // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
@@ -18,10 +19,11 @@ async function main() {
 
     let username: string | null = null;
     let repoName: string | null = null;
-
-   
+    let gitUrl2: string | null = null;
+    
     if (url.startsWith("https://www.npmjs.com/package/")) {
         let gitUrl = await npm_2_git(url);
+        gitUrl2 = gitUrl.replace("git:", "https:");
         let gitRepoDetails = await getGitRepoDetails(gitUrl);
         
         if (gitRepoDetails) {
@@ -29,20 +31,26 @@ async function main() {
         }
     }
     else {
+        gitUrl2 = url; 
         let gitRepoDetails = await getGitRepoDetails(url);
         if (gitRepoDetails) {
             ({username, repoName} = gitRepoDetails);
         }
     }
     
-    if (username != null && repoName != null) {
-        let package_test = new Package(url, repoName, username, process.env.GITHUB_TOKEN);
+    if (username != null && repoName != null && gitUrl2 != null) {
+        console.log(gitUrl2)
+        let package_test = new Package(gitUrl2, repoName, username, process.env.GITHUB_TOKEN);
         data = await graphAPIfetch(gql_query(username, repoName), package_test).catch((error) => {
             console.log (`Error: ${error}`);
         });
        let run_test = new Runner(package_test);
+       await get_info_from_cloned_repo(package_test);
        await run_test.calculate_correctness();
-       console.log(run_test.package_instance.correctness)
+       await run_test.calculate_ramp();
+       await run_test.calculate_license();
+       await run_test.calculate_score();
+       console.log(run_test.package_instance.score)
 
     }
     else {
