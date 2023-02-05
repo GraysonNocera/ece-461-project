@@ -1,37 +1,37 @@
 {
     "data": {
         "repository": {
-            "name": "is-github-url",
-            "forkCount": 3,
+            "name": "cloc",
+            "forkCount": 883,
             "licenseInfo": {
-                "name": "MIT License"
+                "name": "GNU General Public License v2.0"
             },
             "assignableUsers": {
                 "totalCount": 1
             },
-            "sshUrl": "git@github.com:alferov/is-github-url.git",
+            "sshUrl": "git@github.com:AlDanial/cloc.git",
             "latestRelease": {
-                "tagName": "1.2.2"
+                "tagName": "v1.96"
             },
             "hasIssuesEnabled": true,
             "issues": {
-                "totalCount": 2
+                "totalCount": 553
             },
             "open_issues": {
-                "totalCount": 1
+                "totalCount": 20
             },
             "defaultBranchRef": {
                 "target": {
                     "history": {
-                        "totalCount": 41
+                        "totalCount": 985
                     }
                 }
             },
             "pullRequests": {
-                "totalCount": 3
+                "totalCount": 152
             },
-            "last_pushed_at": "2016-10-31T03:38:07Z",
-            "stargazerCount": 16,
+            "last_pushed_at": "2023-02-02T05:05:03Z",
+            "stargazerCount": 15455,
             "hasVulnerabilityAlertsEnabled": true
         },
         "securityVulnerabilities": {
