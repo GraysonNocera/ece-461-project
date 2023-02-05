@@ -6,7 +6,7 @@ import { get_info_from_cloned_repo } from "./clone_repo";
 // Rudimentary implementation of Runner class
 
 export class Runner {
- package_instance: Package; 
+  package_instance: Package;
 
   constructor(instance : Package){
         this.package_instance = instance;
@@ -14,27 +14,80 @@ export class Runner {
   //What do we need to call from here?  but possibly interact with whatever API's we need 
   //has to be async to allow use of await to fulfil promise made by myFunc
   //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
-  async calculate_correctness(){
-    //this.package_instance.correctness = 0; 
-    //0.5 on commit count because commits are important but aren't always useful and 0.8 on active issues over resolved because this can be 
-    //a sign of correctness 
-    this.package_instance.commit_count = await get_recentCommits(this.package_instance.repo, this.package_instance.owner);
-    if(this.package_instance.commit_count >= 1000){
+//   async calculate_correctness(){
+//     //this.package_instance.correctness = 0; 
+//     //0.5 on commit count because commits are important but aren't always useful and 0.8 on active issues over resolved because this can be 
+//     //a sign of correctness 
+//     this.package_instance.commit_count = await get_recentCommits(this.package_instance.repo, this.package_instance.owner);
+//     if(this.package_instance.commit_count >= 1000){
+//       this.package_instance.commit_count = 1;
+//     } else{
+//       this.package_instance.commit_count /= 1000; 
+//     }
+//     console.log(this.package_instance.commit_count)
+//     this.package_instance.correctness = Math.min(0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues, 1));
+
+// }
+
+//   //API?
+//   async calculate_bus(){
+//     this.package_instance.bus_factor = 0; 
+//   }
+
+  async calculate_correctness() {
+    //needed to complete promise and return a number type
+    this.package_instance.commit_count = await get_recentCommits(
+      this.package_instance.repo,
+      this.package_instance.owner
+    );
+
+    // More than 1000 commits in the last year is probably a sign of a well maintained project
+    if (this.package_instance.commit_count >= 1000) {
       this.package_instance.commit_count = 1;
-    } else{
-      this.package_instance.commit_count /= 1000; 
+    } else {
+      this.package_instance.commit_count /= 1000;
     }
-    console.log(this.package_instance.commit_count)
-    this.package_instance.correctness = Math.min(0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues, 1));
 
-}
+    let num_stars = this.package_instance.num_stars; // Do we want to use the number of stars as a factor in correctness?
 
-  //API?
-  async calculate_bus(){
-    this.package_instance.bus_factor = 0; 
+    this.package_instance.correctness = Math.min(
+      0.5 * this.package_instance.commit_count +
+        0.8 *
+          (this.package_instance.issues_active / this.package_instance.issues,
+          1)
+    );
   }
 
-  async calculate_license(){
+  //API?
+  async calculate_bus() {
+    let num_devs = this.package_instance.num_dev;
+    let pr_count = this.package_instance.pr_count;
+    let ratio = 0;
+
+    // If there's no PRs then there's only 1 person working on it
+    if (pr_count == 0) {
+      this.package_instance.bus_factor = 0; // Terrible bus factor
+      return;
+    } else {
+      ratio = num_devs / pr_count; // Ratio of devs to PRs. If there's a small number of devs making many PRs then the bus factor is low
+    }
+
+    let num_stars = this.package_instance.num_stars; // If there's a lot of stars then there's people interested in the project and more likely to contribute
+
+    // console.log("DEBUG");
+    // console.log("DEBUG");
+    // console.log("DEBUG");
+    // console.log("DEBUG");
+    // console.log("DEBUG");
+    // console.log(ratio);
+    // console.log(num_stars);
+
+    // Calculate bus factor
+    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
+    return;
+  }
+
+  async calculate_license() {
     // Calculate license based on data from cloned repo
     // License is calculated by considering whether the readme includes a license section
     // and if the repository has a license file
@@ -44,18 +97,27 @@ export class Runner {
 
     // TODO: should we take into account the REST API license stuff
 
-    this.package_instance.license = 0
+    this.package_instance.license = 0;
 
-    let has_license_file_score: number = Number(await this.package_instance.has_license_file)
-    let has_license_in_readme_score: number = Number(await this.package_instance.has_license_in_readme)
-    let has_license_in_package_json: number = Number(await this.package_instance.has_license_in_package_json)
+    let has_license_file_score: number = Number(
+      await this.package_instance.has_license_file
+    );
+    let has_license_in_readme_score: number = Number(
+      await this.package_instance.has_license_in_readme
+    );
+    let has_license_in_package_json: number = Number(
+      await this.package_instance.has_license_in_package_json
+    );
 
-    this.package_instance.license = has_license_file_score * 0.2 + has_license_in_readme_score * 0.5 + has_license_in_package_json * 0.3
+    this.package_instance.license =
+      has_license_file_score * 0.2 +
+      has_license_in_readme_score * 0.5 +
+      has_license_in_package_json * 0.3;
   }
 
-  async calculate_ramp(){
+  async calculate_ramp() {
+    this.package_instance.ramp_up = 0;
 
-    this.package_instance.ramp_up = 0
 
     // await get_info_from_cloned_repo(this.package_instance)
 
@@ -66,23 +128,33 @@ export class Runner {
     // Handle large percent comments
 
     // Subscores
-    let readme_score = Math.min(await this.package_instance.readme_size / standard_readme_length, 1)
-    let comments_score = Math.min(await this.package_instance.comment_ratio / standard_percent_comments, 1)
+    let readme_score = Math.min(
+      (await this.package_instance.readme_size) / standard_readme_length,
+      1
+    );
+    let comments_score = Math.min(
+      (await this.package_instance.comment_ratio) / standard_percent_comments,
+      1
+    );
 
     // Calculate ramp up time
-    this.package_instance.ramp_up = (readme_score * 0.4) + (comments_score * 0.6)
-  }
-
-  //API? 
-  async claculate_responsiveness(){
-    this.package_instance.responsiveness = 0; 
+    this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
   }
 
   //API?
-  async calculate_score(){
-    this.package_instance.score = 0.35 * this.package_instance.bus_factor + 0.25 * this.package_instance.license + 0.2 * this.package_instance.correctness + 0.1 * this.package_instance.ramp_up + 0.1 * this.package_instance.responsiveness;
-    
-    //whatever we need to do to calculate formula 
+  async calculate_responsiveness() {
+    this.package_instance.responsiveness = 0;
+  }
+
+  //API?
+  async calculate_score() {
+    this.package_instance.score =
+      0.35 * this.package_instance.bus_factor +
+      0.25 * this.package_instance.license +
+      0.2 * this.package_instance.correctness +
+      0.1 * this.package_instance.ramp_up +
+      0.1 * this.package_instance.responsiveness;
+
+    //whatever we need to do to calculate formula
   }
 }
-
