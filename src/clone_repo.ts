@@ -5,12 +5,16 @@ import cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
+import { root_cloned } from "./logging";
+import { Category } from "typescript-logging-category-style";
 
 export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
     // Clone repo into path_to_repo + repo_name directory
     // :param repo_url: url to Github repo page
     // :param path_to_repo: (optional) path to repository
     // :param repo_name: (optional) name of repository
+
+    let log: Category = root_cloned.getChildCategory("create_git_object")
 
     if (!path_to_repo) {
         // If no path_to_repo provided, assume current working directory
@@ -21,8 +25,10 @@ export async function create_git_object(repo_name: string, path_to_repo?: string
     let repo_base_dir = path.join(path_to_repo, repo_name)
     if (!fs.existsSync(repo_base_dir)) {
         fs.mkdirSync(repo_base_dir)
+        log.info("Created repository directory\n")
     } else {
         emptyDirSync(repo_base_dir)
+        log.info("Emptied repository directory\n")
     }
 
     // Create options for git object
@@ -36,10 +42,18 @@ export async function create_git_object(repo_name: string, path_to_repo?: string
     // Create git object
     const git: SimpleGit = simpleGit(options)
 
+    if (git) {
+        log.info("Successfully created git object\n")
+    } else {
+        log.debug("Git object was not properly created\n")
+    }
+
     return git
 }
 
 export async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
+
+    let log: Category = root_cloned.getChildCategory("clone_repo")
 
     emptyDirSync(repo_base_dir)
 
@@ -48,9 +62,9 @@ export async function clone_repo(repo_url: string, repo_base_dir: string, git: S
         //Options go here
     }, (err, data) => {
         if (err)
-            console.log("Error", err)
+            log.debug("Error when cloning from " + repo_url + ": " + err + "\n")
         if (data)
-            console.log("Data", data)
+            log.info("Data from cloning from " + repo_url + "\n")
     });
 
 }
@@ -60,6 +74,8 @@ async function get_readme_path(repo_base_dir: string): Promise<string> {
     // :param repo_base_dir: base directory of repo
     // :return: string of repo readme 
 
+    let log: Category = root_cloned.getChildCategory("get_readme_path")
+
     let file_path: string = "";
     
     // match readme
@@ -68,9 +84,14 @@ async function get_readme_path(repo_base_dir: string): Promise<string> {
     files.forEach(element => {
         if (element.search(readme_search) != -1) {
             file_path = path.join(repo_base_dir, element)
+            log.info("Found readme file for repository " + repo_base_dir + ": " + file_path + "\n")
             return file_path
         }
     });
+    
+    if (!file_path) {
+        log.debug("Readme file not found for repository in " + repo_base_dir + "\n")
+    }
 
     return file_path
 }
@@ -79,6 +100,8 @@ export async function has_license_file(repo_base_dir: string): Promise<boolean> 
     // Boolean for detecting a license file
     // :param repo_base_dir: base directory of repo
     // :return: whether the repo has a license file
+
+    let log: Category = root_cloned.getChildCategory("has_license_file")    
 
     let has_file: boolean = false;
     
@@ -91,6 +114,12 @@ export async function has_license_file(repo_base_dir: string): Promise<boolean> 
             return has_file
         }
     });
+
+    if (has_file) {
+        log.info("License file found for repository in " + repo_base_dir + "\n")
+    } else {
+        log.info("License file not found for repository in " + repo_base_dir + "\n")
+    }
 
     return has_file
 }
@@ -148,7 +177,7 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
     // :param repo_base_dir: base path of repository
 
     if (fs.existsSync(repo_base_dir)) {
-        emptyDir(repo_base_dir)
+        await emptyDir(repo_base_dir)
         fs.rmdir(repo_base_dir, (err) => {
             if (err)
                 console.log(err)
@@ -241,3 +270,8 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
 
     delete_repo(repo_base_dir)
 }
+
+let p: Package = new Package()
+p.repo = "cloudinary_npm"
+p.url = "https://github.com/cloudinary/cloudinary_npm"
+get_info_from_cloned_repo(p)
