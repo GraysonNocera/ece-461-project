@@ -14,25 +14,6 @@ export class Runner {
   //What do we need to call from here?  but possibly interact with whatever API's we need 
   //has to be async to allow use of await to fulfil promise made by myFunc
   //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
-//   async calculate_correctness(){
-//     //this.package_instance.correctness = 0; 
-//     //0.5 on commit count because commits are important but aren't always useful and 0.8 on active issues over resolved because this can be 
-//     //a sign of correctness 
-//     this.package_instance.commit_count = await get_recentCommits(this.package_instance.repo, this.package_instance.owner);
-//     if(this.package_instance.commit_count >= 1000){
-//       this.package_instance.commit_count = 1;
-//     } else{
-//       this.package_instance.commit_count /= 1000; 
-//     }
-//     console.log(this.package_instance.commit_count)
-//     this.package_instance.correctness = Math.min(0.5*this.package_instance.commit_count + 0.8*(this.package_instance.issues_active/this.package_instance.issues, 1));
-
-// }
-
-//   //API?
-//   async calculate_bus(){
-//     this.package_instance.bus_factor = 0; 
-//   }
 
   async calculate_correctness() {
     //needed to complete promise and return a number type
@@ -49,8 +30,13 @@ export class Runner {
     }
 
     let num_stars = this.package_instance.num_stars; // Do we want to use the number of stars as a factor in correctness?
-
-    this.package_instance.correctness = Math.min(
+    if(num_stars >= 10000){
+      num_stars = 1
+    } else {
+      num_stars /= 10000; 
+    }
+    this.package_instance.correctness = Math.min( 
+      0.2 * num_stars + 
       0.5 * this.package_instance.commit_count +
         0.8 *
           (this.package_instance.issues_active / this.package_instance.issues,

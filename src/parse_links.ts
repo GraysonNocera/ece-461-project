@@ -165,6 +165,7 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
       const data = await response.json();
       
       console.log ("\nData Acquired From API\n")
+    //  console.log(data)
       fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
         if (err) {
           console.log(err);
@@ -193,7 +194,13 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
       package_test.pr_count = data3.data.repository.pullRequests.totalCount;
       package_test.last_pushed_at = data3.data.repository.last_pushed_at;
       package_test.num_stars = data3.data.repository.stargazerCount;
-      package_test.license_name = data3.data.repository.licenseInfo.name;
+      if(data3.data.repository.licenseInfo != null){
+        package_test.license_name = data3.data.repository.licenseInfo.name;
+      }
+      else{
+        package_test.license_name = "no name";
+      }
+     
 
       return data;
     } catch (error) {
@@ -210,7 +217,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   const recent = new Date();
   recent.setMonth(recent.getMonth() - 3);
   let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`
-  console.log(sincedate)
+  //console.log(sincedate)
 
   try {
       while (commitsRemaining) {
@@ -236,7 +243,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   } catch (error) {
       console.error("Could not find repository commit counts.");
   }
-  console.log(count)
+  //console.log(count)
   return count;
 }
 

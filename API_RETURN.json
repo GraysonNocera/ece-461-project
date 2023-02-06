@@ -1,38 +1,34 @@
 {
     "data": {
         "repository": {
-            "name": "is-github-url",
+            "name": "ece-461-project",
             "forkCount": 3,
-            "licenseInfo": {
-                "name": "MIT License"
-            },
+            "licenseInfo": null,
             "assignableUsers": {
-                "totalCount": 1
+                "totalCount": 4
             },
-            "sshUrl": "git@github.com:alferov/is-github-url.git",
-            "latestRelease": {
-                "tagName": "1.2.2"
-            },
+            "sshUrl": "git@github.com:GraysonNocera/ece-461-project.git",
+            "latestRelease": null,
             "hasIssuesEnabled": true,
             "issues": {
-                "totalCount": 2
+                "totalCount": 21
             },
             "open_issues": {
-                "totalCount": 1
+                "totalCount": 8
             },
             "defaultBranchRef": {
                 "target": {
                     "history": {
-                        "totalCount": 41
+                        "totalCount": 149
                     }
                 }
             },
             "pullRequests": {
-                "totalCount": 3
+                "totalCount": 22
             },
-            "last_pushed_at": "2016-10-31T03:38:07Z",
-            "stargazerCount": 16,
-            "hasVulnerabilityAlertsEnabled": true
+            "last_pushed_at": "2023-02-05T19:39:56Z",
+            "stargazerCount": 2,
+            "hasVulnerabilityAlertsEnabled": false
         },
         "securityVulnerabilities": {
             "nodes": [
