@@ -254,5 +254,5 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   package_instance.has_license_file = has_license_file(repo_base_dir);
   package_instance.has_license_in_package_json = has_license_in_package_json(repo_base_dir);
 
-    await delete_repo(repo_base_dir)
+  await delete_repo(repo_base_dir)
 }
