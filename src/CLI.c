@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
       return 1;
     }
 
-    char* file_path = argv[2];
+    char* file_path = argv[1];
     FILE* file = fopen(file_path, "r");
     if (!file) {
       fprintf(stderr, "Error: File not found at path: %s\n", file_path);
@@ -40,9 +40,10 @@ int main(int argc, char* argv[]) {
       buf[strcspn(buf, "\n")] = '\0';
 
       // create the command string
-      sprintf(command, "main.js %s", buf);
+      sprintf(command, "node main.js %s", buf);
 
       // call main with each URL as argument
+      printf ("Running command -> %s\n", command);
       system(command);
     }
 
