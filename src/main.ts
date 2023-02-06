@@ -70,11 +70,12 @@ async function main() {
     let run_test = new Runner(package_test);
     await get_info_from_cloned_repo(package_test);
     await run_test.calculate_correctness();
+    await run_test.calculate_responsiveness();
     await run_test.calculate_ramp();
     await run_test.calculate_license();
-    await run_test.calculate_score();
     await run_test.calculate_bus();
-
+    await run_test.calculate_score();
+    
     console.log("Correctness " + run_test.package_instance.correctness);
     console.log("Ramp-up " + run_test.package_instance.ramp_up);
     console.log("License Score " + run_test.package_instance.license);

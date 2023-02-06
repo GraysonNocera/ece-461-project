@@ -39,9 +39,8 @@ export class Runner {
       0.2 * num_stars + 
       0.5 * this.package_instance.commit_count +
         0.8 *
-          (this.package_instance.issues_active / this.package_instance.issues,
-          1)
-    );
+          (this.package_instance.issues_active / this.package_instance.issues),
+          1);
   }
 
   //API?
@@ -129,7 +128,8 @@ export class Runner {
 
   //API?
   async calculate_responsiveness() {
-    this.package_instance.responsiveness = 0;
+    //this.package_instance.responsiveness = 0;
+    this.package_instance.responsiveness = Math.min(this.package_instance.pr_count/1000+ 3*(this.package_instance.commit_count / this.package_instance.total_commits) , 1)
   }
 
   //API?
