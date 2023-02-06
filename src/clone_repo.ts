@@ -5,8 +5,9 @@ import cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
-import { root_cloned } from "./logging";
+import { provider } from "./logging";
 import { Category } from "typescript-logging-category-style";
+import { Logger } from "typescript-logging-log4ts-style";
 
 export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
     // Clone repo into path_to_repo + repo_name directory
@@ -14,7 +15,7 @@ export async function create_git_object(repo_name: string, path_to_repo?: string
     // :param path_to_repo: (optional) path to repository
     // :param repo_name: (optional) name of repository
 
-    let log: Category = root_cloned.getChildCategory("create_git_object")
+    let log: Logger = provider.getLogger("Cloned.create_git_object")
 
     if (!path_to_repo) {
         // If no path_to_repo provided, assume current working directory
@@ -53,7 +54,7 @@ export async function create_git_object(repo_name: string, path_to_repo?: string
 
 export async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
 
-    let log: Category = root_cloned.getChildCategory("clone_repo")
+    let log: Logger = provider.getLogger("Cloned.clone_repo")
 
     emptyDirSync(repo_base_dir)
 
@@ -74,7 +75,7 @@ async function get_readme_path(repo_base_dir: string): Promise<string> {
     // :param repo_base_dir: base directory of repo
     // :return: string of repo readme 
 
-    let log: Category = root_cloned.getChildCategory("get_readme_path")
+    let log: Logger = provider.getLogger("Cloned.get_readme_path")
 
     let file_path: string = "";
     
@@ -101,7 +102,7 @@ export async function has_license_file(repo_base_dir: string): Promise<boolean> 
     // :param repo_base_dir: base directory of repo
     // :return: whether the repo has a license file
 
-    let log: Category = root_cloned.getChildCategory("has_license_file")    
+    let log: Logger = provider.getLogger("Cloned.has_license_file") 
 
     let has_file: boolean = false;
     
@@ -149,7 +150,7 @@ export async function get_percentage_comments(repo_base_dir: string): Promise<nu
     // :param path_to_repo: path to the repo
     // :return: percentage of code that is comments (num_comments / (num_comments + code))
 
-    let log: Category = root_cloned.getChildCategory("get_percentage_comments")    
+    let log: Logger = provider.getLogger("Cloned.get_percentage_comments")  
 
     // Terminal command, running cloc to get comment information
     repo_base_dir = "\"" + repo_base_dir + "\"" // prep directory for cloc command
@@ -192,7 +193,7 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
     // Delete the repo after analyzing it
     // :param repo_base_dir: base path of repository
 
-    let log: Category = root_cloned.getChildCategory("delete_repo")    
+    let log: Logger = provider.getLogger("Cloned.get_repo")
 
     if (fs.existsSync(repo_base_dir)) {
         await emptyDir(repo_base_dir)
@@ -227,7 +228,7 @@ export async function has_license_in_readme(repo_base_dir: string): Promise<bool
 
 async function read_readme(readme_path: string): Promise<string> {
 
-    let log: Category = root_cloned.getChildCategory("read_readme")    
+    let log: Logger = provider.getLogger("Cloned.read_readme")  
 
     let file_contents: string = "";
     
@@ -242,7 +243,7 @@ async function read_readme(readme_path: string): Promise<string> {
 
 export async function has_license_in_package_json(repo_base_dir: string): Promise<boolean> {
 
-    let log: Category = root_cloned.getChildCategory("has_license_in_package_json")    
+    let log: Logger = provider.getLogger("Cloned.has_license_in_package_json")  
 
     let package_json_path: string = path.join(repo_base_dir, "package.json")
     let file_contents: Buffer;

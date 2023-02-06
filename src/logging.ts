@@ -4,7 +4,6 @@ import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
 
 let level: number = 0;
 if (process.env.LOG_LEVEL != undefined) {
-    console.log(process.env.LOG_LEVEL)
     if (Number(process.env.LOG_LEVEL) == 1) {
         // Informational messages
         level = LogLevel.Info
