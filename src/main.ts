@@ -74,8 +74,7 @@ async function main() {
     await run_test.calculate_ramp();
     await run_test.calculate_license();
     await run_test.calculate_bus();
-    await run_test.calculate_score();
-    
+    await run_test.calculate_score(); 
     console.log("Correctness " + run_test.package_instance.correctness);
     console.log("Ramp-up " + run_test.package_instance.ramp_up);
     console.log("License Score " + run_test.package_instance.license);

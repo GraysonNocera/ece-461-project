@@ -8,7 +8,6 @@
     "axios": "^1.2.6",
     "child_process": "^1.0.2",
     "cloc": "^2.11.0",
-    "csv": "^6.2.6",
     "fs": "^0.0.1-security",
     "fs-extra": "^11.1.0",
     "graphql": "^16.6.0",
@@ -18,6 +17,8 @@
     "octokit": "^2.0.14",
     "path": "^0.12.7",
     "simple-git": "^3.16.0",
-    "tsc": "^2.0.4"
+    "tsc": "^2.0.4",
+    "typescript-logging": "^2.0.2",
+    "typescript-logging-log4ts-style": "^2.0.2"
   }
 }

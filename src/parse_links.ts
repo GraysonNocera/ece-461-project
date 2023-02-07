@@ -166,13 +166,13 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
       
       console.log ("\nData Acquired From API\n")
     //  console.log(data)
-      fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("API Return Saved to File for further parsing!");
-        }
-      });
+      // fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
+      //   if (err) {
+      //     console.log(err);
+      //   } else {
+      //     console.log("API Return Saved to File for further parsing!");
+      //   }
+      // });
 
       let data2 = JSON.stringify(data);
       let data3 = JSON.parse(data2);

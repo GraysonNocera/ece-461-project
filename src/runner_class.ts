@@ -4,18 +4,15 @@ import { get_workingLifetime ,get_recentCommits } from "./parse_links";
 import { Package } from './package_class';
 import { get_info_from_cloned_repo } from "./clone_repo";
 // Rudimentary implementation of Runner class
-
+// Main driver for the functions that calculate the score of the repo
 export class Runner {
   package_instance: Package;
 
   constructor(instance : Package){
         this.package_instance = instance;
     }
-  //What do we need to call from here?  but possibly interact with whatever API's we need 
-  //has to be async to allow use of await to fulfil promise made by myFunc
-  //Will eventually be used to calculate correctess parameter but currently just used to test API interaction
-
   async calculate_correctness() {
+    //used to calculate the correctness of the repo
     //needed to complete promise and return a number type
     this.package_instance.commit_count = await get_recentCommits(
       this.package_instance.repo,
@@ -29,12 +26,15 @@ export class Runner {
       this.package_instance.commit_count /= 1000;
     }
 
-    let num_stars = this.package_instance.num_stars; // Do we want to use the number of stars as a factor in correctness?
+    //stars  are also a good sign of a well maintianed repo 
+    let num_stars = this.package_instance.num_stars; 
     if(num_stars >= 10000){
       num_stars = 1
     } else {
       num_stars /= 10000; 
     }
+
+    //Cap the scores off at 1
     this.package_instance.correctness = Math.min( 
       0.2 * num_stars + 
       0.5 * this.package_instance.commit_count +
@@ -43,8 +43,8 @@ export class Runner {
           1);
   }
 
-  //API?
   async calculate_bus() {
+    //Calculate the bus factor of the repo 
     let num_devs = this.package_instance.num_dev;
     let pr_count = this.package_instance.pr_count;
     let ratio = 0;
@@ -126,13 +126,13 @@ export class Runner {
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
   }
 
-  //API?
+  //calculate responsiveness 
   async calculate_responsiveness() {
     //this.package_instance.responsiveness = 0;
     this.package_instance.responsiveness = Math.min(this.package_instance.pr_count/1000+ 3*(this.package_instance.commit_count / this.package_instance.total_commits) , 1)
   }
 
-  //API?
+  //calculate total score 
   async calculate_score() {
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +

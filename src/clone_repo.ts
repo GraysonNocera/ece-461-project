@@ -5,28 +5,32 @@ import * as cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
+import { provider } from "./logging";
+import { Category } from "typescript-logging-category-style";
+import { Logger } from "typescript-logging-log4ts-style";
 
-export async function create_git_object(
-  repo_name: string,
-  path_to_repo?: string
-): Promise<SimpleGit> {
-  // Clone repo into path_to_repo + repo_name directory
-  // :param repo_url: url to Github repo page
-  // :param path_to_repo: (optional) path to repository
-  // :param repo_name: (optional) name of repository
+export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
+    // Clone repo into path_to_repo + repo_name directory
+    // :param repo_url: url to Github repo page
+    // :param path_to_repo: (optional) path to repository
+    // :param repo_name: (optional) name of repository
+
+    let log: Logger = provider.getLogger("Cloned.create_git_object")
 
   if (!path_to_repo) {
     // If no path_to_repo provided, assume current working directory
     path_to_repo = process.cwd();
   }
 
-  // Create file or delete its contents if it exists
-  let repo_base_dir = path.join(path_to_repo, repo_name);
-  if (!fs.existsSync(repo_base_dir)) {
-    fs.mkdirSync(repo_base_dir);
-  } else {
-    emptyDirSync(repo_base_dir);
-  }
+    // Create file or delete its contents if it exists
+    let repo_base_dir = path.join(path_to_repo, repo_name)
+    if (!fs.existsSync(repo_base_dir)) {
+        fs.mkdirSync(repo_base_dir)
+        log.info("Created repository directory\n")
+    } else {
+        emptyDirSync(repo_base_dir)
+        log.info("Emptied repository directory\n")
+    }
 
   // Create options for git object
   const options: Partial<SimpleGitOptions> = {
@@ -36,70 +40,87 @@ export async function create_git_object(
     trimmed: false,
   };
 
-  // Create git object
-  const git: SimpleGit = simpleGit(options);
+    // Create git object
+    const git: SimpleGit = simpleGit(options)
+
+    if (git) {
+        log.info("Successfully created git object\n")
+    } else {
+        log.debug("Git object was not properly created\n")
+    }
 
   return git;
 }
 
-export async function clone_repo(
-  repo_url: string,
-  repo_base_dir: string,
-  git: SimpleGit
-): Promise<void> {
-  emptyDirSync(repo_base_dir);
+export async function clone_repo(repo_url: string, repo_base_dir: string, git: SimpleGit): Promise<void> {
 
-  // Clone repo
-  await git.clone(
-    repo_url,
-    {
-      //Options go here
-    },
-    (err, data) => {
-      if (err) console.log("Error", err);
-      if (data) console.log("Data", data);
-    }
-  );
+    let log: Logger = provider.getLogger("Cloned.clone_repo")
+
+    emptyDirSync(repo_base_dir)
+
+    // Clone repo
+    await git.clone(repo_url, repo_base_dir, {
+        //Options go here
+    }, (err, data) => {
+        if (err)
+            log.debug("Error when cloning from " + repo_url + ": " + err + "\n")
+        if (data)
+            log.info("Data from cloning from " + repo_url + "\n")
+    });
+
 }
 
 async function get_readme_path(repo_base_dir: string): Promise<string> {
-  // Get the path of a readme in a repo
-  // :param repo_base_dir: base directory of repo
-  // :return: string of repo readme
+    // Get the path of a readme in a repo
+    // :param repo_base_dir: base directory of repo
+    // :return: string of repo readme 
 
-  let file_path: string = "";
+    let log: Logger = provider.getLogger("Cloned.get_readme_path")
 
-  // match readme
-  let readme_search: RegExp = /[Rr][Ee][Aa][Dd][Mm][Ee]\..+/;
-  let files: string[] = fs.readdirSync(repo_base_dir);
-  files.forEach((element) => {
-    if (element.search(readme_search) != -1) {
-      file_path = path.join(repo_base_dir, element);
-      return file_path;
+    let file_path: string = "";
+    
+    // match readme
+    let readme_search: RegExp = /[Rr][Ee][Aa][Dd][Mm][Ee]\..+/
+    let files: string[] = fs.readdirSync(repo_base_dir)
+    files.forEach(element => {
+        if (element.search(readme_search) != -1) {
+            file_path = path.join(repo_base_dir, element)
+            log.info("Found readme file for repository: " + file_path + "\n")
+            return file_path
+        }
+    });
+    
+    if (!file_path) {
+        log.debug("Readme file not found for repository in " + repo_base_dir + "\n")
     }
-  });
 
   return file_path;
 }
 
-export async function has_license_file(
-  repo_base_dir: string
-): Promise<boolean> {
-  // Boolean for detecting a license file
-  // :param repo_base_dir: base directory of repo
-  // :return: whether the repo has a license file
+export async function has_license_file(repo_base_dir: string): Promise<boolean> {
+    // Boolean for detecting a license file
+    // :param repo_base_dir: base directory of repo
+    // :return: whether the repo has a license file
 
-  let has_file: boolean = false;
+    let log: Logger = provider.getLogger("Cloned.has_license_file") 
 
-  // match readme
-  let readme_search: RegExp = /[Ll][Ii][Cc][Ee][Nn][SsCc][Ee]\.*.*/;
-  let files: string[] = fs.readdirSync(repo_base_dir);
-  files.forEach((element) => {
-    if (element.search(readme_search) != -1) {
-      has_file = true;
-      return has_file;
+    let has_file: boolean = false;
+    
+    // match readme
+    let readme_search: RegExp = /[Ll][Ii][Cc][Ee][Nn][SsCc][Ee]\.*.*/
+    let files: string[] = fs.readdirSync(repo_base_dir)
+    files.forEach(element => {
+        if (element.search(readme_search) != -1) {
+            has_file = true
+            return has_file
+        }
+    });
+
+    if (has_file) {
+        log.info("License file found for repository in " + repo_base_dir + "\n")
+    } else {
+        log.info("License file not found for repository in " + repo_base_dir + "\n")
     }
-  });
 
   return has_file;
 }
@@ -126,21 +147,27 @@ export async function get_readme_length(
   return file_contents.length;
 }
 
-export async function get_percentage_comments(
-  repo_base_dir: string
-): Promise<number> {
-  // Get the percentage of code that is comments
-  // :param path_to_repo: path to the repo
-  // :return: percentage of code that is comments (num_comments / (num_comments + code))
+export async function get_percentage_comments(repo_base_dir: string): Promise<number> {
+    // Get the percentage of code that is comments
+    // :param path_to_repo: path to the repo
+    // :return: percentage of code that is comments (num_comments / (num_comments + code))
+
+    let log: Logger = provider.getLogger("Cloned.get_percentage_comments")  
 
   // Terminal command, running cloc to get comment information
   repo_base_dir = '"' + repo_base_dir + '"'; // prep directory for cloc command
   let terminal_command: string =
     "cloc --by-percent cm --sum-one --yaml " + repo_base_dir;
 
-  // Run terminal output and conver to string
-  let terminal_output: Buffer = cp.execSync(terminal_command);
-  let data: string = terminal_output.toString();
+    // Run terminal output and conver to string
+    let terminal_output: Buffer;
+    try {
+        terminal_output = cp.execSync(terminal_command)
+    } catch (err) {
+        log.debug("Error in running cloc command\n")
+        return 0;
+    }
+    let data: string = terminal_output.toString()
 
   // Get percentage of repo that is comments
   let percent: number = 0;
@@ -149,23 +176,33 @@ export async function get_percentage_comments(
   let re: RegExp = new RegExp("SUM", "i");
   data = data.substring(data.search(re), data.length);
 
-  // Get total comment percentage
-  re = new RegExp("comment:", "i");
-  let loc: number = data.search(re);
-  data = data.substring(loc + "comment: ".length, data.length);
-  percent = parseFloat(data.split("\n")[0]);
-  return percent;
+    // Get total comment percentage
+    re = new RegExp('comment:', 'i');
+    let loc: number = data.search(re)
+    if (!loc) {
+        log.debug("Could not find comment ratio\n")
+        return 0
+    }
+
+    data = data.substring(loc + "comment: ".length, data.length)
+    percent = parseFloat(data.split('\n')[0])
+
+    log.info("Returning comment ratio\n")
+
+    return percent
 }
 
 export async function delete_repo(repo_base_dir: string): Promise<void> {
-  // Delete the repo after analyzing it
-  // :param repo_base_dir: base path of repository
+    // Delete the repo after analyzing it
+    // :param repo_base_dir: base path of repository
+
+    let log: Logger = provider.getLogger("Cloned.get_repo")
 
     if (fs.existsSync(repo_base_dir)) {
         emptyDir(repo_base_dir)
         fs.rm(repo_base_dir, {recursive : true}, (err) => {
             if (err)
-                console.log(err)
+                log.debug("Error when removing repository in " + repo_base_dir + "\n")
         })
     }
 }
@@ -192,37 +229,42 @@ export async function has_license_in_readme(
 }
 
 async function read_readme(readme_path: string): Promise<string> {
-  let file_contents: string = "";
 
-  try {
-    file_contents = fs.readFileSync(readme_path, "ascii");
-  } catch (exception) {
-    console.log("README file not found");
-  }
+    let log: Logger = provider.getLogger("Cloned.read_readme")  
+
+    let file_contents: string = "";
+    
+    try {
+        file_contents = fs.readFileSync(readme_path, "ascii");
+    } catch(exception) {
+        log.debug("Readme file not found: " + readme_path + "\n")
+    }
 
   return file_contents;
 }
 
-export async function has_license_in_package_json(
-  repo_base_dir: string
-): Promise<boolean> {
-  let package_json_path: string = path.join(repo_base_dir, "package.json");
-  let file_contents: Buffer;
-  try {
-    file_contents = fs.readFileSync(package_json_path);
-  } catch (err) {
-    // Package json not found
-    // Log err in LOG FILE
-    return false;
-  }
+export async function has_license_in_package_json(repo_base_dir: string): Promise<boolean> {
 
-  let package_json = JSON.parse(file_contents.toString());
-  try {
-    if (package_json.license) return true;
-  } catch (err) {
-    // No license file
-    return false;
-  }
+    let log: Logger = provider.getLogger("Cloned.has_license_in_package_json")  
+
+    let package_json_path: string = path.join(repo_base_dir, "package.json")
+    let file_contents: Buffer;
+    try {
+        file_contents = fs.readFileSync(package_json_path)
+    } catch (err) {
+        log.debug("Could not find package.json file\n")
+        return false
+    }
+
+    let package_json = JSON.parse(file_contents.toString())
+    try {
+        if (package_json.license)
+            log.info("Found license in package.json\n")
+            return true
+    } catch(err) {
+        log.debug("Package.json has no license\n")
+        return false
+    }
 
   return true;
 }
@@ -256,3 +298,8 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
 
   await delete_repo(repo_base_dir)
 }
+
+let p: Package = new Package()
+p.repo = "cloudinary_npm"
+p.url = "https://github.com/cloudinary/cloudinary_npm"
+get_info_from_cloned_repo(p)
