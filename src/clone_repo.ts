@@ -199,7 +199,6 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
     let log: Logger = provider.getLogger("Cloned.get_repo")
 
     if (fs.existsSync(repo_base_dir)) {
-        emptyDir(repo_base_dir)
         fs.rm(repo_base_dir, {recursive : true}, (err) => {
             if (err)
                 log.debug("Error when removing repository in " + repo_base_dir + "\n")
@@ -265,8 +264,6 @@ export async function has_license_in_package_json(repo_base_dir: string): Promis
         log.debug("Package.json has no license\n")
         return false
     }
-
-  return true;
 }
 
 function has_correct_license() {
@@ -296,7 +293,7 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   package_instance.has_license_file = has_license_file(repo_base_dir);
   package_instance.has_license_in_package_json = has_license_in_package_json(repo_base_dir);
 
-  await delete_repo(repo_base_dir)
+   await delete_repo(repo_base_dir)
 }
 
 let p: Package = new Package()
