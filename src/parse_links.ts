@@ -1,21 +1,16 @@
 import axios, { AxiosResponse } from "axios";
-// import isGitHubUrl = require("is-github-url");
-import * as URL from "url";
+import { Package } from './package_class';
 let fs = require("fs");
-
 const MAX_RETRIES = 1;
 const isGitHubUrl = require("is-github-url");
-
-// import { Octokit } from "octokit";
 import { Octokit as OctokitType } from "octokit";
 const Octokit = OctokitType as any;
-import * as readline from 'readline';
 
-// Set up authentication token
-// To do this, I copied and pasted my github token into an environment variable
-// in vs code and referenced it in this line
+// GraphQL query to get the number of commits in the last year
+    
+
 const octokit = new Octokit({ 
-  auth: "<GitHub Token>",
+  auth: process.env.GITHUB_TOKEN,
   userAgent: "using apis",
   timeZone: "Eastern",
   baseUrl: 'https://api.github.com',
@@ -80,9 +75,9 @@ export function gql_query(username:string, repo:string) {
 export async function npm_2_git(npmUrl: string): Promise<string> {
   
   // check if input is a valid URL
-  if (!URL.parse(npmUrl).hostname) {
-    throw new Error(`Invalid NPM package URL: ${npmUrl}`);
-  }
+  // if (!URL.parse(npmUrl).hostname) {
+  //   throw new Error(`Invalid NPM package URL: ${npmUrl}`);
+  // }
 
   // extract the package name from the npm URL
   const packageName = npmUrl.split("/").pop();
@@ -157,7 +152,7 @@ export async function getGitRepoDetails(url: string): Promise<{username: string,
   return null;
 }
 
-export async function graphAPIfetch(gql_query: string): Promise<any> {
+export async function graphAPIfetch(gql_query: string, package_test: Package): Promise<any> {
     try {
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
@@ -168,15 +163,44 @@ export async function graphAPIfetch(gql_query: string): Promise<any> {
       });
 
       const data = await response.json();
+      
       console.log ("\nData Acquired From API\n")
+    //  console.log(data)
+      // fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
+      //   if (err) {
+      //     console.log(err);
+      //   } else {
+      //     console.log("API Return Saved to File for further parsing!");
+      //   }
+      // });
 
-      fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("API Return Saved to File for further parsing!");
-        }
-      });
+      let data2 = JSON.stringify(data);
+      let data3 = JSON.parse(data2);
+      
+      package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
+
+      // Check if the repo has issues enabled
+      if (data3.data.repository.hasIssuesEnabled == true) {
+        // If so, get the number of open issues
+        package_test.issues_active = data3.data.repository.open_issues.totalCount;
+        package_test.issues = data3.data.repository.issues.totalCount;
+      } else {
+        // If not, set the number of open issues to -1
+        package_test.issues_active = -1;
+        package_test.issues = -1;
+      }
+
+      package_test.total_commits = data3.data.repository.defaultBranchRef.target.history.totalCount;
+      package_test.pr_count = data3.data.repository.pullRequests.totalCount;
+      package_test.last_pushed_at = data3.data.repository.last_pushed_at;
+      package_test.num_stars = data3.data.repository.stargazerCount;
+      if(data3.data.repository.licenseInfo != null){
+        package_test.license_name = data3.data.repository.licenseInfo.name;
+      }
+      else{
+        package_test.license_name = "no name";
+      }
+     
 
       return data;
     } catch (error) {
@@ -193,7 +217,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   const recent = new Date();
   recent.setMonth(recent.getMonth() - 3);
   let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`
-  console.log(sincedate)
+  //console.log(sincedate)
 
   try {
       while (commitsRemaining) {
@@ -219,7 +243,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   } catch (error) {
       console.error("Could not find repository commit counts.");
   }
-
+  //console.log(count)
   return count;
 }
 

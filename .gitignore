@@ -6,3 +6,4 @@ dist/
 
 # Ignore transpiled JavaScript files
 src/*.js
+src/*.json
