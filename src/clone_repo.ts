@@ -331,11 +331,25 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   // Get readme length, readme license
   package_instance.readme_size = get_readme_length(file_contents);
   package_instance.has_license_in_readme = has_license_in_readme(file_contents);
-  if (await package_instance.has_license_in_readme) {
-    package_instance.has_correct_license_in_readme =
-      has_correct_license_in_readme(file_contents);
-  }
+  package_instance.has_correct_license_in_readme =
+    has_correct_license_in_readme(file_contents);
 
   delete_repo(repo_base_dir);
   return;
 }
+
+// Testing
+// async function main() {
+//   let package_instance_var: Package = new Package();
+//   package_instance_var.repo = "nodist"
+//   package_instance_var.url = "https://github.com/nullivex/nodist"
+//   await get_info_from_cloned_repo(package_instance_var)
+//   console.log(await package_instance_var.readme_size)
+//   console.log(await package_instance_var.has_license_in_readme)
+//   console.log(await package_instance_var.has_correct_license_in_readme)
+//   console.log(await package_instance_var.comment_ratio)
+//   console.log(await package_instance_var.has_license_in_package_json)
+//   console.log(await package_instance_var.has_license_file)
+// }
+
+// main()
