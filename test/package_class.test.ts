@@ -60,7 +60,7 @@ describe("test initializing Package", () => {
     expect(test.last_push).toBe("");
   });
 
-  test("initialize dummy url and val", () => {
+  test("initialize dummy url and val but no owner", () => {
     let test = new Package("http://useless_github.com", "test_repo");
     expect(test.bus_factor).toBe(0);
     expect(test.correctness).toBe(0);
