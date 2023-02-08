@@ -60,6 +60,13 @@ async function main() {
       console.log(`Error: ${error}`);
     });
 
+    console.log(data);
+
+    if (data["message"] == `Bad credentials`) {
+      console.log(`Bad credentials. Please check your token.`);
+      throw new Error("Bad credentials. Please check your token.");
+    }
+
     let run_test = new Runner(package_test);
     await get_info_from_cloned_repo(package_test);
     await run_test.calculate_correctness();

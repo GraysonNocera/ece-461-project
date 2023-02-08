@@ -165,7 +165,7 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
       const data = await response.json();
       
       console.log ("\nData Acquired From API\n")
-      //  console.log(data)
+    //  console.log(data)
       // fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
       //   if (err) {
       //     console.log(err);
@@ -176,8 +176,8 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
 
       let data2 = JSON.stringify(data);
       let data3 = JSON.parse(data2);
-
       
+      package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
 
       // Check if the repo has issues enabled
       if (data3.data.repository.hasIssuesEnabled == true) {
@@ -190,7 +190,6 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
         package_test.issues = -1;
       }
 
-      package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
       package_test.total_commits = data3.data.repository.defaultBranchRef.target.history.totalCount;
       package_test.pr_count = data3.data.repository.pullRequests.totalCount;
       package_test.last_pushed_at = data3.data.repository.last_pushed_at;
