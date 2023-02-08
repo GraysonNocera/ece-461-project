@@ -47,4 +47,4 @@ Determines how "responsive" the package is to issues, commits, pull requests, et
 Does the package have a license? If yes, then it will receive a high score. If no... then low. 
 
 ### Net Score
-Based on the above metrics, the net score will be their weighted sum on a scale from 0 to 1 inclusive.
+Based on the above metrics, the net score will be their weighted sum on a scale from 0 to 1 inclusive using the following formula: 
