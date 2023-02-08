@@ -3,8 +3,6 @@
 import sys
 import subprocess
 
-BUF_SIZE = 2048
-
 def main():
     if len(sys.argv) < 2:
         print("Error: No mode specified.")
