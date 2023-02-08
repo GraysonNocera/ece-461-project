@@ -45,3 +45,6 @@ Finds the number of people who can work on the package at any given moment. Also
 Determines how "responsive" the package is to issues, commits, pull requests, etc. Takes into account the number of total commits, issues created recently, and the ratio of closed issues to open issues.
 #### License Compatibility
 Does the package have a license? If yes, then it will receive a high score. If no... then low. 
+
+### Net Score
+Based on the above metrics, the net score will be their weighted sum on a scale from 0 to 1 inclusive.
