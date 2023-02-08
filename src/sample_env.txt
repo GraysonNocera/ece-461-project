@@ -1,0 +1,3 @@
+GITHUB_TOKEN=ghp_nqp7EaHtK5SKzj5WEA2hRbsq6zeejjnnfuHwR
+LOG_LEVEL=1
+LOG_FILE=/Users/myUser/IdeaProjects/files
