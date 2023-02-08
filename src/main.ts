@@ -8,6 +8,8 @@ import {
 import { Package } from "./package_class";
 import { Runner } from "./runner_class";
 import { get_info_from_cloned_repo } from "./clone_repo";
+import { provider } from "./logging";
+import { Logger } from "typescript-logging-log4ts-style";
 
 function sleep(ms: number) {
   // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
@@ -18,7 +20,7 @@ function sleep(ms: number) {
 async function main() {
   let url = process.argv[2];
   var data;
-
+  let log: Logger = provider.getLogger("Main.start");
   if (!url) {
     throw new Error(
       "Please provide a URL as an argument when running the program."
@@ -57,10 +59,10 @@ async function main() {
       gql_query(username, repoName),
       package_test
     ).catch((error) => {
-      console.log(`Error: ${error}`);
+      log.debug("Error with graphAPI query");
     });
 
-    console.log(data);
+    log.info("successful data collection");
 
     if (data["message"] == `Bad credentials`) {
       console.log(`Bad credentials. Please check your token.`);
@@ -70,17 +72,24 @@ async function main() {
     let run_test = new Runner(package_test);
     await get_info_from_cloned_repo(package_test);
     await run_test.calculate_correctness();
+    log.info("calculating correctness");
     await run_test.calculate_responsiveness();
+    log.info("calculating responsiveness");
     await run_test.calculate_ramp();
+    log.info("calculating ramp-up");
     await run_test.calculate_license();
+    log.info("calculating license");
     await run_test.calculate_bus();
-    await run_test.calculate_score(); 
-    console.log("Correctness " + run_test.package_instance.correctness);
-    console.log("Ramp-up " + run_test.package_instance.ramp_up);
-    console.log("License Score " + run_test.package_instance.license);
-    console.log("Bus Factor " + run_test.package_instance.bus_factor);
-    console.log("Responsiveness " + run_test.package_instance.responsiveness);
-    console.log("Total Score " + run_test.package_instance.score);
+    log.info("calculating bus factor");
+    await run_test.calculate_score();
+    log.info("calculating final score");
+
+    // console.log("Correctness " + run_test.package_instance.correctness);
+    // console.log("Ramp-up " + run_test.package_instance.ramp_up);
+    // console.log("License Score " + run_test.package_instance.license);
+    // console.log("Bus Factor " + run_test.package_instance.bus_factor);
+    // console.log("Responsiveness " + run_test.package_instance.responsiveness);
+    // console.log("Total Score " + run_test.package_instance.score);
   } else {
     throw new Error(`Unable to fetch repo -> ${username}/${repoName}`);
   }

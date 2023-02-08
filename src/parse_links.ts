@@ -157,32 +157,26 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
         headers: {
-          "Authorization": `Token ${process.env.GITHUB_TOKEN}`
+          Authorization: `Token ${process.env.GITHUB_TOKEN}`,
         },
-        body: JSON.stringify({ query: gql_query })
+        body: JSON.stringify({ query: gql_query }),
       });
 
       const data = await response.json();
-      
-      console.log ("\nData Acquired From API\n")
-    //  console.log(data)
-      // fs.writeFile("API_RETURN.json", JSON.stringify(data, null, 4), function (err: any) {
-      //   if (err) {
-      //     console.log(err);
-      //   } else {
-      //     console.log("API Return Saved to File for further parsing!");
-      //   }
-      // });
 
+      console.log("\nData Acquired From API\n");
+
+      //redundancy is only redundancy if its redundant
       let data2 = JSON.stringify(data);
       let data3 = JSON.parse(data2);
-      
+
       package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
 
       // Check if the repo has issues enabled
       if (data3.data.repository.hasIssuesEnabled == true) {
         // If so, get the number of open issues
-        package_test.issues_active = data3.data.repository.open_issues.totalCount;
+        package_test.issues_active =
+          data3.data.repository.open_issues.totalCount;
         package_test.issues = data3.data.repository.issues.totalCount;
       } else {
         // If not, set the number of open issues to -1
@@ -190,17 +184,16 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
         package_test.issues = -1;
       }
 
-      package_test.total_commits = data3.data.repository.defaultBranchRef.target.history.totalCount;
+      package_test.total_commits =
+        data3.data.repository.defaultBranchRef.target.history.totalCount;
       package_test.pr_count = data3.data.repository.pullRequests.totalCount;
       package_test.last_pushed_at = data3.data.repository.last_pushed_at;
       package_test.num_stars = data3.data.repository.stargazerCount;
-      if(data3.data.repository.licenseInfo != null){
+      if (data3.data.repository.licenseInfo != null) {
         package_test.license_name = data3.data.repository.licenseInfo.name;
-      }
-      else{
+      } else {
         package_test.license_name = "no name";
       }
-     
 
       return data;
     } catch (error) {
