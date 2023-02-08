@@ -5,6 +5,8 @@ const MAX_RETRIES = 1;
 const isGitHubUrl = require("is-github-url");
 import { Octokit as OctokitType } from "octokit";
 const Octokit = OctokitType as any;
+import { provider } from "./logging";
+import { Logger } from "typescript-logging-log4ts-style";
 
 // GraphQL query to get the number of commits in the last year
     
@@ -203,6 +205,8 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
 
 export async function get_recentCommits(repo: string, owner: string): Promise<number> {
 
+  let log: Logger = provider.getLogger("Parsed.get_recent_commits");
+
   let count = 0;
   let page = 1;
   let per_page = 30;
@@ -211,7 +215,7 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
   recent.setMonth(recent.getMonth() - 3);
   let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`
   //console.log(sincedate)
-
+  
   try {
       while (commitsRemaining) {
           let result = await octokit.request(
@@ -233,15 +237,18 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
               page++;
           }
       }
+
+      log.info("Successfully found repository commit counts.\n");
   } catch (error) {
-      console.error("Could not find repository commit counts.");
+      log.debug("Could not find repository commit counts.\n");
+      // console.error("Could not find repository commit counts.");
   }
   return count;
 }
 
 export async function get_workingLifetime(repo: string, owner: string): Promise<number> {
   let workingLifetime = 0;
-
+  let log: Logger = provider.getLogger("Parsed.get_working_lifetime");
   try {
       const result = await octokit.request('GET /repos/{owner}/{repo}',
       {
@@ -261,8 +268,9 @@ export async function get_workingLifetime(repo: string, owner: string): Promise<
       console.log(recCommit)
 
       workingLifetime = recCommit.getTime() - dateCreated.getTime();
+      log.info("Successfully found the working lifetime in milliseconds.\n")
   } catch (error) {
-      console.error("This repo is ass.");
+      log.debug("Could not find the working lifetime.\n")
   }
   
   return workingLifetime;
