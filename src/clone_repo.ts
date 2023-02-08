@@ -8,7 +8,7 @@ import { Package } from "./package_class";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
-export async function create_git_object(
+async function create_git_object(
   repo_name: string,
   path_to_repo?: string
 ): Promise<SimpleGit> {
@@ -54,7 +54,7 @@ export async function create_git_object(
   return git;
 }
 
-export async function clone_repo(
+async function clone_repo(
   repo_url: string,
   repo_base_dir: string,
   git: SimpleGit
@@ -78,7 +78,7 @@ export async function clone_repo(
   );
 }
 
-async function get_readme_path(repo_base_dir: string): Promise<string> {
+function get_readme_path(repo_base_dir: string): Promise<string> {
   // Get the path of a readme in a repo
   // :param repo_base_dir: base directory of repo
   // :return: string of repo readme
@@ -107,7 +107,7 @@ async function get_readme_path(repo_base_dir: string): Promise<string> {
   return file_path;
 }
 
-export async function has_license_file(
+async function has_license_file(
   repo_base_dir: string
 ): Promise<boolean> {
   // Boolean for detecting a license file
@@ -139,7 +139,7 @@ export async function has_license_file(
   return has_file;
 }
 
-export async function get_readme_length(
+async function get_readme_length(
   file_contents: Promise<string>
 ): Promise<number> {
   // Get length in characters of a readme file
@@ -149,7 +149,7 @@ export async function get_readme_length(
   return (await file_contents)?.length;
 }
 
-export async function get_percentage_comments(
+async function get_percentage_comments(
   repo_base_dir: string
 ): Promise<number> {
   // Get the percentage of code that is comments
@@ -196,7 +196,7 @@ export async function get_percentage_comments(
   return percent;
 }
 
-export async function delete_repo(repo_base_dir: string): Promise<void> {
+async function delete_repo(repo_base_dir: string): Promise<void> {
   // Delete the repo after analyzing it
   // :param repo_base_dir: base path of repository
 
@@ -210,7 +210,7 @@ export async function delete_repo(repo_base_dir: string): Promise<void> {
   }
 }
 
-export async function has_license_in_readme(
+async function has_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
   // Ensure that repo has a license section by checking the README.md
@@ -237,7 +237,7 @@ async function read_readme(readme_path: string): Promise<string> {
   return file_contents;
 }
 
-export async function has_license_in_package_json(
+async function has_license_in_package_json(
   repo_base_dir: string
 ): Promise<boolean> {
   let log: Logger = provider.getLogger("Cloned.has_license_in_package_json");
@@ -261,7 +261,7 @@ export async function has_license_in_package_json(
   }
 }
 
-export async function has_correct_license_in_readme(
+async function has_correct_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
   // Search through README for correct license in README
