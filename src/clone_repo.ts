@@ -212,7 +212,7 @@ async function delete_repo(repo_base_dir: string): Promise<void> {
   }
 }
 
-export async function has_license_in_readme(
+async function has_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
   // Ensure that repo has a license section by checking the README.md
@@ -285,7 +285,7 @@ async function has_correct_license_in_readme(
   return false;
 }
 
-export async function get_info_from_cloned_repo(package_instance: Package) {
+async function get_info_from_cloned_repo(package_instance: Package) {
   // Get information from cloned repo and save it in package_instance
   // :param package_instance: instance of package class holding data
   // :return: none
@@ -339,3 +339,18 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   delete_repo(repo_base_dir);
   return;
 }
+
+export {
+  create_git_object,
+  clone_repo,
+  get_readme_path,
+  has_license_file,
+  get_readme_length,
+  get_percentage_comments,
+  delete_repo,
+  has_license_in_readme,
+  read_readme,
+  has_license_in_package_json,
+  has_correct_license_in_readme,
+  get_info_from_cloned_repo,
+};
