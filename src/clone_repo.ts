@@ -6,7 +6,6 @@ import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDir, emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
 import { provider } from "./logging";
-import { Category } from "typescript-logging-category-style";
 import { Logger } from "typescript-logging-log4ts-style";
 
 export async function create_git_object(repo_name: string, path_to_repo?: string): Promise<SimpleGit> {
