@@ -1,4 +1,3 @@
-import { isExportDeclaration } from "typescript";
 import { Package } from "../src/package_class";
 
 describe("test initializing Package", () => {
