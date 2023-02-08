@@ -2,9 +2,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as cp from "child_process";
-import * as fs from "fs";
-import * as path from "path";
-import * as cp from "child_process";
 import simpleGit, { SimpleGit, SimpleGitOptions } from "simple-git";
 import { emptyDirSync } from "fs-extra";
 import { Package } from "./package_class";
@@ -48,13 +45,6 @@ async function create_git_object(
     maxConcurrentProcesses: 6,
     trimmed: false,
   };
-  // Create options for git object
-  const options: Partial<SimpleGitOptions> = {
-    baseDir: repo_base_dir,
-    binary: "git",
-    maxConcurrentProcesses: 6,
-    trimmed: false,
-  };
 
   // Create git object
   const git: SimpleGit = simpleGit(options);
@@ -65,7 +55,6 @@ async function create_git_object(
     log.debug("Git object was not properly created\n");
   }
 
-  return git;
   return git;
 }
 
@@ -175,10 +164,6 @@ async function get_percentage_comments(repo_base_dir: string): Promise<number> {
   repo_base_dir = '"' + repo_base_dir + '"'; // prep directory for cloc command
   let terminal_command: string =
     "cloc --by-percent cm --sum-one --yaml " + repo_base_dir;
-  // Terminal command, running cloc to get comment information
-  repo_base_dir = '"' + repo_base_dir + '"'; // prep directory for cloc command
-  let terminal_command: string =
-    "cloc --by-percent cm --sum-one --yaml " + repo_base_dir;
 
   // Run terminal output and conver to string
   let terminal_output: Buffer;
@@ -192,12 +177,7 @@ async function get_percentage_comments(repo_base_dir: string): Promise<number> {
 
   // Get percentage of repo that is comments
   let percent: number = 0;
-  // Get percentage of repo that is comments
-  let percent: number = 0;
 
-  // Get the part of the result after SUM
-  let re: RegExp = new RegExp("SUM", "i");
-  data = data.substring(data.search(re), data.length);
   // Get the part of the result after SUM
   let re: RegExp = new RegExp("SUM", "i");
   data = data.substring(data.search(re), data.length);
@@ -256,13 +236,6 @@ async function read_readme(readme_path: string): Promise<string> {
     log.debug("Readme file not found: " + readme_path + "\n");
   }
 
-  try {
-    file_contents = fs.readFileSync(readme_path, "ascii");
-  } catch (exception) {
-    log.debug("Readme file not found: " + readme_path + "\n");
-  }
-
-  return file_contents;
   return file_contents;
 }
 
