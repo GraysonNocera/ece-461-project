@@ -1,37 +1,47 @@
 {
     "data": {
         "repository": {
-            "name": "ece-461-project",
+            "name": "is-github-url",
             "forkCount": 3,
-            "licenseInfo": null,
-            "assignableUsers": {
-                "totalCount": 4
+            "licenseInfo": {
+                "name": "MIT License"
             },
-            "sshUrl": "git@github.com:GraysonNocera/ece-461-project.git",
-            "latestRelease": null,
+            "assignableUsers": {
+                "totalCount": 1
+            },
+            "sshUrl": "git@github.com:alferov/is-github-url.git",
+            "latestRelease": {
+                "tagName": "1.2.2"
+            },
             "hasIssuesEnabled": true,
             "issues": {
-                "totalCount": 21
+                "totalCount": 2
             },
             "open_issues": {
-                "totalCount": 8
+                "totalCount": 1
             },
             "defaultBranchRef": {
                 "target": {
                     "history": {
-                        "totalCount": 149
+                        "totalCount": 41
                     }
                 }
             },
             "pullRequests": {
-                "totalCount": 22
+                "totalCount": 3
             },
-            "last_pushed_at": "2023-02-06T02:20:25Z",
-            "stargazerCount": 2,
-            "hasVulnerabilityAlertsEnabled": false
+            "last_pushed_at": "2016-10-31T03:38:07Z",
+            "stargazerCount": 16,
+            "hasVulnerabilityAlertsEnabled": true
         },
         "securityVulnerabilities": {
             "nodes": [
+                {
+                    "firstPatchedVersion": {
+                        "identifier": "2.0.10"
+                    },
+                    "severity": "CRITICAL"
+                },
                 {
                     "firstPatchedVersion": {
                         "identifier": "1.502"
@@ -582,7 +592,7 @@
                     "firstPatchedVersion": {
                         "identifier": "2.0.10"
                     },
-                    "severity": "MODERATE"
+                    "severity": "HIGH"
                 },
                 {
                     "firstPatchedVersion": {
@@ -601,12 +611,6 @@
                         "identifier": "5.4.1"
                     },
                     "severity": "HIGH"
-                },
-                {
-                    "firstPatchedVersion": {
-                        "identifier": "1.5.0-alpha3"
-                    },
-                    "severity": "MODERATE"
                 }
             ]
         }
