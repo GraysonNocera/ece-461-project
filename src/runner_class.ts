@@ -128,7 +128,6 @@ export class Runner {
 
   //calculate responsiveness 
   async calculate_responsiveness() {
-    //this.package_instance.responsiveness = 0;
     this.package_instance.responsiveness = Math.min(this.package_instance.pr_count/1000+ 3*(this.package_instance.commit_count / this.package_instance.total_commits) , 1)
   }
 
@@ -140,7 +139,5 @@ export class Runner {
       0.2 * this.package_instance.correctness +
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
-
-    //whatever we need to do to calculate formula
   }
 }

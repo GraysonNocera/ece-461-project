@@ -295,8 +295,3 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
 
    await delete_repo(repo_base_dir)
 }
-
-let p: Package = new Package()
-p.repo = "cloudinary_npm"
-p.url = "https://github.com/cloudinary/cloudinary_npm"
-get_info_from_cloned_repo(p)
