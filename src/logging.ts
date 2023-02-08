@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 import {LogLevel, LogMessage } from "typescript-logging";
 import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
 

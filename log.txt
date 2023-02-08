@@ -1,8 +1,0 @@
-2023-02-06 15:05:34,518 INFO  [Cloned.create_git_object] Created repository directory
-2023-02-06 15:05:34,521 INFO  [Cloned.create_git_object] Successfully created git object
-2023-02-06 15:05:39,122 INFO  [Cloned.get_readme_path] Found readme file for repository: /Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/cloudinary_npm/README.md
-2023-02-06 15:05:39,587 INFO  [Cloned.get_readme_path] Found readme file for repository: /Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/cloudinary_npm/README.md
-2023-02-06 15:05:39,587 INFO  [Cloned.has_license_file] License file not found for repository in /Users/graysonnocera/Desktop/Spring 2023/ECE 461/ece-461-project/cloudinary_npm
-2023-02-06 15:05:39,588 INFO  [Cloned.has_license_in_package_json] Found license in package.json
-2023-02-06 15:05:39,588 DEBUG [Cloned.has_license_in_package_json] Debug message
-2023-02-06 15:05:39,586 INFO  [Cloned.get_percentage_comments] Returning comment ratio

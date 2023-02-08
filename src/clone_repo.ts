@@ -23,6 +23,10 @@ async function create_git_object(
     // If no path_to_repo provided, assume current working directory
     path_to_repo = process.cwd();
   }
+  if (!path_to_repo) {
+    // If no path_to_repo provided, assume current working directory
+    path_to_repo = process.cwd();
+  }
 
   // Create file or delete its contents if it exists
   let repo_base_dir = path.join(path_to_repo, repo_name);
@@ -105,6 +109,7 @@ function get_readme_path(repo_base_dir: string): string {
   }
 
   return file_path;
+  return file_path;
 }
 
 async function has_license_file(repo_base_dir: string): Promise<boolean> {
@@ -134,6 +139,7 @@ async function has_license_file(repo_base_dir: string): Promise<boolean> {
     );
   }
 
+  return has_file;
   return has_file;
 }
 
@@ -223,12 +229,6 @@ async function read_readme(readme_path: string): Promise<string> {
   let log: Logger = provider.getLogger("Cloned.read_readme");
 
   let file_contents: string = "";
-
-  try {
-    file_contents = fs.readFileSync(readme_path, "ascii");
-  } catch (exception) {
-    log.debug("Readme file not found: " + readme_path + "\n");
-  }
 
   try {
     file_contents = fs.readFileSync(readme_path, "ascii");
@@ -339,19 +339,3 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   delete_repo(repo_base_dir);
   return;
 }
-
-// Testing
-// async function main() {
-//   let package_instance_var: Package = new Package();
-//   package_instance_var.repo = "nodist"
-//   package_instance_var.url = "https://github.com/nullivex/nodist"
-//   await get_info_from_cloned_repo(package_instance_var)
-//   console.log(await package_instance_var.readme_size)
-//   console.log(await package_instance_var.has_license_in_readme)
-//   console.log(await package_instance_var.has_correct_license_in_readme)
-//   console.log(await package_instance_var.comment_ratio)
-//   console.log(await package_instance_var.has_license_in_package_json)
-//   console.log(await package_instance_var.has_license_file)
-// }
-
-// main()
