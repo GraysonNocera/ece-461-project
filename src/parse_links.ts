@@ -19,6 +19,9 @@ const octokit = new Octokit({
 });
 
 export function gql_query(username:string, repo:string) {
+  // Function description
+  // param: username:
+  // param: repo: 
   return `
   {
     repository(owner: "${username}", name: "${repo}") {
@@ -75,6 +78,9 @@ export function gql_query(username:string, repo:string) {
 
 // Takes a NPM package URL and returns the GitHub URL
 export async function npm_2_git(npmUrl: string): Promise<string> {
+  // Function description
+  // param: npmUrl:
+  // return: string: 
   
   // check if input is a valid URL
   // if (!URL.parse(npmUrl).hostname) {
@@ -135,6 +141,10 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
 
 export async function getGitRepoDetails(url: string): Promise<{username: string, repoName: string} | null> {
+  // Function description
+  // param: username:
+  // param: repoName:
+  // return: null 
   let match: RegExpMatchArray | null;
   //console.log (`\nParsing -> ${url}\n`)
 
@@ -155,6 +165,10 @@ export async function getGitRepoDetails(url: string): Promise<{username: string,
 }
 
 export async function graphAPIfetch(gql_query: string, package_test: Package): Promise<any> {
+  // Function description
+  // param: gql_query:
+  // param: package_test:
+  // return: any: 
     try {
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
@@ -204,6 +218,10 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
 }
 
 export async function get_recentCommits(repo: string, owner: string): Promise<number> {
+  // Get the number of commits within the last 3 months
+  // param: repo: name of repository
+  // param: owner: name of owner of repository
+  // return: number: number of recent commits
 
   let log: Logger = provider.getLogger("Parsed.get_recent_commits");
 
@@ -247,6 +265,10 @@ export async function get_recentCommits(repo: string, owner: string): Promise<nu
 }
 
 export async function get_workingLifetime(repo: string, owner: string): Promise<number> {
+  // Get the working lifetime from date created to date of last commit
+  // param: repo: name of repository
+  // param: owner: name of owner of repository
+  // return: number: working lifetime in milliseconds
   let workingLifetime = 0;
   let log: Logger = provider.getLogger("Parsed.get_working_lifetime");
   try {
