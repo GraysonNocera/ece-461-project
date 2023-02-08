@@ -78,7 +78,7 @@ async function clone_repo(
   );
 }
 
-function get_readme_path(repo_base_dir: string): Promise<string> {
+function get_readme_path(repo_base_dir: string): string {
   // Get the path of a readme in a repo
   // :param repo_base_dir: base directory of repo
   // :return: string of repo readme
@@ -299,7 +299,7 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   await clone_repo(package_instance.url, repo_base_dir, git);
 
   // Get README
-  let file_path: Promise<string> = get_readme_path(repo_base_dir);
+  let file_path: string = get_readme_path(repo_base_dir);
   let file_contents: Promise<string> = read_readme(await file_path);
 
   // Get information about repo
@@ -308,7 +308,7 @@ export async function get_info_from_cloned_repo(package_instance: Package) {
   package_instance.has_license_in_package_json =
     has_license_in_package_json(repo_base_dir);
 
-  if (!(await file_path)) {
+  if (!file_path) {
     // If readme is not found, nothing can be obtained from it
     package_instance.readme_size = Promise.resolve(0);
     package_instance.has_license_in_readme = Promise.resolve(false);
