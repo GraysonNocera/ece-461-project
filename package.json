@@ -19,7 +19,6 @@
     "simple-git": "^3.16.0",
     "tsc": "^2.0.4",
     "typescript-logging": "^2.0.2",
-    "typescript-logging-category-style": "^2.0.2",
     "typescript-logging-log4ts-style": "^2.0.2"
   }
 }

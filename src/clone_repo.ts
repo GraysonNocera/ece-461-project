@@ -107,9 +107,7 @@ function get_readme_path(repo_base_dir: string): string {
   return file_path;
 }
 
-async function has_license_file(
-  repo_base_dir: string
-): Promise<boolean> {
+async function has_license_file(repo_base_dir: string): Promise<boolean> {
   // Boolean for detecting a license file
   // :param repo_base_dir: base directory of repo
   // :return: whether the repo has a license file
@@ -149,9 +147,7 @@ async function get_readme_length(
   return (await file_contents)?.length;
 }
 
-async function get_percentage_comments(
-  repo_base_dir: string
-): Promise<number> {
+async function get_percentage_comments(repo_base_dir: string): Promise<number> {
   // Get the percentage of code that is comments
   // :param path_to_repo: path to the repo
   // :return: percentage of code that is comments (num_comments / (num_comments + code))
@@ -210,7 +206,7 @@ async function delete_repo(repo_base_dir: string): Promise<void> {
   }
 }
 
-async function has_license_in_readme(
+export async function has_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
   // Ensure that repo has a license section by checking the README.md
@@ -227,6 +223,12 @@ async function read_readme(readme_path: string): Promise<string> {
   let log: Logger = provider.getLogger("Cloned.read_readme");
 
   let file_contents: string = "";
+
+  try {
+    file_contents = fs.readFileSync(readme_path, "ascii");
+  } catch (exception) {
+    log.debug("Readme file not found: " + readme_path + "\n");
+  }
 
   try {
     file_contents = fs.readFileSync(readme_path, "ascii");
