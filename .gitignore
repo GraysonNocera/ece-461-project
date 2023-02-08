@@ -6,4 +6,4 @@ dist/
 
 # Ignore transpiled JavaScript files
 src/*.js
-src/*.json
+src/API_RETURN.json
