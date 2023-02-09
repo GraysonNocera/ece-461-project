@@ -80,12 +80,19 @@ function write_setting(msg: LogMessage): void {
   // :param msg: logMessage to be written
 
   let path: string = "";
+  let message: string = "";
 
   // Only write to file if log file has been provided and log level is not silent
   if (process.env.LOG_FILE && Number(process.env.LOG_LEVEL) != 0) {
     path = process.env.LOG_FILE;
 
-    fs.appendFile(path, msg.message, {}, (err) => {
+    if (msg.message.endsWith("\n")) {
+        message = msg.message
+    } else {
+        message = msg.message + "\n"
+    }
+
+    fs.appendFile(path, message, {}, (err) => {
       if (err) return false;
     });
   }
