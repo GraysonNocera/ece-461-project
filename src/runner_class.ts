@@ -1,8 +1,7 @@
-import { listenerCount } from "process";
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import { get_workingLifetime, get_recentCommits } from "./parse_links";
+import { get_recentCommits } from "./parse_links";
 import { Package } from "./package_class";
-import { get_info_from_cloned_repo } from "./clone_repo";
+import { provider } from "./logging";
+import { Logger } from "typescript-logging-log4ts-style";
 
 // Main driver for the functions that calculate the score of the repo
 export class Runner {
@@ -79,6 +78,10 @@ export class Runner {
   async calculate_license() {
     // Calculate license based on data from cloned repo
 
+    let log: Logger = provider.getLogger("Scores.calculate_license");
+
+    log.info("Calculating license\n");
+
     this.package_instance.license = 0;
 
     let has_license_file_score: number = Number(
@@ -103,10 +106,30 @@ export class Runner {
       (has_license_file_score &&
         has_license_in_readme_score &&
         has_license_in_package_json);
+
+    if (has_correct_license_in_readme) {
+      log.info(
+        "License score is 1 based on condition (1) (check function for more information)\n"
+      );
+    } else if (
+      has_license_file_score &&
+      has_license_in_readme_score &&
+      has_license_in_package_json
+    ) {
+      log.info(
+        "License score is 1 based on condition (2) (check function for more information)\n"
+      );
+    } else {
+      log.info("License score is 0\n");
+    }
   }
 
   async calculate_ramp() {
     // Calculate the ramp up time of a large package
+
+    let log: Logger = provider.getLogger("Scores.calculate_ramp");
+
+    log.info("Calculate ramp up time")
 
     this.package_instance.ramp_up = 0;
 
@@ -130,7 +153,11 @@ export class Runner {
 
   //calculate responsiveness
   async calculate_responsiveness() {
-    //this.package_instance.responsiveness = 0;
+    // Calculate responsiveness
+
+    let log: Logger = provider.getLogger("Scores.calculate_responsiveness");
+
+    log.info("Calculating responsiveness")
     this.package_instance.responsiveness = Math.min(
       this.package_instance.pr_count / 1000 +
         3 *
@@ -142,6 +169,9 @@ export class Runner {
 
   //calculate total score
   async calculate_score() {
+    let log: Logger = provider.getLogger("Scores.calculate_score");
+    log.info("Calculating score")
+
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
       0.25 * this.package_instance.license +
