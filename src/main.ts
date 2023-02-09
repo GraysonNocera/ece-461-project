@@ -8,6 +8,7 @@ import {
 import { Package } from "./package_class";
 import { Runner } from "./runner_class";
 import { get_info_from_cloned_repo } from "./clone_repo";
+import { get_recentCommits } from "./parse_links";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
@@ -71,6 +72,7 @@ async function main() {
 
     let run_test = new Runner(package_test);
     await get_info_from_cloned_repo(package_test);
+    await get_recentCommits(package_test);
     await run_test.calculate_correctness();
     log.info("calculating correctness");
     await run_test.calculate_responsiveness();
@@ -84,12 +86,12 @@ async function main() {
     await run_test.calculate_score();
     log.info("calculating final score");
 
-    // console.log("Correctness " + run_test.package_instance.correctness);
-    // console.log("Ramp-up " + run_test.package_instance.ramp_up);
-    // console.log("License Score " + run_test.package_instance.license);
-    // console.log("Bus Factor " + run_test.package_instance.bus_factor);
-    // console.log("Responsiveness " + run_test.package_instance.responsiveness);
-    // console.log("Total Score " + run_test.package_instance.score);
+    console.log("Correctness " + run_test.package_instance.correctness);
+    console.log("Ramp-up " + run_test.package_instance.ramp_up);
+    console.log("License Score " + run_test.package_instance.license);
+    console.log("Bus Factor " + run_test.package_instance.bus_factor);
+    console.log("Responsiveness " + run_test.package_instance.responsiveness);
+    console.log("Total Score " + run_test.package_instance.score);
   } else {
     throw new Error(`Unable to fetch repo -> ${username}/${repoName}`);
   }

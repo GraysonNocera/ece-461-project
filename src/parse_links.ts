@@ -201,42 +201,44 @@ export async function graphAPIfetch(gql_query: string, package_test: Package): P
     }
 }
 
-export async function get_recentCommits(repo: string, owner: string): Promise<number> {
-
+export async function get_recentCommits(
+  package_instance: Package
+): Promise<any> {
   let count = 0;
   let page = 1;
   let per_page = 30;
   let commitsRemaining = true;
   const recent = new Date();
   recent.setMonth(recent.getMonth() - 3);
-  let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`
+  let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`;
   //console.log(sincedate)
 
   try {
-      while (commitsRemaining) {
-          let result = await octokit.request(
-              'GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,page,per_page}',
-              {
-                  owner: owner,
-                  repo: repo,
-                  since: sincedate,
-                  page: page,
-                  per_page: per_page
-              }
-          );
+    while (commitsRemaining) {
+      let result = await octokit.request(
+        "GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,page,per_page}",
+        {
+          owner: package_instance.owner,
+          repo: package_instance.repo,
+          since: sincedate,
+          page: page,
+          per_page: per_page,
+        }
+      );
 
-          count += result.data.length;
+      count += result.data.length;
 
-          if (result.data.length < per_page) {
-              commitsRemaining = false;
-          } else {
-              page++;
-          }
+      if (result.data.length < per_page) {
+        commitsRemaining = false;
+      } else {
+        page++;
       }
+    }
   } catch (error) {
-      console.error("Could not find repository commit counts.");
+    console.error("Could not find repository commit counts.");
   }
-  return count;
+  package_instance.commit_count = count;
+  return;
 }
 
 export async function get_workingLifetime(repo: string, owner: string): Promise<number> {

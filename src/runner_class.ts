@@ -8,16 +8,16 @@ import { get_info_from_cloned_repo } from "./clone_repo";
 export class Runner {
   package_instance: Package;
 
-  constructor(instance : Package){
-        this.package_instance = instance;
-    }
+  constructor(instance: Package) {
+    this.package_instance = instance;
+  }
   async calculate_correctness() {
     //used to calculate the correctness of the repo
     //needed to complete promise and return a number type
-    this.package_instance.commit_count = await get_recentCommits(
-      this.package_instance.repo,
-      this.package_instance.owner
-    );
+    // this.package_instance.commit_count = await get_recentCommits(
+    //   this.package_instance.repo,
+    //   this.package_instance.owner
+    // );
 
     // More than 1000 commits in the last year is probably a sign of a well maintained project
     if (this.package_instance.commit_count >= 1000) {
@@ -26,25 +26,26 @@ export class Runner {
       this.package_instance.commit_count /= 1000;
     }
 
-    //stars  are also a good sign of a well maintianed repo 
-    let num_stars = this.package_instance.num_stars; 
-    if(num_stars >= 10000){
-      num_stars = 1
+    //stars  are also a good sign of a well maintianed repo
+    let num_stars = this.package_instance.num_stars;
+    if (num_stars >= 10000) {
+      num_stars = 1;
     } else {
-      num_stars /= 10000; 
+      num_stars /= 10000;
     }
 
     //Cap the scores off at 1
-    this.package_instance.correctness = Math.min( 
-      0.2 * num_stars + 
-      0.5 * this.package_instance.commit_count +
+    this.package_instance.correctness = Math.min(
+      0.2 * num_stars +
+        0.5 * this.package_instance.commit_count +
         0.8 *
           (this.package_instance.issues_active / this.package_instance.issues),
-          1);
+      1
+    );
   }
 
   async calculate_bus() {
-    //Calculate the bus factor of the repo 
+    //Calculate the bus factor of the repo
     let num_devs = this.package_instance.num_dev;
     let pr_count = this.package_instance.pr_count;
     let ratio = 0;
@@ -68,7 +69,10 @@ export class Runner {
     // console.log(num_stars);
 
     // Calculate bus factor
-    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
+    this.package_instance.bus_factor = Math.min(
+      7 * ratio + 0.3 * (num_stars / 10000),
+      1
+    );
     return;
   }
 
@@ -103,7 +107,6 @@ export class Runner {
   async calculate_ramp() {
     this.package_instance.ramp_up = 0;
 
-
     // await get_info_from_cloned_repo(this.package_instance)
 
     // Get standards for readme length and percent comments
@@ -126,13 +129,18 @@ export class Runner {
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
   }
 
-  //calculate responsiveness 
+  //calculate responsiveness
   async calculate_responsiveness() {
-    //this.package_instance.responsiveness = 0;
-    this.package_instance.responsiveness = Math.min(this.package_instance.pr_count/1000+ 3*(this.package_instance.commit_count / this.package_instance.total_commits) , 1)
+    this.package_instance.responsiveness = Math.min(
+      this.package_instance.pr_count / 1000 +
+        3 *
+          (this.package_instance.commit_count /
+            this.package_instance.total_commits),
+      1
+    );
   }
 
-  //calculate total score 
+  //calculate total score
   async calculate_score() {
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
@@ -140,38 +148,5 @@ export class Runner {
       0.2 * this.package_instance.correctness +
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
-
-    //whatever we need to do to calculate formula
-  }
-
-  write_to_file() {
-    // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
-    // a loop that does this over and over, putting it all into the output file
-
-    this.package_instance.url = "https://github.com/lodash/lodash"
-    let json: string = JSON.stringify({
-      "URL":this.package_instance.url,
-      "NET_SCORE":0.8,
-      "RAMP_UP_SCORE":0.4,
-      "CORRECTNESS_SCORE": 0.2,
-      "BUS_FACTOR_SCORE": 0.45,
-      "RESPONSIVE_MAINTAINER_SCORE": 0.6,
-      "LICENSE_SCORE": 1,
-    })
-
-    json += "\n"
-
-    this.package_instance.url = "https://github.com/nullivex/nodist"
-    json += JSON.stringify({
-      "URL":this.package_instance.url,
-      "NET_SCORE":0.2,
-      "RAMP_UP_SCORE":0.5,
-      "CORRECTNESS_SCORE": 0.8,
-      "BUS_FACTOR_SCORE": 0.2,
-      "RESPONSIVE_MAINTAINER_SCORE": 0.9,
-      "LICENSE_SCORE": 0,
-    })
-
-    console.log(json)
   }
 }
