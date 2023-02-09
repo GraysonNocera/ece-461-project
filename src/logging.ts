@@ -63,21 +63,18 @@ function write_setting(msg: LogMessage): void {
   }
 }
 
-// Create logging interface (functions as main)
-// :return: whether the logging interface succeeded
+function get_provider(): Log4TSProvider {
+  // Create logging interface (functions as main)
+  // :return: whether the logging interface succeeded
 
-// Get the log level
-let level: number = get_log_level();
+  // Get the log level
+  let level: number = get_log_level();
 
-// Create file
-if (!create_log_file()) {
-  // No log file created
-}
+  // Create file
+  if (!create_log_file()) {}
 
-// Define how logging should be written (i.e. to a file)
-export const provider: Log4TSProvider = Log4TSProvider.createProvider(
-  "Logging",
-  {
+  // Define how logging should be written (i.e. to a file)
+  let provider: Log4TSProvider = Log4TSProvider.createProvider("Logging", {
     level: level,
     groups: [
       {
@@ -89,7 +86,10 @@ export const provider: Log4TSProvider = Log4TSProvider.createProvider(
       type: "LogChannel",
       write: write_setting,
     },
-  }
-);
+  });
 
-// Logger was successfully created
+  return provider
+}
+
+export const provider: Log4TSProvider = get_provider()
+
