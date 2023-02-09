@@ -8,11 +8,18 @@ export class Runner {
   package_instance: Package;
 
   constructor(instance: Package) {
+    // Constructor for Runner class
+    // :param instance: instance of Package class
+
     this.package_instance = instance;
   }
+
   async calculate_correctness() {
-    //used to calculate the correctness of the repo
-    //needed to complete promise and return a number type
+    // Used to calculate the correctness of the repo
+    // Needed to complete promise and return a number type
+
+    let log: Logger = provider.getLogger("Scores.calculate_correctness");
+
     this.package_instance.commit_count = await get_recentCommits(
       this.package_instance.repo,
       this.package_instance.owner
@@ -33,6 +40,9 @@ export class Runner {
       num_stars /= 10000;
     }
 
+    log.info(`Calculated num_stars: ${num_stars} and commit_count: ${this.package_instance.commit_count}`)
+    log.info("Calculating correctness...")
+
     //Cap the scores off at 1
     this.package_instance.correctness = Math.min(
       0.2 * num_stars +
@@ -41,10 +51,15 @@ export class Runner {
           (this.package_instance.issues_active / this.package_instance.issues),
       1
     );
+
+    log.info("Calculated correctness score of " + this.package_instance.correctness)
   }
 
   async calculate_bus() {
     //Calculate the bus factor of the repo
+
+    let log: Logger = provider.getLogger("Scores.calculate_bus");
+
     let num_devs = this.package_instance.num_dev;
     let pr_count = this.package_instance.pr_count;
     let ratio = 0;
@@ -59,11 +74,6 @@ export class Runner {
 
     let num_stars = this.package_instance.num_stars; // If there's a lot of stars then there's people interested in the project and more likely to contribute
 
-    // console.log("DEBUG");
-    // console.log("DEBUG");
-    // console.log("DEBUG");
-    // console.log("DEBUG");
-    // console.log("DEBUG");
     // console.log(ratio);
     // console.log(num_stars);
 
@@ -72,6 +82,9 @@ export class Runner {
       7 * ratio + 0.3 * (num_stars / 10000),
       1
     );
+
+    log.info("Calculated bus factor score of " + this.package_instance.bus_factor)
+
     return;
   }
 
@@ -129,7 +142,7 @@ export class Runner {
 
     let log: Logger = provider.getLogger("Scores.calculate_ramp");
 
-    log.info("Calculate ramp up time")
+    log.info("Calculate ramp up time");
 
     this.package_instance.ramp_up = 0;
 
@@ -149,6 +162,8 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
+
+    log.info("Calculated ramp up score of " + this.package_instance.ramp_up)
   }
 
   //calculate responsiveness
@@ -157,7 +172,7 @@ export class Runner {
 
     let log: Logger = provider.getLogger("Scores.calculate_responsiveness");
 
-    log.info("Calculating responsiveness")
+    log.info("Calculating responsiveness");
     this.package_instance.responsiveness = Math.min(
       this.package_instance.pr_count / 1000 +
         3 *
@@ -165,12 +180,14 @@ export class Runner {
             this.package_instance.total_commits),
       1
     );
+
+    log.info("Calculated responsiveness of " + this.package_instance.responsiveness)
   }
 
   //calculate total score
   async calculate_score() {
     let log: Logger = provider.getLogger("Scores.calculate_score");
-    log.info("Calculating score")
+    log.info("Calculating final score...");
 
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
@@ -179,7 +196,12 @@ export class Runner {
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
 
-    //whatever we need to do to calculate formula
+    log.info(
+      "Final score for package " +
+        this.package_instance.repo +
+        " = " +
+        this.package_instance.score
+    );
   }
 
   write_to_file() {
