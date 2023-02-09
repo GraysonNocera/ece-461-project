@@ -23,10 +23,6 @@ async function create_git_object(
     // If no path_to_repo provided, assume current working directory
     path_to_repo = process.cwd();
   }
-  if (!path_to_repo) {
-    // If no path_to_repo provided, assume current working directory
-    path_to_repo = process.cwd();
-  }
 
   // Create file or delete its contents if it exists
   let repo_base_dir = path.join(path_to_repo, repo_name);
