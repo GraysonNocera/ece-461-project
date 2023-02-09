@@ -73,6 +73,8 @@ async function clone_repo(
 
   emptyDirSync(repo_base_dir);
 
+  log.info("Cloning repo...")
+
   // Clone repo
   await git.clone(
     repo_url,
@@ -86,6 +88,8 @@ async function clone_repo(
       if (data) log.info("Data from cloning from " + repo_url + "\n");
     }
   );
+
+  log.info("Successfully cloned repo")
 }
 
 function get_readme_path(repo_base_dir: string): string {
