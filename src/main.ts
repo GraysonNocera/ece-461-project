@@ -11,12 +11,6 @@ import { get_info_from_cloned_repo } from "./clone_repo";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
-function sleep(ms: number) {
-  // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
-  // a race condition that could have been fixed with ```await sleep(500)```.
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function main() {
   let url = process.argv[2];
   var data;
