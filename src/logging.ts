@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { LogLevel, LogMessage } from "typescript-logging";
-import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
+import { Log4TSProvider } from "typescript-logging-log4ts-style";
 
 function get_log_level(): number {
   // Get the log level from the environment variable
@@ -20,14 +20,14 @@ function get_log_level(): number {
   return level;
 }
 
-function create_log_file(): boolean {
+function open_log_file(): boolean {
   // Create log file
   // :return: boolean for if file was created correctly
 
   // Check for log file environment variable
   if (process.env.LOG_FILE) {
     try {
-      fs.writeFileSync(process.env.LOG_FILE, "");
+      fs.openSync(process.env.LOG_FILE, "r");
     } catch {
       // Invalid file
       return false;
@@ -70,8 +70,8 @@ function get_provider(): Log4TSProvider {
   // Get the log level
   let level: number = get_log_level();
 
-  // Create file
-  if (!create_log_file()) {}
+  // Ensure log file has been created
+  if (!open_log_file()) {}
 
   // Define how logging should be written (i.e. to a file)
   let provider: Log4TSProvider = Log4TSProvider.createProvider("Logging", {
