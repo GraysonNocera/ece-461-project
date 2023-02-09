@@ -1,5 +1,3 @@
-import { convertToObject } from "typescript";
-import { runInContext } from "vm";
 import { Package } from "../src/package_class";
 import { Runner } from "../src/runner_class";
 
