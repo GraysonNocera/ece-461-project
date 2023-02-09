@@ -2,41 +2,6 @@ import * as fs from "fs";
 import { LogLevel, LogMessage } from "typescript-logging";
 import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
 
-// Define a provider from which all loggers will stem
-let provider: Log4TSProvider;
-
-function main(): boolean {
-  // Create logging interface
-  // :return: whether the logging interface succeeded
-
-  // Get the log level
-  let level: number = get_log_level();
-
-  // Create file
-  if (!create_log_file()) {
-    // No log file created
-    return false;
-  }
-
-  // Define how logging should be written (i.e. to a file)
-  provider = Log4TSProvider.createProvider("Logging", {
-    level: level,
-    groups: [
-      {
-        identifier: "MatchAll",
-        expression: new RegExp(".+"),
-      },
-    ],
-    channel: {
-      type: "LogChannel",
-      write: write_setting,
-    },
-  });
-
-  // Logger was successfully created
-  return true;
-}
-
 function get_log_level(): number {
   // Get the log level from the environment variable
   // :return: number corresponding to log level
@@ -87,9 +52,9 @@ function write_setting(msg: LogMessage): void {
     path = process.env.LOG_FILE;
 
     if (msg.message.endsWith("\n")) {
-        message = msg.message
+      message = msg.message;
     } else {
-        message = msg.message + "\n"
+      message = msg.message + "\n";
     }
 
     fs.appendFile(path, message, {}, (err) => {
@@ -98,8 +63,33 @@ function write_setting(msg: LogMessage): void {
   }
 }
 
-if (!main()) {
-  // Logging failed
+// Create logging interface (functions as main)
+// :return: whether the logging interface succeeded
+
+// Get the log level
+let level: number = get_log_level();
+
+// Create file
+if (!create_log_file()) {
+  // No log file created
 }
 
-export { provider };
+// Define how logging should be written (i.e. to a file)
+export const provider: Log4TSProvider = Log4TSProvider.createProvider(
+  "Logging",
+  {
+    level: level,
+    groups: [
+      {
+        identifier: "MatchAll",
+        expression: new RegExp(".+"),
+      },
+    ],
+    channel: {
+      type: "LogChannel",
+      write: write_setting,
+    },
+  }
+);
+
+// Logger was successfully created
