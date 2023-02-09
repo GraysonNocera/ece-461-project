@@ -1,6 +1,8 @@
 // Introspection query for GraphQL
 // Will return a list of data you can query from the API
 
+import * as fs from "fs";
+
 fetch("https://api.github.com/graphql", {
     method: "POST",
     headers: {
