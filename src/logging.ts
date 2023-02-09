@@ -71,7 +71,8 @@ function get_provider(): Log4TSProvider {
   let level: number = get_log_level();
 
   // Ensure log file has been created
-  if (!open_log_file()) {}
+  if (!open_log_file()) {
+  }
 
   // Define how logging should be written (i.e. to a file)
   let provider: Log4TSProvider = Log4TSProvider.createProvider("Logging", {
@@ -88,8 +89,7 @@ function get_provider(): Log4TSProvider {
     },
   });
 
-  return provider
+  return provider;
 }
 
-export const provider: Log4TSProvider = get_provider()
-
+export const provider: Log4TSProvider = get_provider();

@@ -73,7 +73,7 @@ async function clone_repo(
 
   emptyDirSync(repo_base_dir);
 
-  log.info("Cloning repo...")
+  log.info("Cloning repo...");
 
   // Clone repo
   await git.clone(
@@ -89,7 +89,7 @@ async function clone_repo(
     }
   );
 
-  log.info("Successfully cloned repo")
+  log.info("Successfully cloned repo");
 }
 
 function get_readme_path(repo_base_dir: string): string {
@@ -263,10 +263,12 @@ async function has_license_in_package_json(
   let package_json_path: string = path.join(repo_base_dir, "package.json");
   let file_contents: Buffer;
   try {
-    log.info("Read package.json file\n")
+    log.info("Read package.json file\n");
     file_contents = fs.readFileSync(package_json_path);
   } catch (err) {
-    log.debug("Could not find package.json file, exited with error: " + err + "\n");
+    log.debug(
+      "Could not find package.json file, exited with error: " + err + "\n"
+    );
     return false;
   }
 
@@ -300,24 +302,18 @@ async function has_correct_license_in_readme(
   ];
 
   // Define licenses for ease of printing in log file
-  let licenses: Array<string> = [
-    "LGPL",
-    "MIT",
-    "BSD",
-    "Apache",
-    "MPL",
-  ]
+  let licenses: Array<string> = ["LGPL", "MIT", "BSD", "Apache", "MPL"];
 
   // Iterate through licenses to check
   for (let i: number = 0; i < searches.length; i++) {
-    match = (await file_contents)?.search(searches[i])
+    match = (await file_contents)?.search(searches[i]);
     if (match != -1) {
-      log.info("Found license " + licenses[i] + " in readme\n")
+      log.info("Found license " + licenses[i] + " in readme\n");
       return true;
     }
   }
 
-  log.info("Could not find license in readme\n")
+  log.info("Could not find license in readme\n");
 
   return false;
 }
@@ -329,7 +325,7 @@ async function get_info_from_cloned_repo(package_instance: Package) {
 
   let log: Logger = provider.getLogger("Cloned.get_info_from_cloned_repo");
 
-  log.info("Cloning repo and getting information about it\n")
+  log.info("Cloning repo and getting information about it\n");
 
   // Create git object to interact with repo
   let path_to_repo: string = process.cwd();

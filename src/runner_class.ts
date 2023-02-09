@@ -40,8 +40,10 @@ export class Runner {
       num_stars /= 10000;
     }
 
-    log.info(`Calculated num_stars: ${num_stars} and commit_count: ${this.package_instance.commit_count}`)
-    log.info("Calculating correctness...")
+    log.info(
+      `Calculated num_stars: ${num_stars} and commit_count: ${this.package_instance.commit_count}`
+    );
+    log.info("Calculating correctness...");
 
     //Cap the scores off at 1
     this.package_instance.correctness = Math.min(
@@ -52,7 +54,9 @@ export class Runner {
       1
     );
 
-    log.info("Calculated correctness score of " + this.package_instance.correctness)
+    log.info(
+      "Calculated correctness score of " + this.package_instance.correctness
+    );
   }
 
   async calculate_bus() {
@@ -83,7 +87,9 @@ export class Runner {
       1
     );
 
-    log.info("Calculated bus factor score of " + this.package_instance.bus_factor)
+    log.info(
+      "Calculated bus factor score of " + this.package_instance.bus_factor
+    );
 
     return;
   }
@@ -163,7 +169,7 @@ export class Runner {
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
 
-    log.info("Calculated ramp up score of " + this.package_instance.ramp_up)
+    log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
   //calculate responsiveness
@@ -181,7 +187,9 @@ export class Runner {
       1
     );
 
-    log.info("Calculated responsiveness of " + this.package_instance.responsiveness)
+    log.info(
+      "Calculated responsiveness of " + this.package_instance.responsiveness
+    );
   }
 
   //calculate total score

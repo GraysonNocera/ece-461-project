@@ -16,16 +16,16 @@ async function main() {
   var data;
   let log: Logger = provider.getLogger("Main.start");
   if (!url) {
-    log.debug("URL not provided when running main program\n")
+    log.debug("URL not provided when running main program\n");
   }
 
-  log.info("Scoring package from: " + url)
+  log.info("Scoring package from: " + url);
 
   let username: string | null = null;
   let repoName: string | null = null;
   let gitUrl2: string | null = null;
 
-  log.info("Parsing repository link...\n")
+  log.info("Parsing repository link...\n");
   if (url.startsWith("https://www.npmjs.com/package/")) {
     let gitUrl = await npm_2_git(url);
     gitUrl2 = gitUrl.replace("git:", "https:");
@@ -50,7 +50,7 @@ async function main() {
       process.env.GITHUB_TOKEN
     );
 
-    log.info("Getting info from graphQL query")
+    log.info("Getting info from graphQL query");
     data = await graphAPIfetch(
       gql_query(username, repoName),
       package_test
@@ -61,11 +61,11 @@ async function main() {
     log.info("successful data collection");
 
     if (data["message"] == `Bad credentials`) {
-      log.debug("Bad credentials. Please check your token.")
+      log.debug("Bad credentials. Please check your token.");
     }
 
     let run_test = new Runner(package_test);
-    log.info("Getting info from cloned repo...")
+    log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
     await run_test.calculate_correctness();
     log.info("calculating correctness");
@@ -87,7 +87,7 @@ async function main() {
     // console.log("Responsiveness " + run_test.package_instance.responsiveness);
     // console.log("Total Score " + run_test.package_instance.score);
   } else {
-    log.debug(`Unable to fetch repo -> ${username}/${repoName}`)
+    log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
 }
 

@@ -78,14 +78,14 @@ export function gql_query(username: string, repo: string) {
 export async function npm_2_git(npmUrl: string): Promise<string> {
   // Function description
   // param: npmUrl:
-  // return: string: rest api gets total commits from the repository 
+  // return: string: rest api gets total commits from the repository
 
   // check if input is a valid URL
   // if (!URL.parse(npmUrl).hostname) {
   //   throw new Error(`Invalid NPM package URL: ${npmUrl}`);
   // }
 
-  let log: Logger = provider.getLogger("URLParsing.npm_2_git")
+  let log: Logger = provider.getLogger("URLParsing.npm_2_git");
 
   // extract the package name from the npm URL
   const packageName = npmUrl.split("/").pop();
@@ -93,8 +93,7 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
   while (retries < MAX_RETRIES) {
     try {
-
-      log.info("Using npm registroy API to fetch package info...")
+      log.info("Using npm registroy API to fetch package info...");
 
       // use the npm registry API to get the package information
       const response: AxiosResponse = await axios.get(
@@ -104,22 +103,24 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
       // check if package have repository
       if (!packageInfo.repository) {
-        log.debug("No repository found for package: " + packageName)
+        log.debug("No repository found for package: " + packageName);
       }
 
       // check if repository is on github
       if (isGitHubUrl(packageInfo.repository.url)) {
         return packageInfo.repository.url.replace("git+https", "git");
       } else {
-        log.debug(`Repository of package: ${packageName} is not on GitHub`)
+        log.debug(`Repository of package: ${packageName} is not on GitHub`);
       }
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-        log.debug(`Package not found: ${packageName}`)
+        log.debug(`Package not found: ${packageName}`);
       } else if (error.response && error.response.status === 429) {
-        log.debug(`Rate limit exceeded: ${error.response.headers["Retry-After"]} seconds`)
+        log.debug(
+          `Rate limit exceeded: ${error.response.headers["Retry-After"]} seconds`
+        );
       } else if (error.code === "ECONNREFUSED") {
-        log.debug(`Error: ${error.code}. Retrying...`)
+        log.debug(`Error: ${error.code}. Retrying...`);
         retries++;
         continue;
       } else {
@@ -128,7 +129,7 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
     }
   }
 
-  log.debug(`Error: Maximum retries exceeded for package: ${packageName}`)
+  log.debug(`Error: Maximum retries exceeded for package: ${packageName}`);
   throw new Error(
     `Error: Maximum retries exceeded for package: ${packageName}`
   );
@@ -142,7 +143,7 @@ export async function getGitRepoDetails(
   // param: repoName:
   // return: null
 
-  let log: Logger = provider.getLogger("URLParse.getGitRepoDetails")
+  let log: Logger = provider.getLogger("URLParse.getGitRepoDetails");
 
   let match: RegExpMatchArray | null;
 
@@ -154,11 +155,11 @@ export async function getGitRepoDetails(
   if (match) {
     let repoName = match[2];
     let username = match[1];
-    log.info(`Found username: ${username}, repoName: ${repoName}`)
+    log.info(`Found username: ${username}, repoName: ${repoName}`);
     return { username, repoName };
   }
 
-  log.debug(`getGitRepoDetails returns Null; Nothing matched\n`)
+  log.debug(`getGitRepoDetails returns Null; Nothing matched\n`);
   return null;
 }
 
@@ -171,10 +172,10 @@ export async function graphAPIfetch(
   // param: package_test:
   // return: any:
 
-  let log: Logger = provider.getLogger("GraphQL.graphAPIfetch")
+  let log: Logger = provider.getLogger("GraphQL.graphAPIfetch");
 
   try {
-    log.info("Beginning GraphQL...")
+    log.info("Beginning GraphQL...");
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
       headers: {
@@ -185,7 +186,7 @@ export async function graphAPIfetch(
 
     const data = await response.json();
 
-    log.info("Data acquired from API. Parsing data...")
+    log.info("Data acquired from API. Parsing data...");
 
     //redundancy is only redundancy if its redundant
     let data2 = JSON.stringify(data);
@@ -217,7 +218,7 @@ export async function graphAPIfetch(
 
     return data;
   } catch (error) {
-    log.debug("Error in GraphQL fetch: " + error)
+    log.debug("Error in GraphQL fetch: " + error);
   }
 }
 
@@ -285,7 +286,7 @@ export async function get_workingLifetime(
       repo: repo,
     });
     const dateCreated = new Date(result.data.created_at);
-    log.info("Data repository was created: " + dateCreated)
+    log.info("Data repository was created: " + dateCreated);
 
     const latestCommit = await octokit.request(
       "GET /repos/{owner}/{repo}/commits",
@@ -296,7 +297,7 @@ export async function get_workingLifetime(
       }
     );
     const recCommit = new Date(latestCommit.data[0].commit.author.date);
-    log.info("Latest commit: " + recCommit)
+    log.info("Latest commit: " + recCommit);
 
     workingLifetime = recCommit.getTime() - dateCreated.getTime();
     log.info("Successfully found the working lifetime in milliseconds.\n");
