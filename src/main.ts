@@ -13,6 +13,8 @@ import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
 async function main() {
+  // Main driver function for calculating score of a package
+
   let url = process.argv[2];
   var data;
   let log: Logger = provider.getLogger("Main.start");
@@ -21,7 +23,6 @@ async function main() {
   }
 
   log.info("Running command -> node src/main.js " + url)
-
   log.info("Scoring package from: " + url);
 
   let username: string | null = null;
@@ -30,23 +31,12 @@ async function main() {
 
   log.info("Parsing repository link...\n");
 
-  // handling for npm package
-  if (url.startsWith("https://www.npmjs.com/package/")) {
-    let gitUrl = await npm_2_git(url);
-    gitUrl2 = gitUrl.replace("git:", "https:");
-    let gitRepoDetails = await getGitRepoDetails(gitUrl);
-
-    if (gitRepoDetails) {
-      ({ username, repoName } = gitRepoDetails);
-    }
-  // handling for GitHub package
-  } else {
-    gitUrl2 = url;
-    let gitRepoDetails = await getGitRepoDetails(url);
-    if (gitRepoDetails) {
-      ({ username, repoName } = gitRepoDetails);
-    }
-  }
+  // Handle the url
+  ({
+    username: username,
+    repoName: repoName,
+    url: gitUrl2
+  } = await handle_url(url));
 
   if (username != null && repoName != null && gitUrl2 != null) {
     let package_test = new Package(
@@ -98,6 +88,36 @@ async function main() {
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
+}
+
+async function handle_url(url:string): Promise<{username: string, repoName: string, url: string}> {
+  let username: string = "";
+  let repoName: string = "";
+  let gitUrl2: string = url;
+
+  // handling for npm package
+  if (url.startsWith("https://www.npmjs.com/package/")) {
+    let gitUrl = await npm_2_git(url);
+    gitUrl2 = gitUrl.replace("git:", "https:");
+    let gitRepoDetails = await getGitRepoDetails(gitUrl);
+
+    if (gitRepoDetails) {
+      ({ username, repoName } = gitRepoDetails);
+    }
+  // handling for GitHub package
+  } else {
+    gitUrl2 = url;
+    let gitRepoDetails = await getGitRepoDetails(url);
+    if (gitRepoDetails) {
+      ({ username, repoName } = gitRepoDetails);
+    }
+  }
+
+  return ({
+    username: username,
+    repoName: repoName,
+    url: gitUrl2
+  })
 }
 
 main();
