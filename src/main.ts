@@ -66,12 +66,6 @@ async function main() {
 
     log.info("successful data collection: " + data);
 
-    // if (data["message"] == `Bad credentials`) {
-    //   log.debug("Bad credentials. Please check your token.");
-    // }
-
-    // fetching metrics to calculate net score
-
     let run_test = new Runner(package_test);
     log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
@@ -96,7 +90,7 @@ async function main() {
     log.info("Responsiveness " + run_test.package_instance.responsiveness);
     log.info("Total Score " + run_test.package_instance.score);
 
-    console.log ("Package Name: " + package_test.url + " Total Score: " + run_test.package_instance.score);
+    console.log ("Package Name: " + package_test.url + "   Total Score: " + run_test.package_instance.score);
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
