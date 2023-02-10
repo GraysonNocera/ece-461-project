@@ -22,7 +22,7 @@ async function main() {
     log.debug("URL not provided when running main program\n");
   }
 
-  log.info("Running command -> node src/main.js " + url)
+  log.info("Running command -> node src/main.js " + url);
   log.info("Scoring package from: " + url);
 
   let username: string | null = null;
@@ -35,7 +35,7 @@ async function main() {
   ({
     username: username,
     repoName: repoName,
-    url: gitUrl2
+    url: gitUrl2,
   } = await handle_url(url));
 
   if (username != null && repoName != null && gitUrl2 != null) {
@@ -54,14 +54,17 @@ async function main() {
       log.debug("Error with graphAPI query: " + error);
     });
 
-    log.info("successful data collection: " + data);
-
-    if (data["message"] == `Bad credentials`) {
-      log.debug("Bad credentials. Please check your token.");
+    try {
+      if (data["message"] == `Bad credentials`) {
+        log.debug("Bad credentials. Please check your token.");
+      }
+    } catch (error) {
+      log.debug("GraphQL API call failed with error: " + error);
     }
 
-    // fetching metrics to calculate net score
+    log.info("Successful data collection: " + data);
 
+    // fetching metrics to calculate net score
     let run_test = new Runner(package_test);
     log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
@@ -79,7 +82,7 @@ async function main() {
     await run_test.calculate_score();
     log.info("calculating final score");
 
-    log.info("Correctness " + run_test.package_instance.correctness)
+    log.info("Correctness " + run_test.package_instance.correctness);
     log.info("Ramp-up " + run_test.package_instance.ramp_up);
     log.info("License Score " + run_test.package_instance.license);
     log.info("Bus Factor " + run_test.package_instance.bus_factor);
@@ -90,13 +93,19 @@ async function main() {
   }
 }
 
-async function handle_url(url:string): Promise<{username: string, repoName: string, url: string}> {
+async function handle_url(
+  url: string
+): Promise<{ username: string; repoName: string; url: string }> {
+  // Handle the url provided from url text file
+  // :param url: string version of url provided
+  // :return: Promise of {username, repoName, url} from parsing url
+
   let username: string = "";
   let repoName: string = "";
   let gitUrl2: string = url;
 
-  // handling for npm package
   if (url.startsWith("https://www.npmjs.com/package/")) {
+    // handling for npm package
     let gitUrl = await npm_2_git(url);
     gitUrl2 = gitUrl.replace("git:", "https:");
     let gitRepoDetails = await getGitRepoDetails(gitUrl);
@@ -104,8 +113,8 @@ async function handle_url(url:string): Promise<{username: string, repoName: stri
     if (gitRepoDetails) {
       ({ username, repoName } = gitRepoDetails);
     }
-  // handling for GitHub package
   } else {
+    // handling for GitHub package
     gitUrl2 = url;
     let gitRepoDetails = await getGitRepoDetails(url);
     if (gitRepoDetails) {
@@ -113,11 +122,11 @@ async function handle_url(url:string): Promise<{username: string, repoName: stri
     }
   }
 
-  return ({
+  return {
     username: username,
     repoName: repoName,
-    url: gitUrl2
-  })
+    url: gitUrl2,
+  };
 }
 
 main();
