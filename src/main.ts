@@ -61,10 +61,10 @@ async function main() {
       gql_query(username, repoName),
       package_test
     ).catch((error) => {
-      log.debug("Error with graphAPI query");
+      log.debug("Error with graphAPI query: " + error);
     });
 
-    log.info("successful data collection");
+    log.info("successful data collection: " + data);
 
     // if (data["message"] == `Bad credentials`) {
     //   log.debug("Bad credentials. Please check your token.");
