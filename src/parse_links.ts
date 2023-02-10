@@ -5,8 +5,6 @@ const MAX_RETRIES = 1;
 const isGitHubUrl = require("is-github-url");
 import { Octokit as OctokitType } from "octokit";
 const Octokit = OctokitType as any;
-import { provider } from "./logging";
-import { Logger } from "typescript-logging-log4ts-style";
 
 // GraphQL query to get the number of commits in the last year
 
@@ -18,9 +16,6 @@ const octokit = new Octokit({
 });
 
 export function gql_query(username: string, repo: string) {
-  // Function description
-  // param: username:
-  // param: repo:
   return `
   {
     repository(owner: "${username}", name: "${repo}") {
@@ -76,16 +71,10 @@ export function gql_query(username: string, repo: string) {
 
 // Takes a NPM package URL and returns the GitHub URL
 export async function npm_2_git(npmUrl: string): Promise<string> {
-  // Function description
-  // param: npmUrl:
-  // return: string: rest api gets total commits from the repository
-
   // check if input is a valid URL
   // if (!URL.parse(npmUrl).hostname) {
   //   throw new Error(`Invalid NPM package URL: ${npmUrl}`);
   // }
-
-  let log: Logger = provider.getLogger("URLParsing.npm_2_git");
 
   // extract the package name from the npm URL
   const packageName = npmUrl.split("/").pop();
@@ -93,41 +82,44 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
   while (retries < MAX_RETRIES) {
     try {
-      log.info("Using npm registroy API to fetch package info...");
-
       // use the npm registry API to get the package information
       const response: AxiosResponse = await axios.get(
         `https://registry.npmjs.org/${packageName}`
       );
       const packageInfo = response.data;
 
-      // console.log (packageInfo);
-
       // check if package have repository
       if (!packageInfo.repository) {
-        log.debug("No repository found for package: " + packageName);
+        throw new Error(`No repository found for package: ${packageName}`);
       }
+      let new_url = packageInfo.repository.url;
+      // console.log(npmUrl);
+      if (new_url.startsWith("git+ssh://git@github.com")) {
+        new_url = new_url.replace(
+          "git+ssh://git@github.com",
+          "git://github.com"
+        );
+        //console.log(new_url);
 
+        return new_url;
+      }
       // check if repository is on github
       if (isGitHubUrl(packageInfo.repository.url)) {
-        console.log (packageInfo.repository.url);
-
-        log.info("Package is on GitHub");
-        let new_url = packageInfo.repository.url.replace("git+https", "git");
-        new_url = new_url.replace("git+ssh", "git");
-        return new_url;
+        return packageInfo.repository.url.replace("git+https", "git");
       } else {
-        log.debug(`Repository of package: ${packageName} is not on GitHub`);
+        throw new Error(
+          `Repository of package: ${packageName} is not on GitHub`
+        );
       }
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-        log.debug(`Package not found: ${packageName}`);
+        throw new Error(`Package not found: ${packageName}`);
       } else if (error.response && error.response.status === 429) {
-        log.debug(
+        throw new Error(
           `Rate limit exceeded: ${error.response.headers["Retry-After"]} seconds`
         );
       } else if (error.code === "ECONNREFUSED") {
-        log.debug(`Error: ${error.code}. Retrying...`);
+        console.log(`Error: ${error.code}. Retrying...`);
         retries++;
         continue;
       } else {
@@ -136,7 +128,6 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
     }
   }
 
-  log.debug(`Error: Maximum retries exceeded for package: ${packageName}`);
   throw new Error(
     `Error: Maximum retries exceeded for package: ${packageName}`
   );
@@ -145,14 +136,9 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 export async function getGitRepoDetails(
   url: string
 ): Promise<{ username: string; repoName: string } | null> {
-  // Function description
-  // param: username:
-  // param: repoName:
-  // return: null
-
-  let log: Logger = provider.getLogger("URLParse.getGitRepoDetails");
-
   let match: RegExpMatchArray | null;
+  //console.log (`\nParsing -> ${url}\n`)
+  //console.log(url);
 
   if (url.startsWith("git:")) {
     match = url.match(/git:\/\/github\.com\/([^\/]+)\/([^\/]+)\.git/);
@@ -162,11 +148,11 @@ export async function getGitRepoDetails(
   if (match) {
     let repoName = match[2];
     let username = match[1];
-    log.info(`Found username: ${username}, repoName: ${repoName}`);
+    //console.log (`getGitRepoDetails returns ${username}/${repoName}`);
     return { username, repoName };
   }
 
-  log.debug(`getGitRepoDetails returns Null; Nothing matched\n`);
+  console.error(`getGitRepoDetails returns Null; Nothing matched\n`);
   return null;
 }
 
@@ -174,15 +160,7 @@ export async function graphAPIfetch(
   gql_query: string,
   package_test: Package
 ): Promise<any> {
-  // Function description
-  // param: gql_query:
-  // param: package_test:
-  // return: any:
-
-  let log: Logger = provider.getLogger("GraphQL.graphAPIfetch");
-
   try {
-    log.info("Beginning GraphQL...");
     const response = await fetch("https://api.github.com/graphql", {
       method: "POST",
       headers: {
@@ -193,7 +171,7 @@ export async function graphAPIfetch(
 
     const data = await response.json();
 
-    log.info("Data acquired from API. Parsing data...");
+    //console.log("\nData Acquired From API\n");
 
     //redundancy is only redundancy if its redundant
     let data2 = JSON.stringify(data);
@@ -225,21 +203,13 @@ export async function graphAPIfetch(
 
     return data;
   } catch (error) {
-    log.debug("Error in GraphQL fetch: " + error);
+    console.error(error);
   }
 }
 
 export async function get_recentCommits(
-  repo: string,
-  owner: string
-): Promise<number> {
-  // Get the number of commits within the last 3 months
-  // param: repo: name of repository
-  // param: owner: name of owner of repository
-  // return: number: number of recent commits
-
-  let log: Logger = provider.getLogger("Parsed.get_recent_commits");
-
+  package_instance: Package
+): Promise<any> {
   let count = 0;
   let page = 1;
   let per_page = 30;
@@ -247,14 +217,15 @@ export async function get_recentCommits(
   const recent = new Date();
   recent.setMonth(recent.getMonth() - 3);
   let sincedate = `${recent.getFullYear()}-${recent.getMonth()}-${recent.getDay()}`;
+  //console.log(sincedate)
 
   try {
     while (commitsRemaining) {
       let result = await octokit.request(
         "GET /repos/{owner}/{repo}/commits{?sha,path,author,since,until,page,per_page}",
         {
-          owner: owner,
-          repo: repo,
+          owner: package_instance.owner,
+          repo: package_instance.repo,
           since: sincedate,
           page: page,
           per_page: per_page,
@@ -269,32 +240,26 @@ export async function get_recentCommits(
         page++;
       }
     }
-
-    log.info("Successfully found repository commit counts.\n");
   } catch (error) {
-    log.debug("Could not find repository commit counts.\n");
+    console.error("Could not find repository commit counts.");
   }
-
-  return count;
+  package_instance.commit_count = count;
+  return;
 }
 
 export async function get_workingLifetime(
   repo: string,
   owner: string
 ): Promise<number> {
-  // Get the working lifetime from date created to date of last commit
-  // param: repo: name of repository
-  // param: owner: name of owner of repository
-  // return: number: working lifetime in milliseconds
   let workingLifetime = 0;
-  let log: Logger = provider.getLogger("Parsed.get_working_lifetime");
+
   try {
     const result = await octokit.request("GET /repos/{owner}/{repo}", {
       owner: owner,
       repo: repo,
     });
     const dateCreated = new Date(result.data.created_at);
-    log.info("Data repository was created: " + dateCreated);
+    //console.log(dateCreated);
 
     const latestCommit = await octokit.request(
       "GET /repos/{owner}/{repo}/commits",
@@ -305,12 +270,11 @@ export async function get_workingLifetime(
       }
     );
     const recCommit = new Date(latestCommit.data[0].commit.author.date);
-    log.info("Latest commit: " + recCommit);
+    //console.log(recCommit);
 
     workingLifetime = recCommit.getTime() - dateCreated.getTime();
-    log.info("Successfully found the working lifetime in milliseconds.\n");
   } catch (error) {
-    log.debug("Could not find the working lifetime.\n");
+    console.error("This repo is ass.");
   }
 
   return workingLifetime;

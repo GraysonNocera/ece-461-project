@@ -69,7 +69,7 @@ async function main() {
     let run_test = new Runner(package_test);
     log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
-    await get_recentCommits(package_test.repo, package_test.owner);
+    await get_recentCommits(package_test);
     await run_test.calculate_correctness();
     log.info("calculating correctness");
     await run_test.calculate_responsiveness();

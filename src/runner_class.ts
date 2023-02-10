@@ -20,10 +20,10 @@ export class Runner {
 
     let log: Logger = provider.getLogger("Scores.calculate_correctness");
 
-    this.package_instance.commit_count = await get_recentCommits(
-      this.package_instance.repo,
-      this.package_instance.owner
-    );
+    // this.package_instance.commit_count = await get_recentCommits(
+    //   this.package_instance.repo,
+    //   this.package_instance.owner
+    // );
 
     // More than 1000 commits in the last year is probably a sign of a well maintained project
     if (this.package_instance.commit_count >= 1000) {
@@ -197,7 +197,6 @@ export class Runner {
     let log: Logger = provider.getLogger("Scores.calculate_score");
     log.info("Calculating final score...");
 
-    // weights as follows
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
       0.25 * this.package_instance.license +
@@ -241,6 +240,6 @@ export class Runner {
       LICENSE_SCORE: 0,
     });
 
-    console.log(json);
+    //(json);
   }
 }
