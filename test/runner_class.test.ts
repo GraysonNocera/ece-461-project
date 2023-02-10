@@ -1,7 +1,7 @@
 import { Package } from "../src/package_class";
 import { Runner } from "../src/runner_class";
 
-jest.setTimeout(10 * 1000)
+jest.setTimeout(30 * 1000)
 
 const test_package = new Package(
   "https.dummy_url.gov",

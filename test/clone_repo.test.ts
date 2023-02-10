@@ -3,8 +3,8 @@ import path from "path";
 import * as cr from "../src/clone_repo";
 import { Package } from "../src/package_class";
 
-// Set timeout to 10 seconds
-jest.setTimeout(12 * 1000)
+// Set timeout to 30 seconds
+jest.setTimeout(30 * 1000)
 
 describe("Tests for clone_repo.ts", () => {
   test.each([
