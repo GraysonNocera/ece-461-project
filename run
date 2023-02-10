@@ -60,7 +60,7 @@ def main():
                 command = f"node src/main.js {line}"
 
                 # call main with each URL as argument
-                print(f"Running command -> {command}")
+                # print(f"Running command -> {command}")
                 subprocess.run(command, shell=True)
 
 
