@@ -71,4 +71,22 @@ describe("Test parse_links.ts", () => {
   );
 
   
+  test.only("test get_workingLifetime", () => {
+
+    let response = {
+      data: [{
+        createdAt: "10/10/1990",
+        commit: {
+          author: {
+            date: "01/23/2023"
+          }
+        }
+      }]
+    }
+
+    console.log(mockAxios)
+    console.log(mockOctokit)
+    let mock_octokit = new mockOctokit.Octokit()
+    console.log(mock_octokit)
+  })
 });
