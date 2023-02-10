@@ -10,3 +10,6 @@ src/*.json
 
 # Ignore coverage files for testing
 coverage/
+
+# Ignore experiments
+experiments/
