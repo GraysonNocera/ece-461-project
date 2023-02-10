@@ -12,10 +12,10 @@ async function create_git_object(
   repo_name: string,
   path_to_repo?: string
 ): Promise<SimpleGit> {
-  // Clone repo into path_to_repo + repo_name directory
-  // :param repo_url: url to Github repo page
+  // Create git object
   // :param path_to_repo: (optional) path to repository
   // :param repo_name: (optional) name of repository
+  // :return: Promise of a SimpleGit object to interact with repo
 
   let log: Logger = provider.getLogger("Cloned.create_git_object");
 
@@ -31,7 +31,7 @@ async function create_git_object(
     log.info("Created repository directory\n");
   } else {
     emptyDirSync(repo_base_dir);
-    log.info("Emptied repository directory\n");
+    log.info("Emptied existing repository directory\n");
   }
 
   // Create options for git object
@@ -59,9 +59,17 @@ async function clone_repo(
   repo_base_dir: string,
   git: SimpleGit
 ): Promise<void> {
+  // Clone repo into path_to_repo + repo_name directory
+  // :param repo_url: GitHub repository url
+  // :param repo_base_dir: base directory of repository on local machine
+  // :param git: git object for interacting with repository
+  // :return: none
+
   let log: Logger = provider.getLogger("Cloned.clone_repo");
 
   emptyDirSync(repo_base_dir);
+
+  log.info("Cloning repo...");
 
   // Clone repo
   await git.clone(
@@ -76,6 +84,8 @@ async function clone_repo(
       if (data) log.info("Data from cloning from " + repo_url + "\n");
     }
   );
+
+  log.info("Successfully cloned repo");
 }
 
 function get_readme_path(repo_base_dir: string): string {
@@ -105,13 +115,12 @@ function get_readme_path(repo_base_dir: string): string {
   }
 
   return file_path;
-  return file_path;
 }
 
 async function has_license_file(repo_base_dir: string): Promise<boolean> {
   // Boolean for detecting a license file
   // :param repo_base_dir: base directory of repo
-  // :return: whether the repo has a license file
+  // :return: Promise of whether the repo has a license file
 
   let log: Logger = provider.getLogger("Cloned.has_license_file");
 
@@ -122,20 +131,14 @@ async function has_license_file(repo_base_dir: string): Promise<boolean> {
   let files: string[] = fs.readdirSync(repo_base_dir);
   files.forEach((element) => {
     if (element.search(readme_search) != -1) {
+      log.info("License file found for respoitory: " + element + "\n");
       has_file = true;
       return has_file;
     }
   });
 
-  if (has_file) {
-    log.info("License file found for repository in " + repo_base_dir + "\n");
-  } else {
-    log.info(
-      "License file not found for repository in " + repo_base_dir + "\n"
-    );
-  }
+  log.info("License file not found for repository in " + repo_base_dir + "\n");
 
-  return has_file;
   return has_file;
 }
 
@@ -143,25 +146,26 @@ async function get_readme_length(
   file_contents: Promise<string>
 ): Promise<number> {
   // Get length in characters of a readme file
-  // :param path_to_repo: absolute path to the base directory of the cloned repo
-  // :return: number of characters in readme
+  // :param file_contents: Contents of readme in a string
+  // :return: Promise of number of characters in readme
 
   return (await file_contents)?.length;
 }
 
 async function get_percentage_comments(repo_base_dir: string): Promise<number> {
   // Get the percentage of code that is comments
-  // :param path_to_repo: path to the repo
-  // :return: percentage of code that is comments (num_comments / (num_comments + code))
+  // :param repo_base_dir: base directory of repository
+  // :return: Promise of percentage of code that is comments (num_comments / (num_comments + code))
 
   let log: Logger = provider.getLogger("Cloned.get_percentage_comments");
 
   // Terminal command, running cloc to get comment information
+  log.info("Running cloc on cloned repository\n");
   repo_base_dir = '"' + repo_base_dir + '"'; // prep directory for cloc command
   let terminal_command: string =
     "cloc --by-percent cm --sum-one --yaml " + repo_base_dir;
 
-  // Run terminal output and conver to string
+  // Run terminal output and convert to string
   let terminal_output: Buffer;
   try {
     terminal_output = cp.execSync(terminal_command);
@@ -189,7 +193,7 @@ async function get_percentage_comments(repo_base_dir: string): Promise<number> {
   data = data.substring(loc + "comment: ".length, data.length);
   percent = parseFloat(data.split("\n")[0]);
 
-  log.info("Returning comment ratio\n");
+  log.info("Returning comment ratio: " + percent + "\n");
 
   return percent;
 }
@@ -197,9 +201,11 @@ async function get_percentage_comments(repo_base_dir: string): Promise<number> {
 async function delete_repo(repo_base_dir: string): Promise<void> {
   // Delete the repo after analyzing it
   // :param repo_base_dir: base path of repository
+  // :return: none
 
   let log: Logger = provider.getLogger("Cloned.get_repo");
 
+  log.info("Removing repository\n");
   if (fs.existsSync(repo_base_dir)) {
     fs.rm(repo_base_dir, { recursive: true }, (err) => {
       if (err)
@@ -211,9 +217,10 @@ async function delete_repo(repo_base_dir: string): Promise<void> {
 async function has_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
+  // DEPRECATED FUNCTION
   // Ensure that repo has a license section by checking the README.md
-  // :param repo_base_dir: base directory of repo
-  // :return: whether readme has license section
+  // :param file_contents: File contents of readme
+  // :return: Promise of whether readme has license section
 
   // Search for a license
   let search: RegExp = new RegExp(/#+\s*[Ll][Ii][Cc][Ee][Nn][SsCc][Ee]/);
@@ -222,10 +229,15 @@ async function has_license_in_readme(
 }
 
 async function read_readme(readme_path: string): Promise<string> {
+  // Read contents of readme
+  // :param readme_path: local path to readme
+  // :return: Promise of string contents of readme
+
   let log: Logger = provider.getLogger("Cloned.read_readme");
 
   let file_contents: string = "";
 
+  log.info("Reading contents of Readme\n");
   try {
     file_contents = fs.readFileSync(readme_path, "ascii");
   } catch (exception) {
@@ -238,14 +250,21 @@ async function read_readme(readme_path: string): Promise<string> {
 async function has_license_in_package_json(
   repo_base_dir: string
 ): Promise<boolean> {
+  // Test if the repository has a license in its package.json
+  // :param repo_base_dir: Base directory of repository
+  // :return: Promise of whether the license is in the package.json
+
   let log: Logger = provider.getLogger("Cloned.has_license_in_package_json");
 
   let package_json_path: string = path.join(repo_base_dir, "package.json");
   let file_contents: Buffer;
   try {
+    log.info("Read package.json file\n");
     file_contents = fs.readFileSync(package_json_path);
   } catch (err) {
-    log.debug("Could not find package.json file\n");
+    log.debug(
+      "Could not find package.json file, exited with error: " + err + "\n"
+    );
     return false;
   }
 
@@ -254,7 +273,7 @@ async function has_license_in_package_json(
     if (package_json.license) log.info("Found license in package.json\n");
     return true;
   } catch (err) {
-    log.debug("Package.json has no license\n");
+    log.debug("Package.json has no license, exited with error: " + err + "\n");
     return false;
   }
 }
@@ -263,7 +282,13 @@ async function has_correct_license_in_readme(
   file_contents: Promise<string>
 ): Promise<boolean> {
   // Search through README for correct license in README
+  // :param file_contents: Promise of file contents of readme
+  // :return: Promise of whether the readme has a compatible license
 
+  let log: Logger = provider.getLogger("Cloned.has_correct_license_in_readme");
+  let match: number = -1;
+
+  // Licenses to search for
   let searches: Array<RegExp> = [
     /[Ll]+(esser\s)*[Gg]+(eneral\s)*[Pp]+(ublic\s)*[Ll]+(icense\s|icence\s)*\s*[Vv]+(ersion)*(\s)*(2\.[1-9]|3(\.[1-9])*)+/,
     /\s*[Mm]+[Ii]+[Tt]+(\s|\.|!|\n)+/,
@@ -272,11 +297,19 @@ async function has_correct_license_in_readme(
     /\s*[Mm]+[Pp]+[Ll]+(\s|\.|!|\n)+/,
   ];
 
+  // Define licenses for ease of printing in log file
+  let licenses: Array<string> = ["LGPL", "MIT", "BSD", "Apache", "MPL"];
+
+  // Iterate through licenses to check
   for (let i: number = 0; i < searches.length; i++) {
-    if ((await file_contents)?.search(searches[i]) != 1) {
+    match = (await file_contents)?.search(searches[i]);
+    if (match != -1) {
+      log.info("Found license " + licenses[i] + " in readme\n");
       return true;
     }
   }
+
+  log.info("Could not find license in readme\n");
 
   return false;
 }
@@ -286,6 +319,11 @@ async function get_info_from_cloned_repo(package_instance: Package) {
   // :param package_instance: instance of package class holding data
   // :return: none
 
+  let log: Logger = provider.getLogger("Cloned.get_info_from_cloned_repo");
+
+  log.info("Cloning repo and getting information about it\n");
+
+  // Create git object to interact with repo
   let path_to_repo: string = process.cwd();
   let repo_base_dir: string = path.join(path_to_repo, package_instance.repo);
   let git: SimpleGit = await create_git_object(
@@ -296,9 +334,9 @@ async function get_info_from_cloned_repo(package_instance: Package) {
   // Clone the repo and wait for it to be done
   await clone_repo(package_instance.url, repo_base_dir, git);
 
-  // Get README
+  // Get README path and contents
   let file_path: string = get_readme_path(repo_base_dir);
-  let file_contents: Promise<string> = read_readme(await file_path);
+  let file_contents: Promise<string> = read_readme(file_path);
 
   // Get information about repo
   package_instance.comment_ratio = get_percentage_comments(repo_base_dir);
@@ -332,21 +370,23 @@ async function get_info_from_cloned_repo(package_instance: Package) {
   package_instance.has_correct_license_in_readme =
     has_correct_license_in_readme(file_contents);
 
+  // Delete the repo
   delete_repo(repo_base_dir);
   return;
 }
 
+// Export functions
 export {
-  create_git_object,
-  clone_repo,
-  get_readme_path,
-  has_license_file,
-  get_readme_length,
-  get_percentage_comments,
-  delete_repo,
-  has_license_in_readme,
-  read_readme,
-  has_license_in_package_json,
-  has_correct_license_in_readme,
   get_info_from_cloned_repo,
+  has_correct_license_in_readme,
+  has_license_in_package_json,
+  read_readme,
+  has_license_in_readme,
+  delete_repo,
+  get_percentage_comments,
+  get_readme_length,
+  has_license_file,
+  get_readme_path,
+  clone_repo,
+  create_git_object,
 };

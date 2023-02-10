@@ -1,141 +1,95 @@
 import * as fs from "fs";
-import {LogLevel, LogMessage } from "typescript-logging";
-import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
+import { LogLevel, LogMessage } from "typescript-logging";
+import { Log4TSProvider } from "typescript-logging-log4ts-style";
 
-let level: number = 0;
-if (process.env.LOG_LEVEL != undefined) {
+function get_log_level(): number {
+  // Get the log level from the environment variable
+  // :return: number corresponding to log level
+
+  let level: number = 0;
+  if (process.env.LOG_LEVEL != undefined) {
     if (Number(process.env.LOG_LEVEL) == 1) {
-        // Informational messages
-        level = LogLevel.Info
+      // Informational messages
+      level = LogLevel.Info;
     } else if (Number(process.env.LOG_LEVEL) == 2) {
-        // Debug messages
-        level = LogLevel.Debug
+      // Debug messages
+      level = LogLevel.Debug;
     }
-}
-
-if (process.env.LOG_FILE) {
-    try {
-        fs.writeFileSync(process.env.LOG_FILE, "")
-    } catch {
-        // Invalid file
-        console.log("Invalid log file")
-    }
-}
-
-export const provider: Log4TSProvider = Log4TSProvider.createProvider("Logging", {
-  level: level,
-  groups: [{
-    identifier: "MatchAll",
-    expression: new RegExp(".+")
-  }],
-  channel: {
-    type: "LogChannel",
-    write: (msg: LogMessage) => {
-        let path: string = "";
-
-        // Only write to file if log file has been provided and log level is not silent
-        if (process.env.LOG_FILE && Number(process.env.LOG_LEVEL) != 0) {
-            path = process.env.LOG_FILE;
-
-            fs.appendFile(path, msg.message, {}, (err) => {
-                if (err)
-                    console.log(err)
-            })
-        }
-    },
   }
-});
 
-// Create some loggers
-export const root_graphql: Logger = provider.getLogger("GraphQL")
-export const root_rest: Logger = provider.getLogger("REST")
-export const root_cloned: Logger = provider.getLogger("Cloned")
-export const root_scoring: Logger = provider.getLogger("Scoring")
-export const root_cli: Logger = provider.getLogger("CLI")
+  return level;
+}
 
-/* Creates a child category/logger called "Account" below "model" */
-// const log = rootService.getChildCategory("Account");
-// log.debug(() => 'Creating new account with name hi\n')
-// log.info(() => 'Create new account\n')
+function open_log_file(): boolean {
+  // Create log file
+  // :return: boolean for if file was created correctly
 
-// const sublog = log.getChildCategory("NewAccount")
-// sublog.info(() => "Info\n")
-// sublog.debug(() => "Debug\n")
-// sublog.debug("Debug message\n")
+  // Check for log file environment variable
+  if (process.env.LOG_FILE) {
+    try {
+      fs.openSync(process.env.LOG_FILE, "r");
+    } catch {
+      // Invalid file
+      return false;
+    }
+  } else {
+    // No LOG_FILE env variable defined
+    return false;
+  }
 
-// rootModel.info("Info message\n")
-// rootModel.debug("Debug message\n")
-// rootService.info("Info message\n")
-// rootService.debug("Debug message\n")
+  return true;
+}
 
-// // Assume 'log' is our Logger here.
-// log.debug("This is a simple message\n");
-// log.debug("This is a simple message and we log an Error (normally you'd catch it and then log it)\n", new Error("Some Exception"));
-// log.debug(() => "Simple message as lambda\n");
-// log.debug(() => "Simple message as lambda with Error\n", () => new Error("SomeOther"));
-// log.debug("Simple message with some random arguments\n", 100, "abc", ["some", "array"], true);
-// log.debug(() => "Simple message as lambda with Error and some random arguments\n", new Error("Some Exception"), 100, "abc", ["some", "array"], true);
+function write_setting(msg: LogMessage): void {
+  // Defines how to write log files
+  // :param msg: logMessage to be written
 
-// const provider_test: Log4TSProvider = Log4TSProvider.createProvider("Test", {
-//     level: LogLevel.Debug,
-//     channel: {
-//       type: "LogChannel",
-//       write: (msg: LogMessage) => {
-//           let path: string = "";
-//           if (process.env.LOG_FILE) {
-//               path = process.env.LOG_FILE;
-  
-//               fs.appendFile(path, msg.message, {}, (err) => {
-//                   if (err)
-//                       console.log(err)
-//               })
-//           }
-//       },
-//     },
-// });
+  let path: string = "";
+  let message: string = "";
 
-// const root = provider_test.getCategory("Stuff")
-// root.info("Should not print\n")
-// root.debug("Should print\n")
-// console.log(root.logLevel)
-// console.log(root.runtimeSettings)
-// const child = root.getChildCategory("hi")
-// console.log(child.logLevel)
+  // Only write to file if log file has been provided and log level is not silent
+  if (process.env.LOG_FILE && Number(process.env.LOG_LEVEL) != 0) {
+    path = process.env.LOG_FILE;
 
-// const log4Provider = Log4TSProvider.createProvider("Provider_test_haha", {
-//     level: LogLevel.Info,
-//     // groups: [{
-//     //     expression: new RegExp(".+")
-//     // }]
-//     groups: [{
-//         identifier: "MatchAll",
-//         expression: new RegExp(".+"),
-//     }],
-//     channel: {
-//         type: "LogChannel",
-//         write: (msg: LogMessage) => {
-//             let path: string = "";
-//             if (process.env.LOG_FILE) {
-//                 path = process.env.LOG_FILE;
-    
-//                 fs.appendFile(path, msg.message, {}, (err) => {
-//                     if (err)
-//                         console.log(err)
-//                 })
-//             }
-//         },
-//     }
-// });
+    if (msg.message.endsWith("\n")) {
+      message = msg.message;
+    } else {
+      message = msg.message + "\n";
+    }
 
-// if (process.env.LOG_FILE) {
-//     try {
-//         fs.writeFileSync(process.env.LOG_FILE, "")
-//     } catch {
-//         // Invalid file
-//         console.log("Invalid log file")
-//     }
-// }
+    fs.appendFile(path, message, {}, (err) => {
+      if (err) return false;
+    });
+  }
+}
 
-// const test_logger = log4Provider.getLogger("can")
-// test_logger.debug("Hello\n")
-// test_logger.info("hi\n")
+function get_provider(): Log4TSProvider {
+  // Create logging interface (functions as main)
+  // :return: whether the logging interface succeeded
+
+  // Get the log level
+  let level: number = get_log_level();
+
+  // Ensure log file has been created
+  if (!open_log_file()) {
+  }
+
+  // Define how logging should be written (i.e. to a file)
+  let provider: Log4TSProvider = Log4TSProvider.createProvider("Logging", {
+    level: level,
+    groups: [
+      {
+        identifier: "MatchAll",
+        expression: new RegExp(".+"),
+      },
+    ],
+    channel: {
+      type: "LogChannel",
+      write: write_setting,
+    },
+  });
+
+  return provider;
+}
+
+export const provider: Log4TSProvider = get_provider();

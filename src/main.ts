@@ -12,26 +12,21 @@ import { get_recentCommits } from "./parse_links";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
-function sleep(ms: number) {
-  // On the one hand, don't use it. On the other, I spent 3 hours (no joke) debugging
-  // a race condition that could have been fixed with ```await sleep(500)```.
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function main() {
   let url = process.argv[2];
   var data;
   let log: Logger = provider.getLogger("Main.start");
   if (!url) {
-    throw new Error(
-      "Please provide a URL as an argument when running the program."
-    );
+    log.debug("URL not provided when running main program\n");
   }
+
+  log.info("Scoring package from: " + url);
 
   let username: string | null = null;
   let repoName: string | null = null;
   let gitUrl2: string | null = null;
 
+  log.info("Parsing repository link...\n");
   if (url.startsWith("https://www.npmjs.com/package/")) {
     let gitUrl = await npm_2_git(url);
     gitUrl2 = gitUrl.replace("git:", "https:");
@@ -49,13 +44,14 @@ async function main() {
   }
 
   if (username != null && repoName != null && gitUrl2 != null) {
-    console.log(gitUrl2);
     let package_test = new Package(
       gitUrl2,
       repoName,
       username,
       process.env.GITHUB_TOKEN
     );
+
+    log.info("Getting info from graphQL query");
     data = await graphAPIfetch(
       gql_query(username, repoName),
       package_test
@@ -66,11 +62,11 @@ async function main() {
     log.info("successful data collection");
 
     if (data["message"] == `Bad credentials`) {
-      console.log(`Bad credentials. Please check your token.`);
-      throw new Error("Bad credentials. Please check your token.");
+      log.debug("Bad credentials. Please check your token.");
     }
 
     let run_test = new Runner(package_test);
+    log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
     await get_recentCommits(package_test);
     await run_test.calculate_correctness();
@@ -93,7 +89,7 @@ async function main() {
     console.log("Responsiveness " + run_test.package_instance.responsiveness);
     console.log("Total Score " + run_test.package_instance.score);
   } else {
-    throw new Error(`Unable to fetch repo -> ${username}/${repoName}`);
+    log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
 }
 
