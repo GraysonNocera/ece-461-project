@@ -197,6 +197,7 @@ export class Runner {
     let log: Logger = provider.getLogger("Scores.calculate_score");
     log.info("Calculating final score...");
 
+    // weights as follows
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
       0.25 * this.package_instance.license +

@@ -26,6 +26,8 @@ async function main() {
   let gitUrl2: string | null = null;
 
   log.info("Parsing repository link...\n");
+
+  // handling for npm package
   if (url.startsWith("https://www.npmjs.com/package/")) {
     let gitUrl = await npm_2_git(url);
     gitUrl2 = gitUrl.replace("git:", "https:");
@@ -34,6 +36,7 @@ async function main() {
     if (gitRepoDetails) {
       ({ username, repoName } = gitRepoDetails);
     }
+  // handling for GitHub package
   } else {
     gitUrl2 = url;
     let gitRepoDetails = await getGitRepoDetails(url);
@@ -63,6 +66,8 @@ async function main() {
     if (data["message"] == `Bad credentials`) {
       log.debug("Bad credentials. Please check your token.");
     }
+
+    // fetching metrics to calculate net score
 
     let run_test = new Runner(package_test);
     log.info("Getting info from cloned repo...");
