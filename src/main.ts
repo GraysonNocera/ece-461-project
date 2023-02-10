@@ -20,6 +20,8 @@ async function main() {
     log.debug("URL not provided when running main program\n");
   }
 
+  log.info("Running command -> node src/main.js " + url)
+
   log.info("Scoring package from: " + url);
 
   let username: string | null = null;
@@ -82,12 +84,12 @@ async function main() {
     await run_test.calculate_score();
     log.info("calculating final score");
 
-    console.log("Correctness " + run_test.package_instance.correctness);
-    console.log("Ramp-up " + run_test.package_instance.ramp_up);
-    console.log("License Score " + run_test.package_instance.license);
-    console.log("Bus Factor " + run_test.package_instance.bus_factor);
-    console.log("Responsiveness " + run_test.package_instance.responsiveness);
-    console.log("Total Score " + run_test.package_instance.score);
+    log.info("Correctness " + run_test.package_instance.correctness)
+    log.info("Ramp-up " + run_test.package_instance.ramp_up);
+    log.info("License Score " + run_test.package_instance.license);
+    log.info("Bus Factor " + run_test.package_instance.bus_factor);
+    log.info("Responsiveness " + run_test.package_instance.responsiveness);
+    log.info("Total Score " + run_test.package_instance.score);
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
