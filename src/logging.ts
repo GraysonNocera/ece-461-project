@@ -92,4 +92,10 @@ function get_provider(): Log4TSProvider {
   return provider;
 }
 
-export const provider: Log4TSProvider = get_provider();
+const provider: Log4TSProvider = get_provider();
+export {
+    provider,
+    get_log_level,
+    get_provider,
+    open_log_file,
+}
