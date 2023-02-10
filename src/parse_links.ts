@@ -100,8 +100,8 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
         `https://registry.npmjs.org/${packageName}`
       );
       const packageInfo = response.data;
-      
-      console.log (packageInfo.homepage);
+
+      // console.log (packageInfo);
 
       // check if package have repository
       if (!packageInfo.repository) {
@@ -110,7 +110,12 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 
       // check if repository is on github
       if (isGitHubUrl(packageInfo.repository.url)) {
-        return packageInfo.homepage;
+        console.log (packageInfo.repository.url);
+
+        log.info("Package is on GitHub");
+        let new_url = packageInfo.repository.url.replace("git+https", "git");
+        new_url = new_url.replace("git+ssh", "git");
+        return new_url;
       } else {
         log.debug(`Repository of package: ${packageName} is not on GitHub`);
       }

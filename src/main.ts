@@ -66,9 +66,9 @@ async function main() {
 
     log.info("successful data collection");
 
-    if (data["message"] == `Bad credentials`) {
-      log.debug("Bad credentials. Please check your token.");
-    }
+    // if (data["message"] == `Bad credentials`) {
+    //   log.debug("Bad credentials. Please check your token.");
+    // }
 
     // fetching metrics to calculate net score
 
@@ -95,6 +95,8 @@ async function main() {
     log.info("Bus Factor " + run_test.package_instance.bus_factor);
     log.info("Responsiveness " + run_test.package_instance.responsiveness);
     log.info("Total Score " + run_test.package_instance.score);
+
+    console.log ("Package Name: " + package_test.url + " Total Score: " + run_test.package_instance.score);
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
   }
