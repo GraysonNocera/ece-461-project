@@ -39,7 +39,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.issues_active = 100;
     runner_test.package_instance.issues = 10000;
     await runner_test.calculate_correctness();
-    expect(runner_test.package_instance.correctness).toBe(
+    expect(runner_test.package_instance.correctness).toBeCloseTo(
       Math.min(
         0.2 * (runner_test.package_instance.num_stars / 10000) +
           0.5 * runner_test.package_instance.commit_count +
@@ -54,7 +54,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.issues_active = 10;
     runner_test.package_instance.issues = 100;
     runner_test.calculate_correctness();
-    expect(runner_test.package_instance.correctness).toBe(
+    expect(runner_test.package_instance.correctness).toBeCloseTo(
       Math.min(
         0.2 * (runner_test.package_instance.num_stars / 10000) +
           0.5 * runner_test.package_instance.commit_count +
@@ -72,7 +72,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.pr_count = 10000;
     runner_test.package_instance.num_stars = 777;
     await runner_test.calculate_bus();
-    expect(runner_test.package_instance.bus_factor).toBe(
+    expect(runner_test.package_instance.bus_factor).toBeCloseTo(
       Math.min(
         7 *
           (runner_test.package_instance.num_dev /
@@ -85,7 +85,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.pr_count = 0;
     runner_test.package_instance.num_stars = 100;
     await runner_test.calculate_bus();
-    expect(runner_test.package_instance.bus_factor).toBe(0);
+    expect(runner_test.package_instance.bus_factor).toBeCloseTo(0);
   });
 
   test("test license calculation", async () => {
@@ -94,8 +94,34 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.has_license_in_package_json =
       Promise.resolve(false);
     runner_test.package_instance.has_license_in_readme = Promise.resolve(false);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(false);
     await runner_test.calculate_license();
-    expect(runner_test.package_instance.license).toBe(0.2);
+    expect(runner_test.package_instance.license).toBe(0);
+  });
+
+  test("test license calculation with correct license", async () => {
+    let runner_test = new Runner(test_package);
+    runner_test.package_instance.has_license_file = Promise.resolve(false);
+    runner_test.package_instance.has_license_in_package_json =
+      Promise.resolve(false);
+    runner_test.package_instance.has_license_in_readme = Promise.resolve(false);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(true);
+    await runner_test.calculate_license();
+    expect(runner_test.package_instance.license).toBe(1);
+  });
+
+  test("test license calculation with correct license in readme", async () => {
+    let runner_test = new Runner(test_package);
+    runner_test.package_instance.has_license_file = Promise.resolve(true);
+    runner_test.package_instance.has_license_in_package_json =
+      Promise.resolve(true);
+    runner_test.package_instance.has_license_in_readme = Promise.resolve(true);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(false);
+    await runner_test.calculate_license();
+    expect(runner_test.package_instance.license).toBeCloseTo(1);
   });
 
   test("test ramp up calculation", async () => {
@@ -103,7 +129,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.comment_ratio = Promise.resolve(1);
     runner_test.package_instance.readme_size = Promise.resolve(1000);
     await runner_test.calculate_ramp();
-    expect(runner_test.package_instance.ramp_up).toBe(0.64);
+    expect(runner_test.package_instance.ramp_up).toBeCloseTo(0.64);
   });
 
   test("test responsiveness calculation", async () => {
@@ -112,7 +138,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.commit_count = 1000;
     runner_test.package_instance.total_commits = 10000;
     await runner_test.calculate_responsiveness();
-    expect(runner_test.package_instance.responsiveness).toBe(1);
+    expect(runner_test.package_instance.responsiveness).toBeCloseTo(1);
   });
 
   test("test score calculation", async () => {
@@ -123,6 +149,6 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.ramp_up = 0.3;
     runner_test.package_instance.responsiveness = 0.9;
     await runner_test.calculate_score();
-    expect(runner_test.package_instance.score).toBe(0.571);
+    expect(runner_test.package_instance.score).toBeCloseTo(0.571);
   });
 });

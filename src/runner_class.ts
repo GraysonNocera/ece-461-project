@@ -217,34 +217,34 @@ export class Runner {
     );
   }
 
-  write_to_file() {
-    // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
-    // a loop that does this over and over, putting it all into the output file
+  // write_to_file() {
+  //   // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
+  //   // a loop that does this over and over, putting it all into the output file
 
-    this.package_instance.url = "https://github.com/lodash/lodash";
-    let json: string = JSON.stringify({
-      URL: this.package_instance.url,
-      NET_SCORE: 0.8,
-      RAMP_UP_SCORE: 0.4,
-      CORRECTNESS_SCORE: 0.2,
-      BUS_FACTOR_SCORE: 0.45,
-      RESPONSIVE_MAINTAINER_SCORE: 0.6,
-      LICENSE_SCORE: 1,
-    });
+  //   this.package_instance.url = "https://github.com/lodash/lodash";
+  //   let json: string = JSON.stringify({
+  //     URL: this.package_instance.url,
+  //     NET_SCORE: 0.8,
+  //     RAMP_UP_SCORE: 0.4,
+  //     CORRECTNESS_SCORE: 0.2,
+  //     BUS_FACTOR_SCORE: 0.45,
+  //     RESPONSIVE_MAINTAINER_SCORE: 0.6,
+  //     LICENSE_SCORE: 1,
+  //   });
 
-    json += "\n";
+  //   json += "\n";
 
-    this.package_instance.url = "https://github.com/nullivex/nodist";
-    json += JSON.stringify({
-      URL: this.package_instance.url,
-      NET_SCORE: 0.2,
-      RAMP_UP_SCORE: 0.5,
-      CORRECTNESS_SCORE: 0.8,
-      BUS_FACTOR_SCORE: 0.2,
-      RESPONSIVE_MAINTAINER_SCORE: 0.9,
-      LICENSE_SCORE: 0,
-    });
+  //   this.package_instance.url = "https://github.com/nullivex/nodist";
+  //   json += JSON.stringify({
+  //     URL: this.package_instance.url,
+  //     NET_SCORE: 0.2,
+  //     RAMP_UP_SCORE: 0.5,
+  //     CORRECTNESS_SCORE: 0.8,
+  //     BUS_FACTOR_SCORE: 0.2,
+  //     RESPONSIVE_MAINTAINER_SCORE: 0.9,
+  //     LICENSE_SCORE: 0,
+  //   });
 
-    //(json);
-  }
+  //   //(json);
+  // }
 }
