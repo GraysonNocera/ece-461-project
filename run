@@ -18,49 +18,31 @@ def parse_test_results(test_dump: str):
     :return: test_cases_passed, total_test_cases, percentage_coverage
     """
 
-    # Get substring starting at total coverage report
-    search_result: re.Match = re.search(
-        r"All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*", test_dump
-    )
-    if not search_result:
-        return 0, 0, 0
-    _, end = search_result.span()
-    test_dump = test_dump[end:]
+    searches: list = [
+        r'All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*',
+        r'\d*\.\d*',
+        r"Tests:\s*",
+        r"\d*",
+        r"\d*\s*passed,\s*",
+        r"\d*",
+    ]
 
-    # Search for total coverage
-    search_result: re.Match = re.search(r"\d*\.\d*", test_dump)
-    if not search_result:
-        return 0, 0, 0
-    _, end = search_result.span()
-    coverage = test_dump[:end]
+    results: list = []
 
-    # Get substring starting at tests passed
-    search_result: re.Match = re.search(r"Tests:\s*", test_dump)
-    if not search_result:
-        return 0, 0, coverage
-    _, end = search_result.span()
-    test_dump = test_dump[end:]
+    for i in range(0, len(searches), 2):
+        search_result: re.Match = re.search(searches[i], test_dump)
+        if not search_result:
+            return 0, 0, 0
+        _, end = search_result.span()
+        test_dump = test_dump[end:]
 
-    # Search for passed tests
-    search_result: re.Match = re.search(r"\d*", test_dump)
-    if not search_result:
-        return 0, 0, coverage
-    _, end = search_result.span()
-    passed = test_dump[:end]
+        search_result: re.Match = re.search(searches[i + 1], test_dump)
+        if not search_result:
+            return 0, 0, 0
+        _, end = search_result.span()
+        results.append(test_dump[:end])
 
-    # Get substring starting at total tests
-    search_result: re.Match = re.search(r"\d*\s*passed,\s*", test_dump)
-    if not search_result:
-        return passed, 0, coverage
-    _, end = search_result.span()
-    test_dump = test_dump[end:]
-
-    # Search for total tests
-    search_result: re.Match = re.search(r"\d*", test_dump)
-    if not search_result:
-        return 0, 0, coverage
-    _, end = search_result.span()
-    total = test_dump[:end]
+    coverage, passed, total = results
 
     return passed, total, coverage
 
