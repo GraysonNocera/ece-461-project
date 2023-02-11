@@ -32,13 +32,13 @@ def parse_test_results(test_dump: str):
     for i in range(0, len(searches), 2):
         search_result: re.Match = re.search(searches[i], test_dump)
         if not search_result:
-            return 0, 0, 0
+            return -1, -1, -1
         _, end = search_result.span()
         test_dump = test_dump[end:]
 
         search_result: re.Match = re.search(searches[i + 1], test_dump)
         if not search_result:
-            return 0, 0, 0
+            return -1, -1, -1
         _, end = search_result.span()
         results.append(test_dump[:end])
 
@@ -122,8 +122,10 @@ def main():
         passed, total, coverage = parse_test_results(
             result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         )
-
-        print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
+        if (passed == total == coverage == -1):
+            print("Testing data could not be acquired")
+        else:
+            print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
     else:
         # RANK MODULES
         if len(sys.argv) < 2:
