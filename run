@@ -131,10 +131,12 @@ def main():
         )
         if passed == total == coverage == -1:
             print("Testing data could not be acquired")
+            return 1
         else:
             print(
                 f"{passed}/{total} test cases passed. {coverage}% line coverage achieved."
             )
+        return 0
     else:
         # RANK MODULES
         if len(sys.argv) < 2:
