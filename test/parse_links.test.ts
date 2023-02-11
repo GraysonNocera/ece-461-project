@@ -49,9 +49,7 @@ describe("Test parse_links.ts", () => {
       data: { url: "https://github.com/" },
     });
 
-    expect(async () => {
-      await pl.npm_2_git(npm_link);
-    }).rejects.toThrow("No repository found for package: your_mom");
+    expect(await pl.npm_2_git(npm_link)).toEqual("");
   });
 
   test.each([
@@ -64,9 +62,7 @@ describe("Test parse_links.ts", () => {
       data: { repository: { url: "https://git_hub.com/" } },
     });
 
-    expect(async () => {
-      await pl.npm_2_git(npm_link);
-    }).rejects.toThrow("Repository of package: your_mom is not on GitHub");
+    expect(await pl.npm_2_git(npm_link)).toEqual("");
   });
 
   test.each([
