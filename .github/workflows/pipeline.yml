@@ -38,7 +38,10 @@ jobs:
       - name: Run script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LOG_LEVEL: 2
+          LOG_FILE: ${{ github.GITHUB_ACTION_PATH }} + "logging.log"
         run: |
+          echo env.LOG_FILE
           ./run install
           ./run build
           npm test
