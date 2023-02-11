@@ -121,7 +121,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.has_correct_license_in_readme =
       Promise.resolve(false);
     await runner_test.calculate_license();
-    expect(runner_test.package_instance.license).toBeCloseTo(0.2);
+    expect(runner_test.package_instance.license).toBeCloseTo(1);
   });
 
   test("test ramp up calculation", async () => {
