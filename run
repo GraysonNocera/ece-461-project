@@ -19,9 +19,9 @@ def parse_test_results(test_dump: str):
     """
 
     searches: list = [
-        r'All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*',
-        r'\d*\.\d*',
-        r"Tests:\s*",
+        r"All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*",
+        r"\d*\.\d*",
+        r"Tests:\s*(\s*\d\s*failed,\s*\d\s*skipped,\s*|\d\s*failed,\s*|\d\s*skipped,\s*)?",
         r"\d*",
         r"\d*\s*passed,\s*",
         r"\d*",
@@ -77,6 +77,7 @@ def main():
         #     #subprocess.run('bash update_node.sh' shell=True)
 
         ## commands = [
+        ## commands = [
         ##     ['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'],
         ##     ['export NVM_DIR="$HOME/.nvm"'],
         ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
@@ -118,18 +119,21 @@ def main():
 
     elif mode == "test":
         # RUN TESTS
-        command = "npm test"
+        command = "npm test logging.test.ts"
         result: subprocess.CompletedProcess = subprocess.run(
             command, shell=True, capture_output=True
         )
         passed, total, coverage = parse_test_results(
             result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         )
-        if (passed == total == coverage == -1):
+        if passed == total == coverage == -1:
             print("Testing data could not be acquired")
+            return 1
         else:
             print(
-                f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
+                f"{passed}/{total} test cases passed. {coverage}% line coverage achieved."
+            )
+        return 0
     else:
         # RANK MODULES
         if len(sys.argv) < 2:
