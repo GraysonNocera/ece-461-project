@@ -22,12 +22,6 @@ def main():
 
     mode = sys.argv[1]
     if mode == "install":
-        # INSTALL DEPENDENCIES
-        ret_val = subprocess.run("npm install", shell=True)
-        if ret_val.returncode != 0:
-            print("Error: NPM Install failed")
-            return 1
-
         try:
             node_ver = subprocess.run(['node --version'], stdout=subprocess.PIPE, shell=True).stdout.decode('utf-8')
         except:
@@ -43,6 +37,13 @@ def main():
             subprocess.run(['nvm install 18.14.0'], shell=True)
             subprocess.run(['nvm use 18.14.0'], shell=True)
 
+        
+        # INSTALL DEPENDENCIES
+        ret_val = subprocess.run("npm install", shell=True)
+        if ret_val.returncode != 0:
+            print("Error: NPM Install failed")
+            return 1
+            
         return 0
 
     elif mode == "build":
