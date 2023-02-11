@@ -102,10 +102,18 @@ def main():
         ##      p.wait()
 
         # INSTALL DEPENDENCIES
-        ret_val = subprocess.run("npm install", shell=True)
-        if ret_val.returncode != 0:
-            print("Error: NPM Install failed")
-            return 1
+
+        try:
+            # Everything works if we can get this export working
+            os.system('export PATH=$(pwd)/node_bin/bin/:$PATH')
+        except:
+            print("Error: Could not export path")
+            pass
+
+        #ret_val = subprocess.run("npm install", shell=True)
+        #if ret_val.returncode != 0:
+        #    print("Error: NPM Install failed")
+        #    return 1
 
         return 0
 
