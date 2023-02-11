@@ -31,7 +31,9 @@ def main():
 
         ## # If node is not installed, install nvm and use it to install 18.14.0
         if (node_ver != "v18.14.0"):
-            subprocess.run("bash update_node.sh", shell=True)
+            p = subprocess.Popen('bash update_node.sh', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p.wait()
+            #subprocess.run('bash update_node.sh' shell=True)
 
 
         ## commands = [    
@@ -40,21 +42,21 @@ def main():
         ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
         ##     ['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"']#,
         ## ]
-## 
-## 
+        ## 
+        ## 
         ## print (node_ver)
-## 
+        ## 
         ## input ("Press Enter to continue...")
-## 
+        ## 
         ## # If not 18.14.0, install nvm and use it to install 18.14.0
         ## if (node_ver != "v18.14.0"):
         ##     for command in commands:
         ##         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         ##         process.wait()
-## 
+        ## 
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm install 18.14.0'])
         ##     p.wait()
-## 
+        ## 
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm use 18.14.0'])
         ##     p.wait()
         
