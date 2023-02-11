@@ -136,15 +136,26 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
 export async function getGitRepoDetails(
   url: string
 ): Promise<{ username: string; repoName: string } | null> {
+  // Function description
+  // param: username: repository owner's username
+  // param: repoName: respository name
+  // return: null
+
+  let log: Logger = provider.getLogger("URLParse.getGitRepoDetails");
+
   let match: RegExpMatchArray | null;
   //console.log (`\nParsing -> ${url}\n`)
   //console.log(url);
 
   if (url.startsWith("git:")) {
+    // Parse ssh gitHub link
     match = url.match(/git:\/\/github\.com\/([^\/]+)\/([^\/]+)\.git/);
   } else {
+    // Parse https github link
     match = url.match(/(?:https:\/\/github\.com\/)([^\/]+)\/([^\/]+)(?:\/|$)/);
   }
+
+  // Assign username and repoName from URL regex
   if (match) {
     let repoName = match[2];
     let username = match[1];
