@@ -93,13 +93,13 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
         throw new Error(`No repository found for package: ${packageName}`);
       }
       let new_url = packageInfo.repository.url;
-      // console.log(npmUrl);
+      // console.log(new_url);
       if (new_url.startsWith("git+ssh://git@github.com")) {
         new_url = new_url.replace(
           "git+ssh://git@github.com",
           "git://github.com"
         );
-        //console.log(new_url);
+        // console.log(new_url);
 
         return new_url;
       }
@@ -172,11 +172,9 @@ export async function graphAPIfetch(
     const data = await response.json();
 
     //console.log("\nData Acquired From API\n");
-
     //redundancy is only redundancy if its redundant
     let data2 = JSON.stringify(data);
     let data3 = JSON.parse(data2);
-
     package_test.num_dev = data3.data.repository.assignableUsers.totalCount;
 
     // Check if the repo has issues enabled
@@ -190,11 +188,25 @@ export async function graphAPIfetch(
       package_test.issues = -1;
     }
 
-    package_test.total_commits =
-      data3.data.repository.defaultBranchRef.target.history.totalCount;
-    package_test.pr_count = data3.data.repository.pullRequests.totalCount;
-    package_test.last_pushed_at = data3.data.repository.last_pushed_at;
-    package_test.num_stars = data3.data.repository.stargazerCount;
+    if (data3.data.repository.defaultBranchRef.target.history.totalCount) {
+      package_test.total_commits =
+        data3.data.repository.defaultBranchRef.target.history.totalCount;
+    } else {
+      package_test.total_commits = 0;
+    }
+    if (data3.data.repository.pullRequests.totalCount) {
+      package_test.pr_count = data3.data.repository.pullRequests.totalCount;
+    } else {
+      package_test.pr_count = 0;
+    }
+    if (data3.data.repository.last_pushed_at != null) {
+      package_test.last_pushed_at = data3.data.repository.last_pushed_at;
+    }
+    if (data3.data.repository.stargazerCount != null) {
+      package_test.num_stars = data3.data.repository.stargazerCount;
+    } else {
+      package_test.num_stars = 0;
+    }
     if (data3.data.repository.licenseInfo != null) {
       package_test.license_name = data3.data.repository.licenseInfo.name;
     } else {
@@ -241,41 +253,10 @@ export async function get_recentCommits(
       }
     }
   } catch (error) {
+    console.log(error);
     console.error("Could not find repository commit counts.");
   }
   package_instance.commit_count = count;
   return;
 }
 
-export async function get_workingLifetime(
-  repo: string,
-  owner: string
-): Promise<number> {
-  let workingLifetime = 0;
-
-  try {
-    const result = await octokit.request("GET /repos/{owner}/{repo}", {
-      owner: owner,
-      repo: repo,
-    });
-    const dateCreated = new Date(result.data.created_at);
-    //console.log(dateCreated);
-
-    const latestCommit = await octokit.request(
-      "GET /repos/{owner}/{repo}/commits",
-      {
-        owner: owner,
-        repo: repo,
-        per_page: 1,
-      }
-    );
-    const recCommit = new Date(latestCommit.data[0].commit.author.date);
-    //console.log(recCommit);
-
-    workingLifetime = recCommit.getTime() - dateCreated.getTime();
-  } catch (error) {
-    console.error("This repo is ass.");
-  }
-
-  return workingLifetime;
-}

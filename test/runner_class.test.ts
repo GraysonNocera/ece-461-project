@@ -94,8 +94,34 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.has_license_in_package_json =
       Promise.resolve(false);
     runner_test.package_instance.has_license_in_readme = Promise.resolve(false);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(false);
     await runner_test.calculate_license();
-    expect(runner_test.package_instance.license).toBe(0.2);
+    expect(runner_test.package_instance.license).toBe(0);
+  });
+
+  test("test license calculation with correct license", async () => {
+    let runner_test = new Runner(test_package);
+    runner_test.package_instance.has_license_file = Promise.resolve(false);
+    runner_test.package_instance.has_license_in_package_json =
+      Promise.resolve(false);
+    runner_test.package_instance.has_license_in_readme = Promise.resolve(false);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(true);
+    await runner_test.calculate_license();
+    expect(runner_test.package_instance.license).toBe(1);
+  });
+
+  test("test license calculation with correct license in readme", async () => {
+    let runner_test = new Runner(test_package);
+    runner_test.package_instance.has_license_file = Promise.resolve(true);
+    runner_test.package_instance.has_license_in_package_json =
+      Promise.resolve(true);
+    runner_test.package_instance.has_license_in_readme = Promise.resolve(true);
+    runner_test.package_instance.has_correct_license_in_readme =
+      Promise.resolve(false);
+    await runner_test.calculate_license();
+    expect(runner_test.package_instance.license).toBe(1);
   });
 
   test("test ramp up calculation", async () => {
