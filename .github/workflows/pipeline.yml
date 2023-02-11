@@ -41,5 +41,5 @@ jobs:
         run: |
           ./run install
           ./run build
-          ./run test
+          npm test
 
