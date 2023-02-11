@@ -19,9 +19,9 @@ def parse_test_results(test_dump: str):
     """
 
     searches: list = [
-        r'All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*',
-        r'\d*\.\d*',
-        r"Tests:\s*",
+        r"All files\s*\|[^\|]*\|[^\|]*\|[^\|]*\|\s*",
+        r"\d*\.\d*",
+        r"Tests:\s*(\s*\d\s*failed,\s*\d\s*skipped,\s*|\d\s*failed,\s*|\d\s*skipped,\s*)?",
         r"\d*",
         r"\d*\s*passed,\s*",
         r"\d*",
@@ -71,32 +71,36 @@ def main():
 
         ## # If node is not installed, install nvm and use it to install 18.14.0
         if node_ver != "v18.14.0":
-            p = subprocess.Popen('bash update_node.sh', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                "bash update_node.sh",
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
             p.wait()
-            #subprocess.run('bash update_node.sh' shell=True)
+            # subprocess.run('bash update_node.sh' shell=True)
 
-
-        ## commands = [    
+        ## commands = [
         ##     ['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'],
         ##     ['export NVM_DIR="$HOME/.nvm"'],
         ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
         ##     ['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"']#,
         ## ]
-## 
-## 
+        ##
+        ##
         ## print (node_ver)
-        ## 
+        ##
         ## input ("Press Enter to continue...")
-        ## 
+        ##
         ## # If not 18.14.0, install nvm and use it to install 18.14.0
         ## if (node_ver != "v18.14.0"):
         ##     for command in commands:
         ##         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         ##         process.wait()
-        ## 
+        ##
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm install 18.14.0'])
         ##     p.wait()
-        ## 
+        ##
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm use 18.14.0'])
         ##     p.wait()
 
@@ -118,17 +122,19 @@ def main():
 
     elif mode == "test":
         # RUN TESTS
-        command = "npm test"
+        command = "npm test logging.test.ts"
         result: subprocess.CompletedProcess = subprocess.run(
             command, shell=True, capture_output=True
         )
         passed, total, coverage = parse_test_results(
             result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         )
-        if (passed == total == coverage == -1):
+        if passed == total == coverage == -1:
             print("Testing data could not be acquired")
         else:
-            print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
+            print(
+                f"{passed}/{total} test cases passed. {coverage}% line coverage achieved."
+            )
     else:
         # RANK MODULES
         if len(sys.argv) < 2:

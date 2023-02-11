@@ -21,7 +21,7 @@ describe("Tests for logging.ts", () => {
     expect(level).toEqual(expected_level);
   });
 
-  test.only.each([
+  test.each([
     {
       environment_var: path.join(process.cwd(), "logging.log"),
       expected_output: true,
