@@ -12,6 +12,8 @@ import { get_recentCommits } from "./parse_links";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
+var ndjson = require('ndjson')
+
 async function main() {
   let url = process.argv[2];
   var data;
@@ -90,9 +92,22 @@ async function main() {
     log.info("Responsiveness " + run_test.package_instance.responsiveness);
     log.info("Total Score " + run_test.package_instance.score);
 
-    console.log ("Package Name: " + package_test.url + "   Total Score: " + run_test.package_instance.score);
+    let retval = {
+      "URL": url,
+      "NET_SCORE": run_test.package_instance.score,
+      "RAMP_UP_SCORE": run_test.package_instance.ramp_up,
+      "CORRECTNESS_SCORE": run_test.package_instance.correctness,
+      "BUS_FACTOR_SCORE": run_test.package_instance.bus_factor,
+      "RESPONSIVE_MAINTAINER_SCORE": run_test.package_instance.responsiveness,
+      "LICENSE_SCORE": run_test.package_instance.license,
+    };
+
+    console.log((JSON.stringify(retval)));
+
+    return 0;
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
+    return 1;
   }
 }
 

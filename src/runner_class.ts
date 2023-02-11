@@ -54,6 +54,8 @@ export class Runner {
       1
     );
 
+    this.package_instance.correctness = parseFloat(this.package_instance.correctness.toPrecision(3));
+
     log.info(
       "Calculated correctness score of " + this.package_instance.correctness
     );
@@ -82,10 +84,8 @@ export class Runner {
     // console.log(num_stars);
 
     // Calculate bus factor
-    this.package_instance.bus_factor = Math.min(
-      7 * ratio + 0.3 * (num_stars / 10000),
-      1
-    );
+    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
+    this.package_instance.bus_factor = parseFloat(this.package_instance.bus_factor.toPrecision(3));
 
     log.info(
       "Calculated bus factor score of " + this.package_instance.bus_factor
@@ -141,6 +141,8 @@ export class Runner {
     } else {
       log.info("License score is 0\n");
     }
+
+    this.package_instance.license = parseFloat(this.package_instance.license.toPrecision(3));
   }
 
   async calculate_ramp() {
@@ -168,7 +170,7 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
-
+    this.package_instance.ramp_up = parseFloat(this.package_instance.ramp_up.toPrecision(3));
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
@@ -186,7 +188,8 @@ export class Runner {
             this.package_instance.total_commits),
       1
     );
-
+    
+    this.package_instance.responsiveness = parseFloat(this.package_instance.responsiveness.toPrecision(3));
     log.info(
       "Calculated responsiveness of " + this.package_instance.responsiveness
     );
@@ -203,6 +206,8 @@ export class Runner {
       0.2 * this.package_instance.correctness +
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
+
+    this.package_instance.score = parseFloat(this.package_instance.score.toPrecision(3));
 
     log.info(
       "Final score for package " +

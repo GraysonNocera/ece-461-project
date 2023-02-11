@@ -3,6 +3,10 @@
 import sys
 import os
 import subprocess
+import json
+
+def sort_key(json_obj):
+    return -json_obj["NET_SCORE"]
 
 def main():
     if len(sys.argv) < 2:
@@ -21,8 +25,24 @@ def main():
         # INSTALL DEPENDENCIES
         ret_val = subprocess.run("npm install", shell=True)
         if ret_val.returncode != 0:
-            print("Error: Install failed")
+            print("Error: NPM Install failed")
             return 1
+
+        try:
+            node_ver = subprocess.run(['node --version'], stdout=subprocess.PIPE, shell=True).stdout.decode('utf-8')
+        except:
+            # Node not installed
+            node_ver = 0
+
+        # If not 18.14.0, install nvm and use it to install 18.14.0
+        if (node_ver != "v18.14.0"):
+            subprocess.run(['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'], shell=True)
+            subprocess.run(['export NVM_DIR="$HOME/.nvm"'], shell=True)
+            subprocess.run(['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'], shell=True)
+            subprocess.run(['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'], shell=True)
+            subprocess.run(['nvm install 18.14.0'], shell=True)
+            subprocess.run(['nvm use 18.14.0'], shell=True)
+
         return 0
 
     elif mode == "build":
@@ -52,16 +72,18 @@ def main():
             return 1
 
         with file:
-            for line in file:
-                # remove newline character from the end of the line
-                line = line.strip()
-
+            output_list = []
+            for line in file: 
                 # create the command string
+                line = line.strip()
                 command = f"node src/main.js {line}"
 
                 # call main with each URL as argument
-                # print(f"Running command -> {command}")
-                subprocess.run(command, shell=True)
+                result = subprocess.run(command, shell=True, capture_output=True)
+                output_list.append(json.loads(result.stdout.decode().strip()))
+    
+        output_list = sorted(output_list, key=sort_key)
+        print (("\n".join([json.dumps(item) for item in output_list])))
 
 
 if __name__ == "__main__":
