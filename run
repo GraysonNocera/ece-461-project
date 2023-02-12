@@ -5,6 +5,7 @@ import os
 import subprocess
 import json
 import re
+import pathlib
 
 
 def sort_key(json_obj):
@@ -50,6 +51,8 @@ def parse_test_results(test_dump: str):
 
 
 def main():
+    write_to_file = False # set to true to write output to output.ndjson
+
     if len(sys.argv) < 2:
         print("Error: No mode specified.")
         return 1
@@ -146,12 +149,20 @@ def main():
         output_list = sorted(newlist, key=sort_key)
         output_str = "\n".join([json.dumps(item) for item in output_list])
         
-        print(output_str)
+        if write_to_file:
+            root_dir = pathlib.PurePath(__file__).parent
+            with open(root_dir.joinpath("output.ndjson"), "w") as f:
+                f.write(output_str)
+        else:
+            print(output_str)
 
-        # root_dir = pathlib.PurePath(__file__).parent
-        # with open(root_dir.joinpath("output.ndjson"), "w") as f:
-        #     f.write(output_str)
+main()
 
 
-if __name__ == "__main__":
-    main()
+## if __name__ == "__main__":
+##     main()
+## 
+## else:
+##     print("Error: This file is not meant to be imported")
+##     print("Please run this file directly or edit line 158 of ece-461-project/run to allow it to be imported.")
+##     exit(1)
