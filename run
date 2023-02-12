@@ -57,11 +57,14 @@ def main():
             pass
     except:
         # No log file was provided or it couldn't be opened
-        pass
+        error_msg = "Warning: No log file provided.\n"
+        error_msg += "To enable logging, set a path to a logging file in "
+        error_msg += "environment variable LOG_FILE and set the log level "
+        error_msg += "in environment variable LOG_LEVEL."
+        print(error_msg)
 
     mode = sys.argv[1]
     if mode == "install":
-
         ## try:
         ##     node_ver = subprocess.run(
         ##         ["node --version"], stdout=subprocess.PIPE, shell=True
@@ -69,30 +72,29 @@ def main():
         ## except:
         ##     # Node not installed
         ##     node_ver = 0
-        ## 
-        ## 
+        ##
+        ##
         ## commands = [
         ##     ['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'],
         ##     ['export NVM_DIR="$HOME/.nvm"'],
         ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
         ##      ['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'],
         ##  ]
-        ## 
+        ##
         ## #If not 18.14.0, install nvm and use it to install 18.14.0
         ## if (node_ver != "v18.14.0"):
         ##     for command in commands:
         ##         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         ##         process.wait()
-        ## 
+        ##
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm install 18.14.0'])
         ##     p.wait()
-        ## 
+        ##
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm use 18.14.0'])
         ##     p.wait()
-        ## 
+        ##
         ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'source ~/.bashrc'])
         ##     p.wait()
-
 
         # INSTALL DEPENDENCIES
 
@@ -141,6 +143,12 @@ def main():
             print("Arg 1 needs to be URL to input file or one of")
             return 1
 
+        if not os.getenv("GITHUB_TOKEN"):
+            print(
+                "Error: Please specify GitHub token in environment variable GITHUB_TOKEN"
+            )
+            return 1
+
         file_path = sys.argv[1]
 
         try:
@@ -157,8 +165,7 @@ def main():
                 command = f"node_bin/bin/node src/main.js {line}"
 
                 # call main with each URL as argument
-                result = subprocess.run(
-                    command, shell=True, capture_output=True)
+                result = subprocess.run(command, shell=True, capture_output=True)
                 output_list.append(json.loads(result.stdout.decode().strip()))
 
         output_list = sorted(output_list, key=sort_key)
