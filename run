@@ -81,11 +81,11 @@ def main():
         ret_val = ret_val.stdout.decode("utf-8")
         match = re.search(r"up to date", ret_val)
         if match:
-            print("0 Dependencies installed: Up to date")
+            print("0 dependencies installed: Up to date")
         else:
             num_packs = re.search(r"added (\d+) packages", ret_val)
             if num_packs:
-                print(f"{num_packs.group(1)} Dependencies installed ... ")
+                print(f"{num_packs.group(1)} dependencies installed... ")
 
 
     elif mode == "build":
@@ -140,7 +140,7 @@ def main():
             for line in file:
                 # create the command string
                 line = line.strip()
-                command = f"node_bin/bin/node src/main.js {line}"
+                command = f"bin/bin/node src/main.js {line}"
 
                 # call main with each URL as argument
                 result = subprocess.run(command, shell=True, capture_output=True)
