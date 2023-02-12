@@ -24,12 +24,16 @@ export class Runner {
     //   this.package_instance.owner
     // );
 
+    log.info("Getting commit count...")
+
     // More than 1000 commits in the last year is probably a sign of a well maintained project
     if (this.package_instance.commit_count >= 1000) {
       this.package_instance.commit_count = 1;
     } else {
       this.package_instance.commit_count /= 1000;
     }
+
+    log.info("Getting number of stars...")
 
     //stars  are also a good sign of a well maintianed repo
     let num_stars = this.package_instance.num_stars;

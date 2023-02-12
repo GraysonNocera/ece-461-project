@@ -60,13 +60,7 @@ export async function main() {
     });
 
     // Ensure successful graphQL fetch
-    try {
-      if (data["message"] == `Bad credentials`) {
-        log.debug("Bad credentials. Please check your token.");
-      }
-    } catch (error) {
-      log.debug("GraphQL API call failed with error: " + error);
-    }
+    ensure_graphQL_fetch(data, log);
 
     log.info("Successful data collection: " + data);
 
@@ -113,6 +107,25 @@ export async function main() {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
     return 1;
   }
+}
+
+export function ensure_graphQL_fetch(data: any, log: Logger): boolean {
+  // Prints proper message is graphQL does not fetch properly
+  // :param data: data received from graphQL
+  // :param log: logger to log results
+  // :return: boolean for whether graphQL fetch was successful
+
+  try {
+    if (data["message"] == `Bad credentials`) {
+      log.debug("Bad credentials. Please check your token.");
+      return false;
+    }
+  } catch (error) {
+    log.debug("GraphQL API call failed with error: " + error);
+    return false;
+  }
+
+  return true;
 }
 
 export async function handle_url(

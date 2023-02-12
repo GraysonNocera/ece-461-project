@@ -275,6 +275,7 @@ export async function get_recentCommits(
   let log: Logger = provider.getLogger("REST.get_recentCommits");
 
   try {
+    log.info("Entering while loop to get recent commits")
     while (commitsRemaining) {
       log.info("Getting recent commits");
 
@@ -303,6 +304,8 @@ export async function get_recentCommits(
       "Could not find repository commit counts. Received error: " + error
     );
   }
+
+  log.info("Found commit count of " + count);
   package_instance.commit_count = count;
   return;
 }

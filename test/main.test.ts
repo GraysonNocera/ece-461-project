@@ -1,4 +1,6 @@
-import { handle_url } from "../src/main";
+import { Logger } from "typescript-logging-log4ts-style";
+import { provider } from "../src/logging";
+import { ensure_graphQL_fetch, handle_url } from "../src/main";
 
 jest.mock("../src/runner_class");
 jest.mock("../src/package_class");
@@ -30,4 +32,14 @@ describe("Test main", () => {
       expect(reponame).toEqual(exp_repoName);
     }
   );
+
+  test.each([
+    { data: {message: "Bad credentials"}, expected: false },
+    { data: undefined, expected: false },
+    { data: {message: "Success"}, expected: true }
+  ])("test ensure_graphQL_fetch", ({data, expected}) => {
+    let log: Logger = provider.getLogger("Test")
+    let result: boolean = ensure_graphQL_fetch(data, log)
+    expect(result).toEqual(expected)
+  })
 });
