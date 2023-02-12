@@ -102,6 +102,9 @@ def main():
             print("Testing data could not be acquired")
             return 1
         else:
+            print(f"Total: {total}")
+            print(f"Passed: {passed}")
+            print(f"Coverage: {coverage}%")
             print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
 
         return 0
