@@ -7,3 +7,9 @@ dist/
 # Ignore transpiled JavaScript files
 src/*.js
 src/*.json
+
+# Ignore coverage files for testing
+coverage/
+
+# Ignore experiments
+experiments/
