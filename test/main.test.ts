@@ -1,4 +1,4 @@
-import { main } from "../src/main";
+import { main, handle_url } from "../src/main";
 import { Runner } from "../src/runner_class";
 
 // let mockCorrectness = jest.fn().mockImplementation(() => {});
@@ -67,4 +67,32 @@ describe("Test main", () => {
     process.argv[2] = "https://www.npmjs.com/package/browserify";
     main();
   });
+
+  test.each([
+    {
+      url: "https://github.com/lodash/lodash",
+      exp_username: "lodash",
+      exp_repoName: "lodash",
+      exp_url: "https://github.com/lodash/lodash",
+    },
+  ])(
+    "test handle_url",
+    async ({ url, exp_username, exp_repoName, exp_url }) => {
+      let new_url: string = "";
+      let username: string = "";
+      let reponame: string = "";
+
+      process.argv[2] = url;
+
+      ({
+        username: username,
+        repoName: reponame,
+        url: new_url,
+      } = await handle_url(url));
+
+      expect(new_url).toEqual(exp_url);
+      expect(username).toEqual(exp_username);
+      expect(reponame).toEqual(exp_repoName);
+    }
+  );
 });
