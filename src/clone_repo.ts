@@ -290,11 +290,11 @@ async function has_correct_license_in_readme(
 
   // Licenses to search for
   let searches: Array<RegExp> = [
-    /[Ll]+(esser\s)*[Gg]+(eneral\s)*[Pp]+(ublic\s)*[Ll]+(icense\s|icence\s)*\s*[Vv]+(ersion)*(\s)*(2\.[1-9]|3(\.[1-9])*)+/,
-    /\s*[Mm]+[Ii]+[Tt]+(\s|\.|!|\n)+/,
-    /\s*[Bb]+[Ss]+[Dd]+(\s|\.|!|\n)+/,
-    /[Aa](pache|PACHE)+/,
-    /\s*[Mm]+[Pp]+[Ll]+(\s|\.|!|\n)+/,
+    /\s*[Ll]+(esser\s)*[Gg]+(eneral\s)*[Pp]+(ublic\s)*[Ll]+(icense\s|icence\s)*\s*[Vv]+(ersion)*(\s)*(2\.[1-9]|3(\.[1-9])*)+[^A-Za-z]+/,
+    /\s*[Mm]+[Ii]+[Tt]+[^A-Za-z]+/,
+    /\s*[Bb]+[Ss]+[Dd]+[^A-Za-z]+/,
+    /\s*[Aa](pache|PACHE)+[^A-Za-z]+/,
+    /\s*[Mm]+[Pp]+[Ll]+[^A-Za-z]+/,
   ];
 
   // Define licenses for ease of printing in log file
