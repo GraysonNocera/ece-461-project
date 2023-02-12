@@ -23,7 +23,7 @@ export function gql_query(username: string, repo: string) {
 
   return `
   {
-    repository(owner: "${username}", name: "${repo}") {
+    repository(owner: "webpack", name: "webpack") {
       name
       forkCount
       licenseInfo {
@@ -61,16 +61,7 @@ export function gql_query(username: string, repo: string) {
       stargazerCount
       hasVulnerabilityAlertsEnabled
     }
-    
-    securityVulnerabilities (first: 100) {
-      nodes {
-        firstPatchedVersion {
-          identifier
-        }
-        severity
-      }
-    }
-  }
+}
   `;
 }
 
@@ -148,9 +139,7 @@ export async function npm_2_git(npmUrl: string): Promise<string> {
   return Promise.resolve("");
 }
 
-export async function getGitRepoDetails(
-  url: string
-): Promise<{ username: string; repoName: string } | null> {
+export async function getGitRepoDetails(url: string): Promise<{ username: string; repoName: string } | null> {
   // Function description
   // :param url: string url to parse
   // :return: Promise of a username and reponame extracted from
@@ -187,8 +176,11 @@ export async function graphAPIfetch(
 ): Promise<any> {
   // Fetch data from GraphQL
   // :param gql_query: string query to be passed to GraphQL
-  // :param package_test: instance of Package class for holding data
-  // returned from GraphQL fetch
+  // :param package_test: instance of Package class
+  //  
+  //  Function fetches data from GraphQL and stores it 
+  //  in the package_test Object
+  // 
   // :return: data received
 
   let log: Logger = provider.getLogger("GraphQL.graphAPIfetch");
