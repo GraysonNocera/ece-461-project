@@ -1,0 +1,7 @@
+{"metric":"RAMP_UP_SCORE", "api":"clone", "filepath":"src/clone_repo.ts", "line":335}
+{"metric":"CORRECTNESS_SCORE", "api":"graphql", "filepath":"src/parse_links.ts", "line":186}
+{"metric":"CORRECTNESS_SCORE", "api":"rest", "filepath":"src/parse_links.ts", "line":262}
+{"metric":"BUS_FACTOR_SCORE", "api":"graphql", "filepath":"src/parse_links.ts", "line":186}
+{"metric":"RESPONSIVE_MAINTAINER_SCORE", "api":"graphql", "filepath":"src/parse_links.ts", "line":186}
+{"metric":"RESPONSIVE_MAINTAINER_SCORE", "api":"rest", "filepath":"src/parse_links.ts", "line":262}
+{"metric":"LICENSE_SCORE", "api":"clone", "filepath":"src/clone_repo.ts", "line":335}
