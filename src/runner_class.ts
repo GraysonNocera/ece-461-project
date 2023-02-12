@@ -54,7 +54,7 @@ export class Runner {
     );
 
     this.package_instance.correctness = parseFloat(
-      this.package_instance.correctness.toPrecision(3)
+      this.package_instance.correctness.toPrecision(2)
     );
 
     log.info(
@@ -87,7 +87,7 @@ export class Runner {
       1
     );
     this.package_instance.bus_factor = parseFloat(
-      this.package_instance.bus_factor.toPrecision(3)
+      this.package_instance.bus_factor.toPrecision(2)
     );
 
     log.info(
@@ -152,7 +152,7 @@ export class Runner {
     }
 
     this.package_instance.license = parseFloat(
-      this.package_instance.license.toPrecision(3)
+      this.package_instance.license.toPrecision(2)
     );
   }
 
@@ -185,7 +185,7 @@ export class Runner {
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
     this.package_instance.ramp_up = parseFloat(
-      this.package_instance.ramp_up.toPrecision(3)
+      this.package_instance.ramp_up.toPrecision(2)
     );
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
@@ -205,7 +205,7 @@ export class Runner {
     );
 
     this.package_instance.responsiveness = parseFloat(
-      this.package_instance.responsiveness.toPrecision(3)
+      this.package_instance.responsiveness.toPrecision(2)
     );
     log.info(
       "Calculated responsiveness of " + this.package_instance.responsiveness
@@ -225,7 +225,7 @@ export class Runner {
       0.1 * this.package_instance.responsiveness;
 
     this.package_instance.score = parseFloat(
-      this.package_instance.score.toPrecision(3)
+      this.package_instance.score.toPrecision(2)
     );
 
     log.info(
