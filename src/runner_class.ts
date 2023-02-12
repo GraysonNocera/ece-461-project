@@ -54,7 +54,9 @@ export class Runner {
       1
     );
 
-    this.package_instance.correctness = parseFloat(this.package_instance.correctness.toPrecision(3));
+    this.package_instance.correctness = parseFloat(
+      this.package_instance.correctness.toPrecision(3)
+    );
 
     log.info(
       "Calculated correctness score of " + this.package_instance.correctness
@@ -84,8 +86,13 @@ export class Runner {
     // console.log(num_stars);
 
     // Calculate bus factor
-    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
-    this.package_instance.bus_factor = parseFloat(this.package_instance.bus_factor.toPrecision(3));
+    this.package_instance.bus_factor = Math.min(
+      7 * ratio + 0.3 * (num_stars / 10000),
+      1
+    );
+    this.package_instance.bus_factor = parseFloat(
+      this.package_instance.bus_factor.toPrecision(3)
+    );
 
     log.info(
       "Calculated bus factor score of " + this.package_instance.bus_factor
@@ -116,15 +123,21 @@ export class Runner {
       await this.package_instance.has_correct_license_in_readme
     );
 
-    // License score outputs a 1 if at least one of the following are true:
+    // License score outputs a nonzero value if at least one of the following are true:
     // 1) The readme has a compatible license
     // 2) The repo has a license file, and has a license field in package.json, and has a license
     //    header in the readme
-    this.package_instance.license =
-      has_correct_license_in_readme ||
-      (has_license_file_score &&
-        has_license_in_readme_score &&
-        has_license_in_package_json);
+    if (has_correct_license_in_readme) {
+      this.package_instance.license = 1;
+    } else if (
+      has_license_file_score &&
+      has_license_in_readme_score &&
+      has_license_in_package_json
+    ) {
+      // License score is set to 0.2 because it is likely that this repo has a license,
+      // but it is very unlikely that it has the correct license
+      this.package_instance.license = 0.2;
+    }
 
     if (has_correct_license_in_readme) {
       log.info(
@@ -136,13 +149,15 @@ export class Runner {
       has_license_in_package_json
     ) {
       log.info(
-        "License score is 1 based on condition (2) (check function for more information)\n"
+        "License score is 0.2 based on condition (2) (check function for more information)\n"
       );
     } else {
       log.info("License score is 0\n");
     }
 
-    this.package_instance.license = parseFloat(this.package_instance.license.toPrecision(3));
+    this.package_instance.license = parseFloat(
+      this.package_instance.license.toPrecision(3)
+    );
   }
 
   async calculate_ramp() {
@@ -170,7 +185,9 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
-    this.package_instance.ramp_up = parseFloat(this.package_instance.ramp_up.toPrecision(3));
+    this.package_instance.ramp_up = parseFloat(
+      this.package_instance.ramp_up.toPrecision(3)
+    );
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
@@ -188,8 +205,10 @@ export class Runner {
             this.package_instance.total_commits),
       1
     );
-    
-    this.package_instance.responsiveness = parseFloat(this.package_instance.responsiveness.toPrecision(3));
+
+    this.package_instance.responsiveness = parseFloat(
+      this.package_instance.responsiveness.toPrecision(3)
+    );
     log.info(
       "Calculated responsiveness of " + this.package_instance.responsiveness
     );
@@ -207,7 +226,9 @@ export class Runner {
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
 
-    this.package_instance.score = parseFloat(this.package_instance.score.toPrecision(3));
+    this.package_instance.score = parseFloat(
+      this.package_instance.score.toPrecision(3)
+    );
 
     log.info(
       "Final score for package " +
