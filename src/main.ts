@@ -146,4 +146,7 @@ export async function handle_url(
   };
 }
 
-main();
+//main();
+if (require.main === module) {
+  main();
+}

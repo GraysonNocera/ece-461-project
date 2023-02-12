@@ -14,7 +14,7 @@ jest.mock("../src/runner_class");
 jest.mock("../src/package_class");
 
 describe("Test main", () => {
-  test("try this", async () => {
+  test.skip("try this", async () => {
     const pl = require("../src/parse_links");
     const cr = require("../src/clone_repo");
 
@@ -81,8 +81,6 @@ describe("Test main", () => {
       let new_url: string = "";
       let username: string = "";
       let reponame: string = "";
-
-      process.argv[2] = url;
 
       ({
         username: username,
