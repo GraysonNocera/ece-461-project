@@ -166,7 +166,12 @@ def main():
 
                 # call main with each URL as argument
                 result = subprocess.run(command, shell=True, capture_output=True)
-                output_list.append(json.loads(result.stdout.decode().strip()))
+                try:
+                    json_output = json.loads(result.stdout.decode().strip())
+                    output_list.append(json_output)
+                except:
+                    print(f"Error when running command: {command}")
+                    return 1
 
         output_list = sorted(output_list, key=sort_key)
         print(("\n".join([json.dumps(item) for item in output_list])))
