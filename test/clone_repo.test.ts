@@ -3,15 +3,16 @@ import path from "path";
 import * as cr from "../src/clone_repo";
 import { Package } from "../src/package_class";
 
-// Set timeout to 30 seconds
-jest.setTimeout(30 * 1000)
+// Set timeout to 60 seconds
+jest.setTimeout(60 * 1000)
 
 describe("Tests for clone_repo.ts", () => {
   test.each([
-    { repo_name: "cloudinary_npm", path_to_repo: "" },
+    { repo_name: "lodash", path_to_repo: "" },
     { repo_name: "browserify", path_to_repo: process.cwd() },
   ])("test create_git_object", ({ repo_name, path_to_repo }) => {
     let git = cr.create_git_object(repo_name, path_to_repo);
+    cr.delete_repo(path.join(path_to_repo, repo_name));
     expect(git).toBeDefined();
   });
 
