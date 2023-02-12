@@ -5,10 +5,12 @@ import os
 import subprocess
 import json
 import re
-import pathlib
 
 
 def sort_key(json_obj):
+    """
+    Sort key for sorting json objects in descending order of NET_SCORE
+    """
     return -json_obj["NET_SCORE"]
 
 
@@ -44,7 +46,6 @@ def parse_test_results(test_dump: str):
         results.append(test_dump[:end])
 
     coverage, passed, total = results
-
     return passed, total, coverage
 
 
@@ -58,54 +59,16 @@ def main():
             pass
     except:
         # No log file was provided or it couldn't be opened
-        error_msg = "Warning: No log file provided.\n"
-        error_msg += "To enable logging, set a path to a logging file in "
-        error_msg += "environment variable LOG_FILE and set the log level "
-        error_msg += "in environment variable LOG_LEVEL."
-        print(error_msg)
+        # error_msg = "Warning: No log file provided.\n"
+        # error_msg += "To enable logging, set a path to a logging file in "
+        # error_msg += "environment variable LOG_FILE and set the log level "
+        # error_msg += "in environment variable LOG_LEVEL."
+        # print(error_msg)
+        pass
 
     mode = sys.argv[1]
     if mode == "install":
-        ## try:
-        ##     node_ver = subprocess.run(
-        ##         ["node --version"], stdout=subprocess.PIPE, shell=True
-        ##     ).stdout.decode("utf-8")
-        ## except:
-        ##     # Node not installed
-        ##     node_ver = 0
-        ##
-        ##
-        ## commands = [
-        ##     ['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'],
-        ##     ['export NVM_DIR="$HOME/.nvm"'],
-        ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
-        ##      ['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'],
-        ##  ]
-        ##
-        ## #If not 18.14.0, install nvm and use it to install 18.14.0
-        ## if (node_ver != "v18.14.0"):
-        ##     for command in commands:
-        ##         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        ##         process.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm install 18.14.0'])
-        ##     p.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm use 18.14.0'])
-        ##     p.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'source ~/.bashrc'])
-        ##     p.wait()
-
         # INSTALL DEPENDENCIES
-
-        ## try:
-        ##     os.system('export PATH=$(pwd)/node_bin/bin/:$PATH')
-        ##     pass
-        ## except:
-        ##     print("Error: Could not export path")
-        ##     pass
-
         ret_val = subprocess.run("npm install --loglevel=error", shell=True)
         if ret_val.returncode != 0:
             print("Error: NPM Install failed")
@@ -127,16 +90,17 @@ def main():
         result: subprocess.CompletedProcess = subprocess.run(
             command, shell=True, capture_output=True
         )
+
         passed, total, coverage = parse_test_results(
             result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         )
+
         if passed == total == coverage == -1:
             print("Testing data could not be acquired")
             return 1
         else:
-            print(
-                f"{passed}/{total} test cases passed. {coverage}% line coverage achieved."
-            )
+            print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
+
         return 0
     else:
         # RANK MODULES
@@ -145,9 +109,7 @@ def main():
             return 1
 
         if not os.getenv("GITHUB_TOKEN"):
-            print(
-                "Error: Please specify GitHub token in environment variable GITHUB_TOKEN"
-            )
+            print("Error: Please specify GitHub token in environment variable GITHUB_TOKEN")
             return 1
 
         file_path = sys.argv[1]
@@ -174,9 +136,18 @@ def main():
                     print(f"Error when running command: {command}")
                     return 1
 
-        output_list = sorted(output_list, key=sort_key)
+        newlist = []
+        
+        # remove any modules that failed to be ranked
+        for item in output_list:
+            if (item['NET_SCORE'] is not None):
+                newlist.append(item)
+
+        output_list = sorted(newlist, key=sort_key)
         output_str = "\n".join([json.dumps(item) for item in output_list])
+        
         print(output_str)
+
         # root_dir = pathlib.PurePath(__file__).parent
         # with open(root_dir.joinpath("output.ndjson"), "w") as f:
         #     f.write(output_str)
