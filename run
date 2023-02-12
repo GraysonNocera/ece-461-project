@@ -123,7 +123,7 @@ def main():
 
     elif mode == "test":
         # RUN TESTS
-        command = "npm test logging.test.ts"
+        command = "npm test"
         result: subprocess.CompletedProcess = subprocess.run(
             command, shell=True, capture_output=True
         )
