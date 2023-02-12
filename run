@@ -5,6 +5,7 @@ import os
 import subprocess
 import json
 import re
+import pathlib
 
 
 def sort_key(json_obj):
@@ -174,7 +175,10 @@ def main():
                     return 1
 
         output_list = sorted(output_list, key=sort_key)
-        print(("\n".join([json.dumps(item) for item in output_list])))
+        output_str = "\n".join([json.dumps(item) for item in output_list])
+        root_dir = pathlib.PurePath(__file__).parent
+        with open(root_dir.joinpath("output.ndjson"), "w") as f:
+            f.write(output_str)
 
 
 if __name__ == "__main__":
