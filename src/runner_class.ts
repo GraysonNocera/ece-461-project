@@ -20,10 +20,10 @@ export class Runner {
 
     let log: Logger = provider.getLogger("Scores.calculate_correctness");
 
-    this.package_instance.commit_count = await get_recentCommits(
-      this.package_instance.repo,
-      this.package_instance.owner
-    );
+    // this.package_instance.commit_count = await get_recentCommits(
+    //   this.package_instance.repo,
+    //   this.package_instance.owner
+    // );
 
     // More than 1000 commits in the last year is probably a sign of a well maintained project
     if (this.package_instance.commit_count >= 1000) {
@@ -54,6 +54,8 @@ export class Runner {
       1
     );
 
+    this.package_instance.correctness = parseFloat(this.package_instance.correctness.toPrecision(3));
+
     log.info(
       "Calculated correctness score of " + this.package_instance.correctness
     );
@@ -82,10 +84,8 @@ export class Runner {
     // console.log(num_stars);
 
     // Calculate bus factor
-    this.package_instance.bus_factor = Math.min(
-      7 * ratio + 0.3 * (num_stars / 10000),
-      1
-    );
+    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
+    this.package_instance.bus_factor = parseFloat(this.package_instance.bus_factor.toPrecision(3));
 
     log.info(
       "Calculated bus factor score of " + this.package_instance.bus_factor
@@ -141,6 +141,8 @@ export class Runner {
     } else {
       log.info("License score is 0\n");
     }
+
+    this.package_instance.license = parseFloat(this.package_instance.license.toPrecision(3));
   }
 
   async calculate_ramp() {
@@ -168,7 +170,7 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
-
+    this.package_instance.ramp_up = parseFloat(this.package_instance.ramp_up.toPrecision(3));
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
@@ -186,7 +188,8 @@ export class Runner {
             this.package_instance.total_commits),
       1
     );
-
+    
+    this.package_instance.responsiveness = parseFloat(this.package_instance.responsiveness.toPrecision(3));
     log.info(
       "Calculated responsiveness of " + this.package_instance.responsiveness
     );
@@ -197,13 +200,14 @@ export class Runner {
     let log: Logger = provider.getLogger("Scores.calculate_score");
     log.info("Calculating final score...");
 
-    // weights as follows
     this.package_instance.score =
       0.35 * this.package_instance.bus_factor +
       0.25 * this.package_instance.license +
       0.2 * this.package_instance.correctness +
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
+
+    this.package_instance.score = parseFloat(this.package_instance.score.toPrecision(3));
 
     log.info(
       "Final score for package " +
@@ -213,34 +217,34 @@ export class Runner {
     );
   }
 
-  write_to_file() {
-    // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
-    // a loop that does this over and over, putting it all into the output file
+  // write_to_file() {
+  //   // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
+  //   // a loop that does this over and over, putting it all into the output file
 
-    this.package_instance.url = "https://github.com/lodash/lodash";
-    let json: string = JSON.stringify({
-      URL: this.package_instance.url,
-      NET_SCORE: 0.8,
-      RAMP_UP_SCORE: 0.4,
-      CORRECTNESS_SCORE: 0.2,
-      BUS_FACTOR_SCORE: 0.45,
-      RESPONSIVE_MAINTAINER_SCORE: 0.6,
-      LICENSE_SCORE: 1,
-    });
+  //   this.package_instance.url = "https://github.com/lodash/lodash";
+  //   let json: string = JSON.stringify({
+  //     URL: this.package_instance.url,
+  //     NET_SCORE: 0.8,
+  //     RAMP_UP_SCORE: 0.4,
+  //     CORRECTNESS_SCORE: 0.2,
+  //     BUS_FACTOR_SCORE: 0.45,
+  //     RESPONSIVE_MAINTAINER_SCORE: 0.6,
+  //     LICENSE_SCORE: 1,
+  //   });
 
-    json += "\n";
+  //   json += "\n";
 
-    this.package_instance.url = "https://github.com/nullivex/nodist";
-    json += JSON.stringify({
-      URL: this.package_instance.url,
-      NET_SCORE: 0.2,
-      RAMP_UP_SCORE: 0.5,
-      CORRECTNESS_SCORE: 0.8,
-      BUS_FACTOR_SCORE: 0.2,
-      RESPONSIVE_MAINTAINER_SCORE: 0.9,
-      LICENSE_SCORE: 0,
-    });
+  //   this.package_instance.url = "https://github.com/nullivex/nodist";
+  //   json += JSON.stringify({
+  //     URL: this.package_instance.url,
+  //     NET_SCORE: 0.2,
+  //     RAMP_UP_SCORE: 0.5,
+  //     CORRECTNESS_SCORE: 0.8,
+  //     BUS_FACTOR_SCORE: 0.2,
+  //     RESPONSIVE_MAINTAINER_SCORE: 0.9,
+  //     LICENSE_SCORE: 0,
+  //   });
 
-    console.log(json);
-  }
+  //   //(json);
+  // }
 }

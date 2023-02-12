@@ -12,7 +12,9 @@ import { get_recentCommits } from "./parse_links";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
 
-async function main() {
+var ndjson = require('ndjson')
+
+export async function main() {
   // Main driver function for calculating score of a package
 
   let url = process.argv[2];
@@ -68,7 +70,7 @@ async function main() {
     let run_test = new Runner(package_test);
     log.info("Getting info from cloned repo...");
     await get_info_from_cloned_repo(package_test);
-    await get_recentCommits(package_test.repo, package_test.owner);
+    await get_recentCommits(package_test);
     await run_test.calculate_correctness();
     log.info("calculating correctness");
     await run_test.calculate_responsiveness();
@@ -88,12 +90,27 @@ async function main() {
     log.info("Bus Factor " + run_test.package_instance.bus_factor);
     log.info("Responsiveness " + run_test.package_instance.responsiveness);
     log.info("Total Score " + run_test.package_instance.score);
+
+    let retval = {
+      "URL": url,
+      "NET_SCORE": run_test.package_instance.score,
+      "RAMP_UP_SCORE": run_test.package_instance.ramp_up,
+      "CORRECTNESS_SCORE": run_test.package_instance.correctness,
+      "BUS_FACTOR_SCORE": run_test.package_instance.bus_factor,
+      "RESPONSIVE_MAINTAINER_SCORE": run_test.package_instance.responsiveness,
+      "LICENSE_SCORE": run_test.package_instance.license,
+    };
+
+    console.log((JSON.stringify(retval)));
+
+    return 0;
   } else {
     log.debug(`Unable to fetch repo -> ${username}/${repoName}`);
+    return 1;
   }
 }
 
-async function handle_url(
+export async function handle_url(
   url: string
 ): Promise<{ username: string; repoName: string; url: string }> {
   // Handle the url provided from url text file
@@ -129,4 +146,7 @@ async function handle_url(
   };
 }
 
-main();
+//main();
+if (require.main === module) {
+  main();
+}
