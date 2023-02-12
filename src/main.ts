@@ -14,7 +14,7 @@ import { Logger } from "typescript-logging-log4ts-style";
 
 var ndjson = require('ndjson')
 
-async function main() {
+export async function main() {
   // Main driver function for calculating score of a package
 
   let url = process.argv[2];
@@ -110,7 +110,7 @@ async function main() {
   }
 }
 
-async function handle_url(
+export async function handle_url(
   url: string
 ): Promise<{ username: string; repoName: string; url: string }> {
   // Handle the url provided from url text file
