@@ -93,9 +93,4 @@ function get_provider(): Log4TSProvider {
 }
 
 const provider: Log4TSProvider = get_provider();
-export {
-    provider,
-    get_log_level,
-    get_provider,
-    open_log_file,
-}
+export { provider, get_log_level, get_provider, open_log_file };

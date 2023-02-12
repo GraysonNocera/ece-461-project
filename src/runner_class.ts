@@ -1,4 +1,3 @@
-import { get_recentCommits } from "./parse_links";
 import { Package } from "./package_class";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
@@ -81,9 +80,6 @@ export class Runner {
     }
 
     let num_stars = this.package_instance.num_stars; // If there's a lot of stars then there's people interested in the project and more likely to contribute
-
-    // console.log(ratio);
-    // console.log(num_stars);
 
     // Calculate bus factor
     this.package_instance.bus_factor = Math.min(
@@ -169,7 +165,10 @@ export class Runner {
 
     this.package_instance.ramp_up = 0;
 
-    // Get standards for readme length and percent comments
+    // Standards for readme length and percentage comments
+    // An ideal repository should have a reasonable size readme (10000 characters)
+    // as well as significant documentation (1:1 comment to code ratio)
+    // We will compare the repositories metrics off these benchmarks
     let standard_readme_length: number = 10000;
     let standard_percent_comments: number = 0.5;
 
@@ -191,7 +190,6 @@ export class Runner {
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
-  //calculate responsiveness
   async calculate_responsiveness() {
     // Calculate responsiveness
 
@@ -237,35 +235,4 @@ export class Runner {
         this.package_instance.score
     );
   }
-
-  // write_to_file() {
-  //   // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
-  //   // a loop that does this over and over, putting it all into the output file
-
-  //   this.package_instance.url = "https://github.com/lodash/lodash";
-  //   let json: string = JSON.stringify({
-  //     URL: this.package_instance.url,
-  //     NET_SCORE: 0.8,
-  //     RAMP_UP_SCORE: 0.4,
-  //     CORRECTNESS_SCORE: 0.2,
-  //     BUS_FACTOR_SCORE: 0.45,
-  //     RESPONSIVE_MAINTAINER_SCORE: 0.6,
-  //     LICENSE_SCORE: 1,
-  //   });
-
-  //   json += "\n";
-
-  //   this.package_instance.url = "https://github.com/nullivex/nodist";
-  //   json += JSON.stringify({
-  //     URL: this.package_instance.url,
-  //     NET_SCORE: 0.2,
-  //     RAMP_UP_SCORE: 0.5,
-  //     CORRECTNESS_SCORE: 0.8,
-  //     BUS_FACTOR_SCORE: 0.2,
-  //     RESPONSIVE_MAINTAINER_SCORE: 0.9,
-  //     LICENSE_SCORE: 0,
-  //   });
-
-  //   //(json);
-  // }
 }

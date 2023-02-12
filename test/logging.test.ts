@@ -5,9 +5,9 @@ import { Package } from "../src/package_class";
 import { LogLevel } from "typescript-logging";
 import * as logging from "../src/logging";
 import { Log4TSProvider } from "typescript-logging-log4ts-style";
-import mockFs from "fs"
+import mockFs from "fs";
 
-jest.mock("fs")
+jest.mock("fs");
 
 describe("Tests for logging.ts", () => {
   test.each([
@@ -28,7 +28,7 @@ describe("Tests for logging.ts", () => {
     },
     { environment_var: "", expected_output: false },
   ])("test get_log_level", ({ environment_var, expected_output }) => {
-    mockFs.openSync = jest.fn().mockReturnValue(true)
+    mockFs.openSync = jest.fn().mockReturnValue(true);
 
     process.env.LOG_FILE = environment_var;
     let can_open: boolean = logging.open_log_file();
@@ -36,7 +36,7 @@ describe("Tests for logging.ts", () => {
   });
 
   test("test get_provider", () => {
-    Log4TSProvider.clear()
+    Log4TSProvider.clear();
     let provider: Log4TSProvider = logging.get_provider();
     expect(provider).toBeDefined();
   });

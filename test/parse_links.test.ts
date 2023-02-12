@@ -8,7 +8,7 @@ import { Octokit } from "octokit";
 // //jest.mock("octokit");
 // jest.mock('@octokit/rest')
 
-const mockOctokit = require("octokit")
+const mockOctokit = require("octokit");
 
 describe("Test parse_links.ts", () => {
   test.each([
