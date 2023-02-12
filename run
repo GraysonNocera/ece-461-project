@@ -151,14 +151,19 @@ def main():
                     print(f"Error when running command: {command}")
                     return 1
 
-        newlist = []
+        nan_list = []
+        good_list = []
         
         # remove any modules that failed to be ranked
         for item in output_list:
             if (item['NET_SCORE'] is not None):
-                newlist.append(item)
+                good_list.append(item)
+            else:
+                nan_list.append(item)
 
-        output_list = sorted(newlist, key=sort_key)
+        output_list = sorted(good_list, key=sort_key)
+        output_list.extend(nan_list)
+        
         output_str = "\n".join([json.dumps(item) for item in output_list])
         
         if write_to_file:
