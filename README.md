@@ -28,7 +28,7 @@ This project aims to use REST and GraphQL APIs to get metrics (bus factor; corre
 
 ### Grading
 #### Notes on NodeJS
-In accordance with Dr. Davis's instructions, we have included a version of NodeJS in our project. Our program uses this "vendored" Node which can be found in bin/bin/node. Since this is in our repository when cloned, running `cloc` on a cloned repository would yield mostly C code. For accurate line counts, the command `cloc ece-461-project --exclude-dir=bin` should be run.
+In accordance with Dr. Davis's instructions, we have included a version of NodeJS in our project. Our program uses this "vendored" Node which can be found in bin/bin/node. Since this is in our repository when cloned, running `cloc` on a cloned repository would yield mostly C code. For accurate line counts, the command `cloc ece-461-project --exclude-dir=bin,package.json,package-lock.json` should be run.
 
 
 #### Upgrading NodeJS on Grading Environment
@@ -60,3 +60,5 @@ Does the package have a license? If yes, then it will receive a high score. If n
 
 ### Net Score
 Based on the above metrics, the net score will be their weighted sum on a scale from 0 to 1 inclusive using the following formula: 
+```(0.35 ∗ bF) + (0.25 ∗ L) + (0.2 ∗ C) + (0.1 ∗ rU) + (0.1 ∗ rM) = nS```
+where bF is the bus factor; L is license; C is correctness; rU is ramp up; rM is responsive Maintainer; and nS is the net score of the package overall.
