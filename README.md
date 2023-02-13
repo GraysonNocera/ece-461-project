@@ -28,7 +28,7 @@ This project aims to use REST API, GraphQL API, and local repository cloning to 
 
 ### Grading
 #### Notes on NodeJS
-In accordance with Dr. Davis's instructions, we have included a version of NodeJS in our project. Our program uses this "vendored" Node which can be found in bin/bin/node. Since this is in our repository when cloned, running `cloc` on a cloned repository would yield mostly C code. For accurate line counts, the command `cloc ece-461-project --exclude-dir=bin,package.json,package-lock.json` should be run.
+In accordance with Dr. Davis's instructions, we have included a version of NodeJS in our project. Our program uses this "vendored" Node which can be found in bin/bin/node. Since this is in our repository when cloned, running `cloc` on a cloned repository would yield mostly C code. For accurate line counts, the command `cloc . --exclude-dir=bin,package.json,package-lock.json` should be run in the root directory of the cloned repository.
 
 
 #### Upgrading NodeJS on Grading Environment
