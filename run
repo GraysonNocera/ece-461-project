@@ -135,12 +135,20 @@ def main():
             print(f"Error: File not found at path: {file_path}")
             return 1
 
+        node_ver = subprocess.run("node -v", shell=True, capture_output=True).stdout.decode("utf-8").strip()
+
         with file:
             output_list = []
             for line in file:
                 # create the command string
                 line = line.strip()
-                command = f"bin/bin/node src/main.js {line}"
+
+                if (node_ver == "v18.14.0"):
+                    command = f"node src/main.js {line}"
+                    print ("Running node")
+                else:
+                    print ("Running bin/bin/node")
+                    command = f"bin/bin/node src/main.js {line}"
 
                 # call main with each URL as argument
                 result = subprocess.run(command, shell=True, capture_output=True)
