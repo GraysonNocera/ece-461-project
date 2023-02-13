@@ -32,7 +32,7 @@ describe("Tests for clone_repo.ts", () => {
 
   test.each([
     { file_contents: "This readme has no license", has_license: false },
-    { file_contents: "Package has LGPL v3", has_license: true },
+    { file_contents: "Package has LGPL v3.", has_license: true },
   ])(
     "test has_correct_license_in_readme",
     async ({ file_contents, has_license }) => {
