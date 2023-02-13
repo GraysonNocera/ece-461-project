@@ -145,9 +145,7 @@ def main():
 
                 if (node_ver == "v18.14.0"):
                     command = f"node src/main.js {line}"
-                    print ("Running node")
                 else:
-                    print ("Running bin/bin/node")
                     command = f"bin/bin/node src/main.js {line}"
 
                 # call main with each URL as argument
