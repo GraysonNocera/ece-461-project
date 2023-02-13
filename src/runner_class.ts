@@ -1,4 +1,3 @@
-import { get_recentCommits } from "./parse_links";
 import { Package } from "./package_class";
 import { provider } from "./logging";
 import { Logger } from "typescript-logging-log4ts-style";
@@ -25,12 +24,16 @@ export class Runner {
     //   this.package_instance.owner
     // );
 
+    log.info("Getting commit count...")
+
     // More than 1000 commits in the last year is probably a sign of a well maintained project
     if (this.package_instance.commit_count >= 1000) {
       this.package_instance.commit_count = 1;
     } else {
       this.package_instance.commit_count /= 1000;
     }
+
+    log.info("Getting number of stars...")
 
     //stars  are also a good sign of a well maintianed repo
     let num_stars = this.package_instance.num_stars;
@@ -54,7 +57,9 @@ export class Runner {
       1
     );
 
-    this.package_instance.correctness = parseFloat(this.package_instance.correctness.toPrecision(3));
+    this.package_instance.correctness = parseFloat(
+      this.package_instance.correctness.toPrecision(2)
+    );
 
     log.info(
       "Calculated correctness score of " + this.package_instance.correctness
@@ -80,12 +85,14 @@ export class Runner {
 
     let num_stars = this.package_instance.num_stars; // If there's a lot of stars then there's people interested in the project and more likely to contribute
 
-    // console.log(ratio);
-    // console.log(num_stars);
-
     // Calculate bus factor
-    this.package_instance.bus_factor = Math.min(7 * ratio + 0.3 * (num_stars / 10000), 1);
-    this.package_instance.bus_factor = parseFloat(this.package_instance.bus_factor.toPrecision(3));
+    this.package_instance.bus_factor = Math.min(
+      7 * ratio + 0.3 * (num_stars / 10000),
+      1
+    );
+    this.package_instance.bus_factor = parseFloat(
+      this.package_instance.bus_factor.toPrecision(2)
+    );
 
     log.info(
       "Calculated bus factor score of " + this.package_instance.bus_factor
@@ -116,15 +123,21 @@ export class Runner {
       await this.package_instance.has_correct_license_in_readme
     );
 
-    // License score outputs a 1 if at least one of the following are true:
+    // License score outputs a nonzero value if at least one of the following are true:
     // 1) The readme has a compatible license
     // 2) The repo has a license file, and has a license field in package.json, and has a license
     //    header in the readme
-    this.package_instance.license =
-      has_correct_license_in_readme ||
-      (has_license_file_score &&
-        has_license_in_readme_score &&
-        has_license_in_package_json);
+    if (has_correct_license_in_readme) {
+      this.package_instance.license = 1;
+    } else if (
+      has_license_file_score &&
+      has_license_in_readme_score &&
+      has_license_in_package_json
+    ) {
+      // License score is set to 0.2 because it is likely that this repo has a license,
+      // but it is very unlikely that it has the correct license
+      this.package_instance.license = 0.2;
+    }
 
     if (has_correct_license_in_readme) {
       log.info(
@@ -136,13 +149,15 @@ export class Runner {
       has_license_in_package_json
     ) {
       log.info(
-        "License score is 1 based on condition (2) (check function for more information)\n"
+        "License score is 0.2 based on condition (2) (check function for more information)\n"
       );
     } else {
       log.info("License score is 0\n");
     }
 
-    this.package_instance.license = parseFloat(this.package_instance.license.toPrecision(3));
+    this.package_instance.license = parseFloat(
+      this.package_instance.license.toPrecision(2)
+    );
   }
 
   async calculate_ramp() {
@@ -154,7 +169,10 @@ export class Runner {
 
     this.package_instance.ramp_up = 0;
 
-    // Get standards for readme length and percent comments
+    // Standards for readme length and percentage comments
+    // An ideal repository should have a reasonable size readme (10000 characters)
+    // as well as significant documentation (1:1 comment to code ratio)
+    // We will compare the repositories metrics off these benchmarks
     let standard_readme_length: number = 10000;
     let standard_percent_comments: number = 0.5;
 
@@ -170,11 +188,12 @@ export class Runner {
 
     // Calculate ramp up time
     this.package_instance.ramp_up = readme_score * 0.4 + comments_score * 0.6;
-    this.package_instance.ramp_up = parseFloat(this.package_instance.ramp_up.toPrecision(3));
+    this.package_instance.ramp_up = parseFloat(
+      this.package_instance.ramp_up.toPrecision(2)
+    );
     log.info("Calculated ramp up score of " + this.package_instance.ramp_up);
   }
 
-  //calculate responsiveness
   async calculate_responsiveness() {
     // Calculate responsiveness
 
@@ -188,8 +207,10 @@ export class Runner {
             this.package_instance.total_commits),
       1
     );
-    
-    this.package_instance.responsiveness = parseFloat(this.package_instance.responsiveness.toPrecision(3));
+
+    this.package_instance.responsiveness = parseFloat(
+      this.package_instance.responsiveness.toPrecision(2)
+    );
     log.info(
       "Calculated responsiveness of " + this.package_instance.responsiveness
     );
@@ -207,7 +228,9 @@ export class Runner {
       0.1 * this.package_instance.ramp_up +
       0.1 * this.package_instance.responsiveness;
 
-    this.package_instance.score = parseFloat(this.package_instance.score.toPrecision(3));
+    this.package_instance.score = parseFloat(
+      this.package_instance.score.toPrecision(2)
+    );
 
     log.info(
       "Final score for package " +
@@ -216,35 +239,4 @@ export class Runner {
         this.package_instance.score
     );
   }
-
-  // write_to_file() {
-  //   // In reality, we should keep track of all these values in the CLI probably, then do the sorting, followed by
-  //   // a loop that does this over and over, putting it all into the output file
-
-  //   this.package_instance.url = "https://github.com/lodash/lodash";
-  //   let json: string = JSON.stringify({
-  //     URL: this.package_instance.url,
-  //     NET_SCORE: 0.8,
-  //     RAMP_UP_SCORE: 0.4,
-  //     CORRECTNESS_SCORE: 0.2,
-  //     BUS_FACTOR_SCORE: 0.45,
-  //     RESPONSIVE_MAINTAINER_SCORE: 0.6,
-  //     LICENSE_SCORE: 1,
-  //   });
-
-  //   json += "\n";
-
-  //   this.package_instance.url = "https://github.com/nullivex/nodist";
-  //   json += JSON.stringify({
-  //     URL: this.package_instance.url,
-  //     NET_SCORE: 0.2,
-  //     RAMP_UP_SCORE: 0.5,
-  //     CORRECTNESS_SCORE: 0.8,
-  //     BUS_FACTOR_SCORE: 0.2,
-  //     RESPONSIVE_MAINTAINER_SCORE: 0.9,
-  //     LICENSE_SCORE: 0,
-  //   });
-
-  //   //(json);
-  // }
 }

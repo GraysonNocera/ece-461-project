@@ -1,7 +1,7 @@
 import { Package } from "../src/package_class";
 import { Runner } from "../src/runner_class";
 
-jest.setTimeout(30 * 1000)
+jest.setTimeout(30 * 1000);
 
 const test_package = new Package(
   "https.dummy_url.gov",
@@ -109,7 +109,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.has_correct_license_in_readme =
       Promise.resolve(true);
     await runner_test.calculate_license();
-    expect(runner_test.package_instance.license).toBe(1);
+    expect(runner_test.package_instance.license).toBeCloseTo(1);
   });
 
   test("test license calculation with correct license in readme", async () => {
@@ -121,7 +121,7 @@ describe("testing for Runner class", () => {
     runner_test.package_instance.has_correct_license_in_readme =
       Promise.resolve(false);
     await runner_test.calculate_license();
-    expect(runner_test.package_instance.license).toBeCloseTo(1);
+    expect(runner_test.package_instance.license).toBeCloseTo(0.2);
   });
 
   test("test ramp up calculation", async () => {

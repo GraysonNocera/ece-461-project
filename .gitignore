@@ -13,3 +13,6 @@ coverage/
 
 # Ignore experiments
 experiments/
+
+# Ignore logs
+*.log

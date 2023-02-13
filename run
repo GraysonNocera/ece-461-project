@@ -9,6 +9,9 @@ import pathlib
 
 
 def sort_key(json_obj):
+    """
+    Sort key for sorting json objects in descending order of NET_SCORE
+    """
     return -json_obj["NET_SCORE"]
 
 
@@ -44,11 +47,12 @@ def parse_test_results(test_dump: str):
         results.append(test_dump[:end])
 
     coverage, passed, total = results
-
     return passed, total, coverage
 
 
 def main():
+    write_to_file = False # set to true to write output to output.ndjson
+
     if len(sys.argv) < 2:
         print("Error: No mode specified.")
         return 1
@@ -58,60 +62,31 @@ def main():
             pass
     except:
         # No log file was provided or it couldn't be opened
-        error_msg = "Warning: No log file provided.\n"
-        error_msg += "To enable logging, set a path to a logging file in "
-        error_msg += "environment variable LOG_FILE and set the log level "
-        error_msg += "in environment variable LOG_LEVEL."
-        print(error_msg)
+        # error_msg = "Warning: No log file provided.\n"
+        # error_msg += "To enable logging, set a path to a logging file in "
+        # error_msg += "environment variable LOG_FILE and set the log level "
+        # error_msg += "in environment variable LOG_LEVEL."
+        # print(error_msg)
+        pass
 
     mode = sys.argv[1]
     if mode == "install":
-        ## try:
-        ##     node_ver = subprocess.run(
-        ##         ["node --version"], stdout=subprocess.PIPE, shell=True
-        ##     ).stdout.decode("utf-8")
-        ## except:
-        ##     # Node not installed
-        ##     node_ver = 0
-        ##
-        ##
-        ## commands = [
-        ##     ['curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash'],
-        ##     ['export NVM_DIR="$HOME/.nvm"'],
-        ##     ['[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'],
-        ##      ['[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"'],
-        ##  ]
-        ##
-        ## #If not 18.14.0, install nvm and use it to install 18.14.0
-        ## if (node_ver != "v18.14.0"):
-        ##     for command in commands:
-        ##         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        ##         process.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm install 18.14.0'])
-        ##     p.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'nvm use 18.14.0'])
-        ##     p.wait()
-        ##
-        ##     p = subprocess.Popen(['/usr/bin/bash', '-i', '-c', 'source ~/.bashrc'])
-        ##     p.wait()
-
         # INSTALL DEPENDENCIES
+        ret_val = subprocess.run("npm install --loglevel=error", shell=True, capture_output=True)
 
-        ## try:
-        ##     os.system('export PATH=$(pwd)/node_bin/bin/:$PATH')
-        ##     pass
-        ## except:
-        ##     print("Error: Could not export path")
-        ##     pass
-
-        ret_val = subprocess.run("npm install --loglevel=error", shell=True)
         if ret_val.returncode != 0:
             print("Error: NPM Install failed")
             return 1
 
-        return 0
+        ret_val = ret_val.stdout.decode("utf-8")
+        match = re.search(r"up to date", ret_val)
+        if match:
+            print("0 dependencies installed: Up to date")
+        else:
+            num_packs = re.search(r"added (\d+) packages", ret_val)
+            if num_packs:
+                print(f"{num_packs.group(1)} dependencies installed... ")
+
 
     elif mode == "build":
         # BUILD PROJECT
@@ -127,16 +102,20 @@ def main():
         result: subprocess.CompletedProcess = subprocess.run(
             command, shell=True, capture_output=True
         )
+
         passed, total, coverage = parse_test_results(
             result.stdout.decode("utf-8") + result.stderr.decode("utf-8")
         )
+
         if passed == total == coverage == -1:
             print("Testing data could not be acquired")
             return 1
         else:
-            print(
-                f"{passed}/{total} test cases passed. {coverage}% line coverage achieved."
-            )
+            print(f"Total: {total}")
+            print(f"Passed: {passed}")
+            print(f"Coverage: {coverage}%")
+            print(f"{passed}/{total} test cases passed. {coverage}% line coverage achieved.")
+
         return 0
     else:
         # RANK MODULES
@@ -145,9 +124,7 @@ def main():
             return 1
 
         if not os.getenv("GITHUB_TOKEN"):
-            print(
-                "Error: Please specify GitHub token in environment variable GITHUB_TOKEN"
-            )
+            print("Error: Please specify GitHub token in environment variable GITHUB_TOKEN")
             return 1
 
         file_path = sys.argv[1]
@@ -158,12 +135,18 @@ def main():
             print(f"Error: File not found at path: {file_path}")
             return 1
 
+        node_ver = subprocess.run("node -v", shell=True, capture_output=True).stdout.decode("utf-8").strip()
+
         with file:
             output_list = []
             for line in file:
                 # create the command string
                 line = line.strip()
-                command = f"node_bin/bin/node src/main.js {line}"
+
+                if (node_ver == "v18.14.0"):
+                    command = f"node src/main.js {line}"
+                else:
+                    command = f"bin/bin/node src/main.js {line}"
 
                 # call main with each URL as argument
                 result = subprocess.run(command, shell=True, capture_output=True)
@@ -174,13 +157,35 @@ def main():
                     print(f"Error when running command: {command}")
                     return 1
 
-        output_list = sorted(output_list, key=sort_key)
+        nan_list = []
+        good_list = []
+        
+        # remove any modules that failed to be ranked
+        for item in output_list:
+            if (item['NET_SCORE'] is not None):
+                good_list.append(item)
+            else:
+                nan_list.append(item)
+
+        output_list = sorted(good_list, key=sort_key)
+        output_list.extend(nan_list)
+        
         output_str = "\n".join([json.dumps(item) for item in output_list])
-        print(output_str)
-        # root_dir = pathlib.PurePath(__file__).parent
-        # with open(root_dir.joinpath("output.ndjson"), "w") as f:
-        #     f.write(output_str)
+        
+        if write_to_file:
+            root_dir = pathlib.PurePath(__file__).parent
+            with open(root_dir.joinpath("output.ndjson"), "w") as f:
+                f.write(output_str)
+        else:
+            print(output_str)
+
+main()
 
 
-if __name__ == "__main__":
-    main()
+## if __name__ == "__main__":
+##     main()
+## 
+## else:
+##     print("Error: This file is not meant to be imported")
+##     print("Please run this file directly or edit line 158 of ece-461-project/run to allow it to be imported.")
+##     exit(1)
