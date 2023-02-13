@@ -1,7 +1,7 @@
 # Spring 2023 ECE 461 Project Part 1
 ###### Brian Yuan, Koltan Hauersperger, Grayson Nocera, Shantanu Sinha
 ## CLI for Trustworthy Modules
-This project aims to use REST and GraphQL APIs to get metrics (bus factor; correctness; ramp up; responsive maintainer) of how trustworthy different packages and repositories are, and to rate these packages and repositories based off a "net score" using the metrics measured.
+This project aims to use REST API, GraphQL API, and local repository cloning to get metrics (bus factor, correctness, ramp up, responsive maintainer, license) of how trustworthy different packages and repositories are, and to rate these packages and repositories based off a "net score" using the metrics measured.
 
 ### Interaction
 
@@ -60,5 +60,7 @@ Does the package have a license? If yes, then it will receive a high score. If n
 
 #### Net Score
 Based on the above metrics, the net score will be their weighted sum on a scale from 0 to 1 inclusive using the following formula:  
+  
 ```(0.35 ∗ bF) + (0.25 ∗ L) + (0.2 ∗ C) + (0.1 ∗ rU) + (0.1 ∗ rM) = nS```  
+  
 where ```bF``` is the bus factor; ```L``` is license; ```C``` is correctness; ```rU``` is ramp up; ```rM``` is responsive Maintainer; and ```nS``` is the net score of the package overall.
